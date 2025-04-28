@@ -402,7 +402,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         data.ingredient?.let {
             ingredientList.addAll(it)
         }
-
         if (stores.size > 0) {
             binding.rlSuperMarket.visibility = View.VISIBLE
             adapter?.updateList(stores)
@@ -534,7 +533,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         } else {
             showLocationError(requireContext(), ErrorMessage.locationError)
         }
-
     }
 
 
