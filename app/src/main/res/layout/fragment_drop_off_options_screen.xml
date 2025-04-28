@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.mainfragment.commonscreen.dropoffoptionscreen.DropOffOptionsScreenFragment">
+
+    <RelativeLayout
+        android:id="@+id/layTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="start|center">
+
+        <RelativeLayout
+            android:id="@+id/relBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_10sdp"
+                android:src="@drawable/back_icon" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Drop off options"
+            android:textColor="#000000"
+            android:textSize="@dimen/_15sdp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layTitle"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_15sdp">
+
+            <RelativeLayout
+                android:id="@+id/relHandToMe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_8sdp"
+                android:background="@drawable/gray_edittext_bg">
+
+                <ImageView
+                    android:id="@+id/imageHandItToMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/hand_it_to_me_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hand it to me"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_toEndOf="@+id/imageHandItToMe"
+                    android:fontFamily="@font/poppins_semibold"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relMeetHandMe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relHandToMe"
+                android:background="@drawable/outline_green_border_white_bg"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:paddingVertical="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <RelativeLayout
+                    android:id="@+id/relMeetDoor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvMeetAtDoor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Meet at my door"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/grey6"
+                        android:fontFamily="@font/montserrat_medium"/>
+
+                    <ImageView
+                        android:id="@+id/imgMeetDoor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/radio_green_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relMeetOutSide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relMeetDoor"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <TextView
+                        android:id="@+id/tvMeetOutside"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Meet outside"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/grey6"
+                        android:fontFamily="@font/montserrat_medium"/>
+
+                    <ImageView
+                        android:id="@+id/imgMeetOutside"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/radio_uncheck_gray_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relMeetReception"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relMeetOutSide"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <TextView
+                        android:id="@+id/tvMeetReception"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Meet at reception"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/grey6"
+                        android:fontFamily="@font/montserrat_medium"/>
+
+                    <ImageView
+                        android:id="@+id/imgMeetReception"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/radio_uncheck_gray_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relLeaveLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_below="@+id/relMeetHandMe"
+                android:background="@drawable/gray_edittext_bg">
+
+                <ImageView
+                    android:id="@+id/imgLeaveAtLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:src="@drawable/hand_it_to_me_icon"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Leave at location"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_toEndOf="@+id/imgLeaveAtLocation"
+                    android:fontFamily="@font/poppins_semibold"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relLeaveDoorOpt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relLeaveLocation"
+                android:background="@drawable/rectangular_shape_green_bg"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <RelativeLayout
+                    android:id="@+id/relLeaveDoor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvLeaveAtDoor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Leave at my door"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/grey6"
+                        android:fontFamily="@font/montserrat_medium"/>
+
+                    <ImageView
+                        android:id="@+id/imgLeaveAtDoor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/radio_uncheck_gray_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relLeaveReception"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relLeaveDoor"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <TextView
+                        android:id="@+id/tvLeaveReception"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Leave at reception"
+                        android:textSize="@dimen/_13sdp"
+                        android:textColor="@color/grey6"
+                        android:fontFamily="@font/montserrat_medium"/>
+
+                    <ImageView
+                        android:id="@+id/imgLeaveReception"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/radio_uncheck_gray_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvInstructions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Instruction for delivery person"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_below="@+id/relLeaveDoorOpt"
+                android:fontFamily="@font/montserrat_semibold"/>
+
+            <RelativeLayout
+                android:id="@+id/relInst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvInstructions"
+                android:background="@drawable/rectangular_shape_green_bg"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <EditText
+                    android:id="@+id/edtInstructions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Example: Please knock instead of using the doorbell"
+                    android:background="@null"
+                    android:text=""
+                    android:textSize="@dimen/_11sdp"
+                    android:textColorHint="@color/grey"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="top|start" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlUpdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/_50sdp"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:background="@drawable/green_btn_background">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/poppins"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:text="Update"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_11sdp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

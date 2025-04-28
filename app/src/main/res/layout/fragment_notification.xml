@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".fragment.mainfragment.profilesetting.NotificationFragment">
+
+   <ScrollView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:fillViewport="true">
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="@dimen/_25sdp"
+           android:layout_marginHorizontal="@dimen/_16sdp">
+
+           <RelativeLayout
+               android:id="@+id/rlToolbar"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+
+               <ImageView
+                   android:id="@+id/imgBackNotification"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:padding="@dimen/_5sdp"
+                   android:src="@drawable/black_images_back" />
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_centerInParent="true"
+                   android:fontFamily="@font/montserrat_semibold"
+                   android:text="Notifications"
+                   android:textSize="@dimen/_13sdp" />
+
+           </RelativeLayout>
+
+           <TextView
+               android:id="@+id/textViewNotification"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_below="@+id/rlToolbar"
+               android:layout_marginTop="@dimen/_10sdp"
+               android:fontFamily="@font/montserrat_semibold"
+               android:text="Notification"
+               android:textColor="@color/black"
+               android:textSize="@dimen/_14sdp" />
+
+           <RelativeLayout
+               android:id="@+id/relEnableNotifications"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/_10sdp"
+               android:layout_below="@+id/textViewNotification"
+               android:background="@drawable/setting_rectangular_bg">
+               <TextView
+                   android:id="@+id/textEnableNotification"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:gravity="center|start"
+                   android:drawableStart="@drawable/notification_icons"
+                   android:drawablePadding="@dimen/_10sdp"
+                   android:fontFamily="@font/montserrat_semibold"
+                   android:text="@string/enable_all_notification"
+                   android:textSize="@dimen/_13sdp"
+                   app:drawableEndCompat="@drawable/toggle_gray_off_icon" />
+
+           </RelativeLayout>
+
+           <RelativeLayout
+               android:id="@+id/relPushNotification"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/_10sdp"
+               android:layout_below="@+id/relEnableNotifications"
+               android:background="@drawable/setting_rectangular_bg">
+
+               <TextView
+                   android:id="@+id/textPushNotification"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:fontFamily="@font/montserrat_semibold"
+
+                   android:gravity="center|start"
+                   android:drawableStart="@drawable/push_notification_icon"
+                   android:drawablePadding="@dimen/_10sdp"
+                   android:text="Push notification"
+                   android:textSize="@dimen/_13sdp"
+                   app:drawableEndCompat="@drawable/toggle_gray_off_icon" />
+
+           </RelativeLayout>
+
+           <RelativeLayout
+               android:id="@+id/relRecipeRecommendations"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/_10sdp"
+               android:layout_below="@+id/relPushNotification"
+               android:background="@drawable/setting_rectangular_bg">
+
+               <TextView
+                   android:id="@+id/textRecipeRecommendations"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:fontFamily="@font/montserrat_semibold"
+                   android:gravity="center|start"
+                   android:drawableStart="@drawable/recipe_recommendation_icon"
+                   android:drawablePadding="@dimen/_10sdp"
+                   android:text="Recipe Recommendations"
+                   android:textSize="@dimen/_13sdp"
+                   app:drawableEndCompat="@drawable/toggle_gray_off_icon" />
+
+           </RelativeLayout>
+
+           <RelativeLayout
+               android:id="@+id/relProductUpdates"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/_10sdp"
+               android:layout_below="@+id/relRecipeRecommendations"
+               android:background="@drawable/setting_rectangular_bg">
+               <TextView
+                   android:id="@+id/textProductUpdates"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:fontFamily="@font/montserrat_semibold"
+                   android:gravity="center|start"
+                   android:drawableStart="@drawable/product_updates_icon"
+                   android:drawablePadding="@dimen/_10sdp"
+                   android:text="Product Updates"
+                   android:textSize="@dimen/_13sdp"
+                   app:drawableEndCompat="@drawable/toggle_gray_off_icon" />
+           </RelativeLayout>
+
+           <RelativeLayout
+               android:id="@+id/relPromotionalUpdates"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="@dimen/_10sdp"
+               android:layout_below="@+id/relProductUpdates"
+               android:background="@drawable/setting_rectangular_bg">
+               <TextView
+                   android:id="@+id/textPromotionalUpdates"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:fontFamily="@font/montserrat_semibold"
+                   android:gravity="center|start"
+                   android:drawablePadding="@dimen/_10sdp"
+                   android:text="Promotional Updates"
+                   android:textSize="@dimen/_13sdp"
+                   app:drawableEndCompat="@drawable/toggle_gray_off_icon"
+                   app:drawableStartCompat="@drawable/promotional_icon" />
+           </RelativeLayout>
+       </RelativeLayout>
+   </ScrollView>
+</RelativeLayout>

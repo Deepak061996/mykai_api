@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "856670496660",
+    "project_id": "myka-f4765",
+    "storage_bucket": "myka-f4765.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856670496660:android:09d58827b3482e0a7dd181",
+        "android_client_info": {
+          "package_name": "com.mykaimeal.planner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "856670496660-2j10jm7g0nej292tp10tla52k5m34e2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mykaimeal.planner",
+            "certificate_hash": "c93edcf5913bf13588a6d6fb5217f219b2cf2516"
+          }
+        },
+        {
+          "client_id": "856670496660-vtpekp5tgthm6hibflrmcbspkokk61gc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKWf4tFXWq8Ti7X607J3N2jURpwJxyRp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "856670496660-vtpekp5tgthm6hibflrmcbspkokk61gc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "856670496660-qsailjit03lsaeen7v1e6l769no55o93.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.MykaiApp.com"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

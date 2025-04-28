@@ -1,0 +1,29 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Green rectangle at the top -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="@dimen/_5sdp" android:topRightRadius="@dimen/_5sdp"/>
+            <solid android:color="#06C169" /> <!-- Change color as per your green -->
+            <size android:height="50dp" /> <!-- Adjust height of green rectangle -->
+        </shape>
+    </item>
+
+    <!-- White rectangle below -->
+    <item android:top="5dp" android:left="@dimen/_2sdp" android:right="@dimen/_2sdp"> <!-- Adjust top offset to match green rectangle height -->
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- White background -->
+        </shape>
+    </item>
+
+
+
+    <item android:bottom="130dp" android:left="@dimen/_2sdp" android:right="@dimen/_2sdp"> <!-- Adjust top offset to match green rectangle height -->
+
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/_5sdp"/>
+            <solid android:color="#06C169" /> <!-- White background -->
+        </shape>
+    </item>
+
+
+</layer-list>

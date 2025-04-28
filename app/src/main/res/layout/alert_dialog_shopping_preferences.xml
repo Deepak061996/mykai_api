@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    android:layout_marginHorizontal="@dimen/_15sdp"
+    app:cardCornerRadius="@dimen/_10sdp"
+    app:cardElevation="@dimen/_5sdp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginBottom="@dimen/_25sdp"
+        android:layout_marginTop="@dimen/_15sdp">
+
+        <ImageView
+            android:id="@+id/imagePreferences"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/shopping_preferences_image" />
+
+        <TextView
+            android:id="@+id/tvShoppingPref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imagePreferences"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Set Your Shopping Preferences"
+            android:textSize="@dimen/_13sdp" />
+
+        <TextView
+            android:id="@+id/tvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvShoppingPref"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/poppins"
+            android:text="Enter your postcode to find supermarkets near you"
+            android:textSize="@dimen/_11sdp" />
+
+        <EditText
+            android:id="@+id/etYourPostCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDesc"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/edittext_bg"
+            android:fontFamily="@font/poppins"
+            android:gravity="center_vertical"
+            android:hint="Enter your postcode"
+            android:inputType="textPassword"
+            android:padding="@dimen/_10sdp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/black"
+            android:textColorHint="@color/light_black"
+            android:textSize="@dimen/_13sdp" />
+
+        <TextView
+            android:id="@+id/tvSearchRadius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etYourPostCode"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/poppins"
+            android:text="Search Radius"
+            android:textSize="@dimen/_11sdp" />
+
+        <EditText
+            android:id="@+id/etSetMaxRadius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvSearchRadius"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/edittext_bg"
+            android:fontFamily="@font/poppins"
+            android:gravity="center_vertical"
+            android:hint="Enter your postcode"
+            android:inputType="textPassword"
+            android:padding="@dimen/_10sdp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/black"
+            android:textColorHint="@color/light_black"
+            android:textSize="@dimen/_13sdp" />
+
+        <com.mykaimeal.planner.CombinedProgressView
+            android:id="@+id/customSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_100sdp"
+            android:layout_below="@+id/etSetMaxRadius"
+            android:layout_centerInParent="true"
+            android:paddingVertical="@dimen/_17sdp"
+            android:paddingHorizontal="@dimen/_15sdp" />
+
+        <RelativeLayout
+            android:id="@+id/relMilesWith"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/customSeekBar">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/tvLoginWith"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:scaleType="fitXY"
+                android:src="@drawable/view_line_icon"
+                app:tint="@color/grey1" />
+
+            <TextView
+                android:id="@+id/tvLoginWith"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="miles"
+                android:textSize="@dimen/_13sdp"
+                android:fontFamily="@font/poppins"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/black"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_toEndOf="@+id/tvLoginWith"
+                android:src="@drawable/view_line_icon"
+                app:tint="@color/grey1" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relDone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_below="@+id/relMilesWith"
+            android:background="@drawable/green_btn_background">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:paddingVertical="@dimen/_10sdp"
+                android:text="Done"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13sdp" />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

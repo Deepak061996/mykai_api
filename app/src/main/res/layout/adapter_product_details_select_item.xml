@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:id="@+id/llProductsClick"
+    android:padding="@dimen/_6sdp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!-- Product Image -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/productImage"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_food_image"
+            app:shapeAppearanceOverlay="@style/RoundedSquare1" />
+
+        <include
+            android:id="@+id/lay_progess"
+            layout="@layout/progess_loader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:paddingStart="@dimen/_10sdp"
+        tools:ignore="RtlSymmetry">
+
+        <TextView
+            android:id="@+id/textProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ketchup"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/black"
+            android:maxLines="3"
+            android:textStyle="bold"
+            android:textSize="@dimen/_12sdp" />
+
+        <TextView
+            android:id="@+id/productDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Details"
+            android:textSize="@dimen/_10ssp"
+            android:textColor="@color/light_green"
+            android:paddingTop="@dimen/_4sdp" />
+
+
+    </LinearLayout>
+
+    <!-- Product Price and Controls -->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/textPrice"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="wrap_content"
+            android:text="$00"
+            android:textColor="#06C169"
+            android:textAlignment="center"
+            android:textSize="@dimen/_11sdp"
+            android:layout_centerHorizontal="true"
+            android:padding="@dimen/_2sdp" />
+
+       <!-- <TextView
+            android:id="@+id/textPrice"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="wrap_content"
+            android:text="$25"
+            android:textColor="#06C169"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:background="#E7FFF4"
+            android:padding="@dimen/_3sdp" />-->
+
+
+        <ImageView
+            android:id="@+id/imageAddIcon"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_below="@+id/textPrice"
+            android:layout_toEndOf="@+id/textCount"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:src="@drawable/ic_add_square_icon" />
+
+        <TextView
+            android:id="@+id/textCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_below="@+id/textPrice"
+            android:layout_toEndOf="@+id/imageMinusIcon"
+            android:text="1"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/imageMinusIcon"
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_4sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_below="@+id/textPrice"
+            android:src="@drawable/ic_minus_square_icon"/>
+
+    </RelativeLayout>
+</LinearLayout>

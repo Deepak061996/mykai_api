@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relRecipeSearch"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_5sdp"
+    android:background="@drawable/orange_box_bg"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/tvRecipeSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:fontFamily="@font/poppins"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_8sdp"
+        android:singleLine="true"
+        android:drawablePadding="@dimen/_16sdp"
+        android:text="Recipe Search"
+        android:textColor="@color/light_black"
+        android:textColorHint="@color/light_black"
+        android:textSize="@dimen/_12sdp"
+        app:drawableEndCompat="@drawable/orange_tick_icon" />
+</RelativeLayout>

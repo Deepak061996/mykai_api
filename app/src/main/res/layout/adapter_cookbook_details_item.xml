@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViews"
+    android:layout_width="@dimen/_130sdp"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_7sdp"
+    android:elevation="@dimen/_10sdp"
+    app:cardCornerRadius="@dimen/_10sdp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_5sdp">
+        <RelativeLayout
+            android:id="@+id/relBreakfast"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageData"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_120sdp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/no_image"
+                app:shapeAppearanceOverlay="@style/CornerCut" />
+            <include
+                android:id="@+id/lay_progess"
+                layout="@layout/progess_loader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
+            <RelativeLayout
+                android:id="@+id/relWatchTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_4sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:background="@drawable/small_transparent_bg"
+                android:paddingHorizontal="@dimen/_3sdp"
+                android:paddingVertical="@dimen/_3sdp">
+
+                <ImageView
+                    android:id="@+id/imgWatch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/watch_white_icon" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_toEndOf="@+id/imgWatch"
+                    android:text="0 min"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10sdp" />
+
+            </RelativeLayout>
+            <ImageView
+                android:id="@+id/imgThreeDot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:src="@drawable/three_dot_icon"
+                app:tint="@color/white" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/_8sdp"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_3sdp"
+                android:layout_below="@id/imgThreeDot"
+                app:cardBackgroundColor="@color/white">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="@dimen/_2sdp"
+                    android:paddingHorizontal="@dimen/_2sdp">
+
+                    <TextView
+                        android:id="@+id/tvRemoveRecipe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:text="Remove Recipe"
+                        android:textSize="@dimen/_10sdp"
+                        android:layout_margin="@dimen/_5sdp"
+                        app:drawableStartCompat="@drawable/remove_recipe_icon" />
+
+                    <TextView
+                        android:id="@+id/tvMoveRecipe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvRemoveRecipe"
+                        android:drawablePadding="@dimen/_5sdp"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:text="Move Recipe"
+                        android:textSize="@dimen/_10sdp"
+                        app:drawableStartCompat="@drawable/move_icon" />
+
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relBreakfast">
+
+            <RelativeLayout
+                android:id="@+id/relNameReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp">
+
+                <TextView
+                    android:id="@+id/tvBreakfast"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:text=""
+                    android:textSize="@dimen/_12sdp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relNameReview"
+                android:layout_marginTop="@dimen/_6sdp">
+
+                <TextView
+                    android:id="@+id/tvAddToPlan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/add_to_plan_bg"
+                    android:drawablePadding="@dimen/_6sdp"
+                    android:padding="@dimen/_4sdp"
+                    android:text="Add to plan"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/_11sdp"
+                    app:drawableStartCompat="@drawable/add_icon" />
+
+                <ImageView
+                    android:id="@+id/basketImg"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/orange_basket_icon" />
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

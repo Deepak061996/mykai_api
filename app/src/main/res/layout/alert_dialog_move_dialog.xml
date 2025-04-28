@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/white"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        app:cardCornerRadius="@dimen/_20sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageRemoveDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_25sdp"
+                android:src="@drawable/move_recipe_item_icon" />
+
+            <ImageView
+                android:id="@+id/imgCrossDiscardChanges"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cross_orange_icon"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/tvRemoveDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageRemoveDay"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Move Recipe"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_17sdp" />
+
+            <TextView
+                android:id="@+id/tvMoveDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvRemoveDay"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/poppins"
+                android:text="Do you really want to move this recipe?"
+                android:textColor="@color/light_black"
+                android:textSize="@dimen/_13sdp" />
+
+            <RelativeLayout
+                android:id="@+id/rlSelectChristmas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_below="@+id/tvMoveDesc"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/gray_box_border_bg">
+
+                <TextView
+                    android:id="@+id/tvChristmas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:gravity="center_vertical"
+                    android:padding="@dimen/_8sdp"
+                    android:singleLine="true"
+                    android:text="Christmas"
+                    android:textColor="@color/light_black"
+                    android:textColorHint="@color/light_black"
+                    android:textSize="@dimen/_13sdp"
+                    app:drawableEndCompat="@drawable/drop_down_icon" />
+
+            </RelativeLayout>
+            <com.skydoves.powerspinner.PowerSpinnerView
+                android:id="@+id/spinnerActivityLevel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvMoveDesc"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/edittext_bg"
+                android:fontFamily="@font/poppins"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="Select Cook Book"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_20sdp"
+                android:textColor="#3C4541"
+                android:textColorHint="#3C4541"
+                android:textSize="@dimen/_10ssp"
+                app:spinner_arrow_gravity="end"
+                app:spinner_arrow_padding="@dimen/_5sdp"
+                app:spinner_arrow_show="true"
+                app:spinner_arrow_tint="#3A4B4C"
+                app:spinner_divider_show="false"
+                app:spinner_item_height="@dimen/_34sdp"
+                app:spinner_popup_animation="fade"
+                app:spinner_popup_max_height="@dimen/_100sdp"
+                app:spinner_popup_background="@color/white"
+                app:spinner_popup_elevation="@dimen/_14sdp"
+                tools:ignore="RtlSymmetry" />
+
+            <RelativeLayout
+                android:id="@+id/rlMove"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_below="@+id/spinnerActivityLevel"
+                android:background="@drawable/green_btn_background">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:text="Move"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sdp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relSelectedSnack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rlSelectChristmas"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/_2sdp">
+
+                <RelativeLayout
+                    android:id="@+id/rlSelectBirthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_15sdp"
+                    android:background="@drawable/circular_white_outline_gray_bg">
+
+                    <TextView
+                        android:id="@+id/tvSelectBirthday"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@null"
+                        android:fontFamily="@font/poppins"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_6sdp"
+                        android:singleLine="true"
+                        android:text="Birthday"
+                        android:textColor="@color/light_black"
+                        android:textSize="@dimen/_12sdp"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlSelectParty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rlSelectBirthday"
+                    android:layout_marginHorizontal="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:background="@drawable/circular_white_outline_gray_bg">
+
+                    <TextView
+                        android:id="@+id/tvSelectParty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@null"
+                        android:fontFamily="@font/poppins"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/_6sdp"
+                        android:singleLine="true"
+                        android:text="Party"
+                        android:textColor="@color/light_black"
+                        android:textSize="@dimen/_12sdp"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

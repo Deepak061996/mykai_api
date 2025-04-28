@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/subscription_plan"
+    android:orientation="vertical"
+    tools:context=".fragment.mainfragment.profilesetting.subscriptionplan.SubscriptionAllPlanFragment">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="@dimen/_20sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp">
+
+            <ImageView
+                android:id="@+id/crossImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:src="@drawable/gray_circle_fill" />
+
+            <TextView
+                android:id="@+id/tvTittles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/crossImages"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/montserrat_semibold"
+                android:text="Save time, save money, eat better"
+                android:textColor="@color/light_green"
+                android:textSize="@dimen/_17sdp" />
+
+            <RelativeLayout
+                android:id="@+id/relSubscriptionFrame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvTittles"
+                android:background="@drawable/subscription_main_image">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_20sdp">
+
+                    <TextView
+                        android:id="@+id/tvTextNames"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:textAlignment="center"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="You’ve got a gift from\n kai"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imageProfile"
+                        android:layout_width="@dimen/_60sdp"
+                        android:layout_height="@dimen/_60sdp"
+                        android:layout_below="@+id/tvTextNames"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/_35sdp"
+                        android:src="@drawable/mask_group_icon"
+                        app:civ_border_color="@color/orange"
+                        app:civ_border_width="@dimen/_2sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relFreeTrials"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_below="@+id/imageProfile">
+                        <TextView
+                            android:id="@+id/tvTrialName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="7- days free"
+                            android:textSize="@dimen/_11sdp"
+                            android:drawablePadding="@dimen/_10sdp"
+                            android:fontFamily="@font/montserrat"
+                            android:textColor="@color/black"
+                            app:drawableStartCompat="@drawable/gift_icon" />
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/relLifeTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_below="@+id/relFreeTrials"
+                        android:layout_marginTop="@dimen/_5sdp">
+                        <TextView
+                            android:id="@+id/tvLifeTimeOff"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Lifetime 50% of  My-kai"
+                            android:textSize="@dimen/_11sdp"
+                            android:drawablePadding="@dimen/_10sdp"
+                            android:fontFamily="@font/montserrat"
+                            android:textColor="@color/black"
+                            app:drawableStartCompat="@drawable/dollar_icon" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relSecretCookBook"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relLifeTime"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <TextView
+                            android:id="@+id/tvSecretCookBook"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Kai’s secret cookbook"
+                            android:textSize="@dimen/_11sdp"
+                            android:drawablePadding="@dimen/_10sdp"
+                            android:fontFamily="@font/montserrat"
+                            android:textColor="@color/black"
+                            app:drawableStartCompat="@drawable/secret_cookbook_icon" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relSubscriptionDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relSubscriptionFrame"
+                android:layout_marginHorizontal="@dimen/_15sdp">
+
+                <RelativeLayout
+                    android:id="@+id/relSubscriptionBasic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/subscription_click_bg"
+                    android:padding="@dimen/_10sdp">
+
+                    <RelativeLayout
+                        android:id="@+id/relStarterClick"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvStarter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/basic_click_bg"
+                            android:fontFamily="@font/poppins"
+                            android:padding="@dimen/_2sdp"
+                            android:text="Starter"
+                            android:textColor="#121212"
+                            android:textSize="@dimen/_11sdp" />
+
+                        <ImageView
+                            android:id="@+id/imgBasicClick"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/selected_plan_icon" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relStarterClick"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <TextView
+                            android:id="@+id/tvNewKai"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="New to Kai"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_15sdp" />
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true">
+                            <ImageView
+                                android:id="@+id/imagePrevious"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/weekly_icon"
+                                app:tint="#FFFFFFCC" />
+                            <TextView
+                                android:id="@+id/tvNewDollar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/imagePrevious"
+                                android:fontFamily="@font/poppins_semibold"
+                                android:text="$1.99/ Weekly"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_11sdp" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/relPopularPlan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relSubscriptionBasic"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/subscription_unclick_bg"
+                    android:padding="@dimen/_10sdp">
+                    <RelativeLayout
+                        android:id="@+id/relPopularClick"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvPopular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/popular_click_bg"
+                            android:fontFamily="@font/poppins"
+                            android:padding="@dimen/_2sdp"
+                            android:text="Popular"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_11sdp" />
+
+                        <ImageView
+                            android:id="@+id/imgPopularClick"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/unselelected_plan_icon" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relPopularClick"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <TextView
+                            android:id="@+id/tvProkaiUser"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="Pro Kai user"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true">
+
+                            <ImageView
+                                android:id="@+id/imagePreviousMonthly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/monthly_icon" />
+
+                            <TextView
+                                android:id="@+id/tvNewDollarMonthly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/imagePreviousMonthly"
+                                android:fontFamily="@font/poppins_semibold"
+                                android:text="$5.99/ Monthly"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_11sdp" />
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/relBestPlan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relPopularPlan"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/subscription_unclick_bg"
+                    android:padding="@dimen/_10sdp">
+
+                    <RelativeLayout
+                        android:id="@+id/relBestClick"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvBest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/best_value_icon"
+                            android:fontFamily="@font/poppins"
+                            android:padding="@dimen/_2sdp"
+                            android:text="Popular"
+                            android:textColor="#121212"
+                            android:textSize="@dimen/_11sdp" />
+
+                        <ImageView
+                            android:id="@+id/imgBaseClick"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/unselelected_plan_icon" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relBestClick"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <TextView
+                            android:id="@+id/tvLovekaiUser"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="Love Kai"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true">
+
+                            <ImageView
+                                android:id="@+id/imagePreviousyearly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:src="@drawable/yearly_icon" />
+
+                            <TextView
+                                android:id="@+id/tvNewDollaryearly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/imagePreviousyearly"
+                                android:fontFamily="@font/poppins_semibold"
+                                android:text="$49.99/ Yearly"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/_11sdp" />
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rlNextBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relSubscriptionDetails"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@drawable/green_btn_background"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tvNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:text="Start Your 7 days free trial"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sdp" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

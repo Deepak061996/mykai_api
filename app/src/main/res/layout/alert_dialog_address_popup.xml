@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_500sdp"
+    android:layout_gravity="center_vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/_20sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_15sdp">
+
+            <TextView
+                android:id="@+id/tvConfirmAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="@string/confirm_your_address"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_18sdp" />
+
+            <ImageView
+                android:id="@+id/imageCross"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:src="@drawable/gray_circle_fill" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvConfirmAddress"
+                android:fillViewport="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvStreetName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins"
+                        android:text="Street name"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relStreetName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvStreetName"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/address_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtStreetName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins"
+                            android:hint="Street name"
+                            android:paddingHorizontal="@dimen/_15sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvStreetNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relStreetName"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins"
+                        android:text="Street No."
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relStreetNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvStreetNumber"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/address_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtStreetNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins"
+                            android:hint="Street number"
+                            android:paddingHorizontal="@dimen/_15sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvApartNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relStreetNumber"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins"
+                        android:text="Apartment No."
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relApartNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvApartNumber"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/address_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtApartNumber"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins"
+                            android:hint="Apart number"
+                            android:paddingHorizontal="@dimen/_15sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvCity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relApartNumber"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins"
+                        android:text="City"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvCity"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/address_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins"
+                            android:hint="City"
+                            android:paddingHorizontal="@dimen/_15sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvStates"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relCity"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins"
+                        android:text="State"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relStates"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvStates"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/address_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtStates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins"
+                            android:hint="State"
+                            android:paddingHorizontal="@dimen/_15sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relStates"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins"
+                        android:text="Address"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvAddress"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/address_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins"
+                            android:hint="Address"
+                            android:maxLines="2"
+                            android:paddingHorizontal="@dimen/_15sdp"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvPostalCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relAddress"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:fontFamily="@font/poppins"
+                        android:text="Postal code"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <RelativeLayout
+                        android:id="@+id/relPostalCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvPostalCode"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/address_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtPostalCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:background="@null"
+                            android:fontFamily="@font/poppins"
+                            android:hint="Postal Code"
+                            android:inputType="number"
+                            android:paddingHorizontal="@dimen/_15sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_15sdp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relConfirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/relPostalCode"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
+                        android:background="@drawable/green_btn_background">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:fontFamily="@font/poppins"
+                            android:paddingVertical="@dimen/_10sdp"
+                            android:text="Confirm"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_13sdp" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </ScrollView>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

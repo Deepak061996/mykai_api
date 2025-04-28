@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvInstructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Step -1"
+        android:textSize="@dimen/_13sdp"
+        android:textColor="@color/black"/>
+
+    <LinearLayout
+        android:id="@+id/llLayouts"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:layout_below="@+id/tvInstructions"
+        android:background="@drawable/create_unselect_bg"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etAddIngredients"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="@null"
+            android:fontFamily="@font/poppins"
+            android:gravity="center|start"
+            android:hint="Pizza"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:singleLine="true"
+            android:textSize="@dimen/_12sdp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imgCross"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:src="@drawable/ic_cross_icon"
+        android:visibility="gone" />
+
+</RelativeLayout>

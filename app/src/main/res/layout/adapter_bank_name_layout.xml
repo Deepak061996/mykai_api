@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_10sdp"
+    android:id="@+id/select"
+    android:orientation="horizontal"
+    android:background="@drawable/card_number_bg"
+    android:paddingVertical="@dimen/_8sdp">
+
+    <ImageView
+        android:id="@+id/imageIcon"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_7sdp"
+        android:src="@drawable/ic_bank_orange_icon"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginEnd="@dimen/_10sdp"
+             android:layout_toLeftOf="@id/imageThreeDots"
+             android:orientation="vertical">
+             <TextView
+                 android:id="@+id/textName"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginStart="@dimen/_8sdp"
+                 android:fontFamily="@font/poppins_semibold"
+                 android:singleLine="true"
+                 android:text="Card Number"
+                 android:textColor="@color/black" />
+
+             <TextView
+                 android:id="@+id/textDes"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginStart="@dimen/_8sdp"
+                 android:fontFamily="@font/poppins"
+                 android:singleLine="true"
+                 android:text="xgfgg"
+                 android:textColor="#9A9A9A"
+                 android:textSize="@dimen/_10ssp"
+                 />
+
+         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imageThreeDots"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/_3sdp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="@dimen/_4sdp"
+                android:layout_height="@dimen/_12sdp"
+
+                android:src="@drawable/three_dot_icon" />
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+
+
+
+</LinearLayout>

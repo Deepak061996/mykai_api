@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainProLay_ids"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+   <!-- <com.github.ybq.android.spinkit.SpinKitView
+        style="@style/SpinKitView.Large.Circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:SpinKit_Color="#06C169" />-->
+
+    <com.mykaimeal.planner.commonworkutils.RSLoadingView
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"/>
+
+<!--    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lt_javrvis"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        app:lottie_rawRes="@raw/loader" />-->
+
+</RelativeLayout>

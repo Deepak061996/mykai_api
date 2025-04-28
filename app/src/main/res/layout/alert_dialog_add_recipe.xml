@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_20sdp"
+        android:layout_centerInParent="true"
+        app:cardBackgroundColor="@color/white"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:elevation="@dimen/_10sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_15sdp">
+            <TextView
+                android:id="@+id/tvAddRecipes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:fontFamily="@font/poppins_bold"
+                android:text="Add Recipe"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_17sdp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/relCreateNewCookBook"
+                android:layout_below="@+id/tvAddRecipes"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <ImageView
+                    android:id="@+id/imgPlusIcons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/light_greens_plus_icon"
+                    android:layout_centerVertical="true"/>
+
+                <TextView
+                    android:id="@+id/tvBreakfast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/poppins"
+                    android:layout_toEndOf="@+id/imgPlusIcons"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/_15sdp"
+                    android:paddingVertical="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:text="Create new cookbook"
+                    android:textColor="@color/light_black"
+                    android:textColorHint="@color/light_black"
+                    android:textSize="@dimen/_14sdp" />
+
+            </RelativeLayout>
+
+            <com.skydoves.powerspinner.PowerSpinnerView
+                android:id="@+id/spinnerActivityLevel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relCreateNewCookBook"
+                android:layout_marginStart="@dimen/_6sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/edittext_bg"
+                android:fontFamily="@font/poppins"
+                android:foreground="?attr/selectableItemBackground"
+                android:hint="Select a cookbook"
+                android:padding="@dimen/_10sdp"
+                android:paddingStart="@dimen/_20sdp"
+                android:textColor="#3C4541"
+                android:textColorHint="#3C4541"
+                android:textSize="@dimen/_10ssp"
+                app:spinner_arrow_gravity="end"
+                app:spinner_arrow_padding="@dimen/_5sdp"
+                app:spinner_arrow_show="true"
+                app:spinner_arrow_tint="#3A4B4C"
+                app:spinner_divider_show="false"
+                app:spinner_item_height="@dimen/_34sdp"
+                app:spinner_popup_animation="fade"
+                app:spinner_popup_max_height="@dimen/_100sdp"
+                app:spinner_popup_background="@color/white"
+                app:spinner_popup_elevation="@dimen/_14sdp"
+                tools:ignore="RtlSymmetry" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/relFavourites"
+                android:visibility="gone"
+                android:background="@drawable/light_green_rectangular_bg"
+                android:layout_below="@+id/relCreateNewCookBook"
+                android:layout_marginHorizontal="@dimen/_8sdp"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <ImageView
+                    android:id="@+id/imgHeartIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/heart_red_icon"
+                    android:layout_centerVertical="true"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/imgHeartIcon"
+                    android:layout_toStartOf="@+id/imgCheckBoxOrange"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvFavourites"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/_15sdp"
+                        android:paddingVertical="@dimen/_9sdp"
+                        android:singleLine="true"
+                        android:text="Favourites"
+                        android:textColor="@color/light_black"
+                        android:textSize="@dimen/_13sdp" />
+
+                </LinearLayout>
+
+                <!--            <CheckBox-->
+                <!--                android:id="@+id/imgCheckBoxOrange"-->
+                <!--                android:layout_width="wrap_content"-->
+                <!--                android:layout_height="wrap_content"-->
+                <!--                android:layout_centerVertical="true"-->
+                <!--                android:buttonTint="#FE9F45"-->
+                <!--                android:layout_alignParentEnd="true"/>-->
+
+
+                <ImageView
+                    android:id="@+id/imgCheckBoxOrange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:src="@drawable/orange_uncheck_box_images" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlDoneBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinnerActivityLevel"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:background="@drawable/green_btn_background">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:paddingHorizontal="@dimen/_65sdp"
+                    android:paddingVertical="@dimen/_12sdp"
+                    android:text="Done"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sdp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>
+
+

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/_6sdp"
+    android:background="@drawable/edittext_bg"
+    android:clipToPadding="false"
+    android:elevation="@dimen/_4sdp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/_6sdp">
+
+    <!-- Item Label -->
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10ssp"
+        android:layout_weight="1"
+        android:text="Potato"
+        android:textColor="#3C4541"
+        android:textSize="@dimen/_12ssp" />
+
+    <ImageView
+        android:id="@+id/imageMinus"
+        android:layout_width="@dimen/_19sdp"
+        android:layout_height="@dimen/_19sdp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_minus_square_icon"
+        android:textColor="#FFF" />
+
+    <TextView
+        android:id="@+id/tvCounter"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="2"
+        android:textColor="#000000"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imagePlus"
+        android:layout_width="@dimen/_19sdp"
+        android:layout_height="@dimen/_19sdp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_add_square_icon"
+        android:textColor="#FFF" />
+
+    <ImageButton
+        android:id="@+id/imageDelete"
+        android:layout_width="@dimen/_30sdp"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/delete_icon"
+        android:contentDescription="Delete Item" />
+
+</LinearLayout>
