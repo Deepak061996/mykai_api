@@ -279,5 +279,6 @@ interface MainRepository {
     suspend fun generateLinkUrl(successCallback: (response: NetworkResult<String>) -> Unit, link: RequestBody?, image: MultipartBody.Part?)
     suspend fun selectStoreProductUrl(successCallback: (response: NetworkResult<String>) -> Unit, storeName: String?, storeId: String?)
     suspend fun getGraphScreenUrl(successCallback: (response: NetworkResult<String>) -> Unit, month:String?)
+    suspend fun orderHistoryUrl(successCallback: (response: NetworkResult<String>) -> Unit)
 
 }

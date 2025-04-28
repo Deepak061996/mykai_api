@@ -819,6 +819,9 @@ interface ApiInterface {
         @Field("month") month: String?
     ): Response<JsonObject>
 
+    @POST(ApiEndPoint.orderHistoryUrl)
+    suspend fun orderHistoryUrl(): Response<JsonObject>
+
 
     @Multipart
     @POST(ApiEndPoint.generateLinkUrl)

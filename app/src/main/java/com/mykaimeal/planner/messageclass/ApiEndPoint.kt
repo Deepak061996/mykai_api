@@ -126,5 +126,7 @@ object ApiEndPoint {
 
     const val graph="graph"
 
+    const val orderHistoryUrl="order-history"
+
 
 }

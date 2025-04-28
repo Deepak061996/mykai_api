@@ -351,12 +351,12 @@
         tools:layout="@layout/fragment_web_view_by_url" />
     <fragment
         android:id="@+id/orderHistoryFragment"
-        android:name="com.mykaimeal.planner.fragment.mainfragment.profilesetting.OrderHistoryFragment"
+        android:name="com.mykaimeal.planner.fragment.mainfragment.profilesetting.orderhistoryscreen.OrderHistoryFragment"
         android:label="fragment_order_history"
         tools:layout="@layout/fragment_order_history" />
     <fragment
         android:id="@+id/orderDetailsScreenFragment"
-        android:name="com.mykaimeal.planner.fragment.mainfragment.profilesetting.OrderDetailsScreenFragment"
+        android:name="com.mykaimeal.planner.fragment.mainfragment.profilesetting.orderhistoryscreen.OrderDetailsScreenFragment"
         android:label="fragment_order_details_screen"
         tools:layout="@layout/fragment_order_details_screen" />
     <fragment
