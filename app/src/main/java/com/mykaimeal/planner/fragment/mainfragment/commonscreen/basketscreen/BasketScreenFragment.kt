@@ -425,19 +425,22 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
                 binding.textNetTotalProduct.text="0"
                 binding.textTotalAmount.text="0"
             }else{
+                // Now format total properly
+                val formattedTotal = if (count % 1 == 0.0) {
+                    count.toInt().toString() // if 10.0 → show 10
+                } else {
+                    count.toString()         // if 10.5 → show 10.5
+                }
                 binding.textConfirmOrder.isClickable=true
-                binding.textNetTotalProduct.text="$$count*"
-                binding.textTotalAmount.text="$$count*"
+                binding.textNetTotalProduct.text="$$formattedTotal*"
+                binding.textTotalAmount.text="$$formattedTotal*"
             }
-
         } else {
             binding.textConfirmOrder.isClickable=false
             binding.textNetTotalProduct.text="0"
             binding.textTotalAmount.text="0"
             binding.rlIngredients.visibility = View.GONE
         }
-
-
     }
 
     private fun showAlert(message: String?, status: Boolean) {
@@ -1131,9 +1134,15 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
                         binding.textNetTotalProduct.text="0"
                         binding.textTotalAmount.text="0"
                     }else{
+                        // Now format total properly
+                            val formattedTotal = if (count % 1 == 0.0) {
+                                count.toInt().toString() // if 10.0 → show 10
+                            } else {
+                                count.toString()         // if 10.5 → show 10.5
+                            }
                         binding.textConfirmOrder.isClickable=true
-                        binding.textNetTotalProduct.text="$$count*"
-                        binding.textTotalAmount.text="$$count*"
+                        binding.textNetTotalProduct.text="$$formattedTotal*"
+                        binding.textTotalAmount.text="$$formattedTotal*"
                     }
                 }else{
                     binding.textConfirmOrder.isClickable=false

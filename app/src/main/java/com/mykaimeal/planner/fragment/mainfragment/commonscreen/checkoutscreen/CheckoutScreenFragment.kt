@@ -254,7 +254,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 binding.relIngredients.visibility = View.VISIBLE
             }
         }
-
     }
 
 
@@ -376,21 +375,45 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 val roundedSubTotal = it.net_total.let {
                     BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
                 }
-                binding.textSubTotalPrices.text = "$$roundedSubTotal"
+                // Now format total properly
+                val formattedTotal = if (roundedSubTotal % 1 == 0.0) {
+                    roundedSubTotal.toInt().toString() // if 10.0 → show 10
+                } else {
+                    roundedSubTotal.toString()         // if 10.5 → show 10.5
+                }
+                binding.textSubTotalPrices.text = "$$formattedTotal"
             }
             if (it.tax != null) {
                 val roundedBagFees = it.tax.let {
                     BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
                 }
-                binding.textBagFees.text = "$$roundedBagFees"
+                // Now format total properly
+                val formattedTax = if (roundedBagFees % 1 == 0.0) {
+                    roundedBagFees.toInt().toString() // if 10.0 → show 10
+                } else {
+                    roundedBagFees.toString()         // if 10.5 → show 10.5
+                }
+                binding.textBagFees.text = "$$formattedTax"
             }
             it.processing?.let { processing ->
                 val roundedServices = BigDecimal(processing).setScale(2, RoundingMode.HALF_UP).toDouble()
-                binding.textServicesPrice.text = "$$roundedServices"
+                // Now format total properly
+                val formattedServices = if (roundedServices % 1 == 0.0) {
+                    roundedServices.toInt().toString() // if 10.0 → show 10
+                } else {
+                    roundedServices.toString()         // if 10.5 → show 10.5
+                }
+                binding.textServicesPrice.text = "$$formattedServices"
             }
             it.delivery?.let { delivery ->
                 val roundedDelivery = BigDecimal(delivery).setScale(2, RoundingMode.HALF_UP).toDouble()
-                binding.textDeliveryPrice.text = "$$roundedDelivery"
+                // Now format total properly
+                val formattedDelivery = if (roundedDelivery % 1 == 0.0) {
+                    roundedDelivery.toInt().toString() // if 10.0 → show 10
+                } else {
+                    roundedDelivery.toString()         // if 10.5 → show 10.5
+                }
+                binding.textDeliveryPrice.text = "$$formattedDelivery"
             }
             cardMealMe.clear()
             if (it.card!=null){

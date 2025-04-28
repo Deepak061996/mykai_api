@@ -60,11 +60,22 @@ class SuperMarketListAdapter(
             }
 
             if (it.total != null) {
-                val roundedNetTotal = it.total.let {
-                    BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+                val totalValue = it.total
+                val formattedTotal = if (totalValue % 1 == 0.0) {
+                    totalValue.toInt().toString() // Show without decimal
+                } else {
+                    String.format("%.2f", totalValue) // Show two decimals
                 }
-                holder.binding.tvSuperMarketRupees.text = "$$roundedNetTotal"
+                holder.binding.tvSuperMarketRupees.text = "$$formattedTotal"
             }
+
+
+            /*  if (it.total != null) {
+                  val roundedNetTotal = it.total.let {
+                      BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+                  }
+                  holder.binding.tvSuperMarketRupees.text = "$$roundedNetTotal"
+              }*/
             /*
                         holder.binding.tvSuperMarketItems.text = it.store_name ?: ""*/
             // ✅ Load image with Glide

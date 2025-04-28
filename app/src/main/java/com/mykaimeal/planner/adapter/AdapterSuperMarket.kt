@@ -51,13 +51,8 @@ class AdapterSuperMarket(
         data?.let {
             if (it.missing != "0") {
                 if (it.missing != null) {
-                    holder.binding.tvSuperMarketItems.setTextColor(
-                        android.graphics.Color.parseColor(
-                            "#FF3232"
-                        )
-                    )
-                    holder.binding.tvSuperMarketItems.text =
-                        it.missing.toString() + " ITEMS MISSING"
+                    holder.binding.tvSuperMarketItems.setTextColor(android.graphics.Color.parseColor("#FF3232"))
+                    holder.binding.tvSuperMarketItems.text = it.missing.toString() + " ITEMS MISSING"
                 }
             } else {
                 holder.binding.tvSuperMarketItems.setTextColor(android.graphics.Color.parseColor("#06C169"))
@@ -65,10 +60,13 @@ class AdapterSuperMarket(
             }
 
             if (it.total != null) {
-                val roundedNetTotal = it.total.let {
-                    BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+                val totalValue = it.total
+                val formattedTotal = if (totalValue % 1 == 0.0) {
+                    totalValue.toInt().toString() // Show without decimal
+                } else {
+                    String.format("%.2f", totalValue) // Show two decimals
                 }
-                holder.binding.tvSuperMarketRupees.text = "$$roundedNetTotal"
+                holder.binding.tvSuperMarketRupees.text = "$$formattedTotal"
             }
 
             it.image?.let {

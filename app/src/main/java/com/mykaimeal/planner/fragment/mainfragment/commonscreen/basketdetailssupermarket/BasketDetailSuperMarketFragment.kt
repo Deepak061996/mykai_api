@@ -263,7 +263,13 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
             binding.recyclerItemList.visibility = View.VISIBLE
             itemSectionAdapter.updateList(ingredientList)
             val count=getTotalPrice()
-            binding.textPrice.text="$$count"
+            // Now format total properly
+            val formattedTotal = if (count % 1 == 0.0) {
+                count.toInt().toString() // if 10.0 → show 10
+            } else {
+                count.toString()         // if 10.5 → show 10.5
+            }
+            binding.textPrice.text="$$formattedTotal"
         } else {
             binding.textPrice.text="$0"
             binding.recyclerItemList.visibility = View.GONE

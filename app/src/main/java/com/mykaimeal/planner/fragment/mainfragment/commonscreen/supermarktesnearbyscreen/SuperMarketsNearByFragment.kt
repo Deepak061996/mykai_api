@@ -184,7 +184,7 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
                     }
 
 
-                /*  // Extract LatLng and store in list
+                  // Extract LatLng and store in list
                   storeLocations.clear()
                   for (store in data) {
                       val address = store.address
@@ -194,7 +194,7 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
                   }
 
                   // Update Google Map
-                  mMap?.let { updateMap(it) }*/
+                  mMap?.let { updateMap(it) }
             }
         } catch (e: Exception) {
             showAlert(e.message ?: "An error occurred", false)
@@ -210,7 +210,7 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
 
         // Move camera to first store location
         if (storeLocations.isNotEmpty()) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(storeLocations[0], 12f))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(storeLocations[0], 10f))
         }
     }
 

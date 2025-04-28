@@ -1,6 +1,7 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -28,12 +30,14 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.gson.Gson
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.basedata.SessionManagement
+import com.mykaimeal.planner.commonworkutils.RoundedBarChartRenderer
 import com.mykaimeal.planner.customview.SpendingChartView
 import com.mykaimeal.planner.databinding.FragmentStatisticsGraphBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsGraphModel
@@ -44,6 +48,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @AndroidEntryPoint
 class StatisticsGraphFragment : Fragment() {
@@ -51,7 +58,9 @@ class StatisticsGraphFragment : Fragment() {
     private lateinit var binding: FragmentStatisticsGraphBinding
     private lateinit var sessionManagement: SessionManagement
     private lateinit var statisticsViewModel: StatisticsViewModel
-    private var referLink: String =""
+    private var referLink: String = ""
+    private var lastSelectedDate: Long? = null
+    private var currentMonth: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,24 +85,17 @@ class StatisticsGraphFragment : Fragment() {
                 }
             })
 
-
-        // Create chart data
-        val data = listOf(
-            SpendingChartView.BarData(300f, "01", "Jun", Color.parseColor("#FFA500")),
-            SpendingChartView.BarData(600f, "07", "Jun", Color.parseColor("#32CD32")),
-            SpendingChartView.BarData(600f, "14", "Jun", Color.parseColor("#32CD32")),
-            SpendingChartView.BarData(600f, "21", "Jun", Color.parseColor("#32CD32")),
-            SpendingChartView.BarData(200f, "03", "Jun", Color.parseColor("#FF4040")))
-
-        binding.spendingChart.setData(data, 1566f, 60f)
-
         initialize()
 
         return binding.root
     }
 
     private fun initialize() {
-        Log.d("AppsFlyer22", "Deep link found, store")
+
+        // Set currentMonth from today's date
+        val calendar = Calendar.getInstance()
+        currentMonth = (calendar.get(Calendar.MONTH) + 1).toString()
+
 
         AppsFlyerLib.getInstance().subscribeForDeepLink { deepLinkResult ->
             when (deepLinkResult.status) {
@@ -135,13 +137,12 @@ class StatisticsGraphFragment : Fragment() {
 
         binding.textInviteFriends.setOnClickListener {
 
-            shareImageWithText("Hey! I put together this cookbook in My" +
-                    "Kai, and I think you’ll love it! It’s packed with delicious meals, check it out and let me know what you think!" +
-                    "\nclick on the link below:\n\n",
-                referLink)
-
-//            dynamicValueUpdate()
-            /* copyShareInviteLink()*/
+            shareImageWithText(
+                "Hey! I put together this cookbook in My" +
+                        "Kai, and I think you’ll love it! It’s packed with delicious meals, check it out and let me know what you think!" +
+                        "\nclick on the link below:\n\n",
+                referLink
+            )
         }
 
         binding.barChart.setOnClickListener {
@@ -150,12 +151,56 @@ class StatisticsGraphFragment : Fragment() {
 
         copyShareInviteLink()
 
-    /*    if (BaseApplication.isOnline(requireContext())) {
+        if (BaseApplication.isOnline(requireContext())) {
             getGraphList()
         } else {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-        }*/
+        }
+
+        binding.relMonthYear.setOnClickListener {
+            openDialog()
+        }
     }
+
+    private fun openDialog() {
+        val dialog = Dialog(requireActivity())
+        dialog.setContentView(R.layout.dialog_calendar)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val calendarView = dialog.findViewById<CalendarView>(R.id.calendar)
+
+        dialog.setOnShowListener {
+            calendarView?.date = lastSelectedDate ?: Calendar.getInstance().timeInMillis
+        }
+        // Get today's date
+        val today = Calendar.getInstance()
+        // Set the minimum date to today
+        calendarView?.minDate = today.timeInMillis
+
+        calendarView?.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            val calendar = Calendar.getInstance()
+            calendar.set(year, month, dayOfMonth)
+            lastSelectedDate = calendar.timeInMillis
+
+            // Format for tvMonthYear: "June 2024"
+            val monthYearFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+            binding.tvDateCalendar.text = monthYearFormat.format(calendar.time)
+
+            // Update currentMonth (month is 0-based, so add +1)
+            currentMonth = (month + 1).toString()
+
+            if (BaseApplication.isOnline(requireContext())) {
+                getGraphList()
+            } else {
+                BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+            }
+
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
 
     private fun getGraphList() {
         BaseApplication.showMe(requireContext())
@@ -163,7 +208,7 @@ class StatisticsGraphFragment : Fragment() {
             statisticsViewModel.getGraphScreenUrl({
                 BaseApplication.dismissMe()
                 handleApiGraphResponse(it)
-            },"4")
+            }, currentMonth)
         }
     }
 
@@ -186,9 +231,7 @@ class StatisticsGraphFragment : Fragment() {
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 if (apiModel.data != null) {
-                    if (apiModel.data.graph_data!=null){
-                        showSpendingChart(apiModel.data)
-                    }
+                    showSpendingChart(apiModel.data)
                 }
             } else {
                 if (apiModel.code == ErrorMessage.code) {
@@ -202,60 +245,74 @@ class StatisticsGraphFragment : Fragment() {
         }
     }
 
-        @SuppressLint("SetTextI18n")
-        private fun showSpendingChart(response: StatisticsGraphModelData) {
+    @SuppressLint("SetTextI18n")
+    private fun showSpendingChart(response: StatisticsGraphModelData) {
 
+        val month = response.month ?: ""
+        val graphData = response.graph_data
 
+        val weekValues = mutableListOf<Float>()
+        weekValues.add((graphData.week_1 ?: 0).toFloat())
+        weekValues.add((graphData.week_2 ?: 0).toFloat())
+        weekValues.add((graphData.week_3 ?: 0).toFloat())
+        weekValues.add((graphData.week_4 ?: 0).toFloat())
 
-            // Create chart data
-            val data = listOf(
-                SpendingChartView.BarData(300f, "01", "Jun", Color.parseColor("#FFA500")),
-                SpendingChartView.BarData(600f, "07", "Jun", Color.parseColor("#32CD32")),
-                SpendingChartView.BarData(600f, "14", "Jun", Color.parseColor("#32CD32")),
-                SpendingChartView.BarData(600f, "21", "Jun", Color.parseColor("#32CD32")),
-                SpendingChartView.BarData(200f, "03", "Jun", Color.parseColor("#FF4040")))
-
-            binding.spendingChart.setData(data, 1566f, 60f)
-
- /*           if (response.total_spent!=null){
-                binding.textSpent.text="Total spent $"+response.total_spent.toString().trim()
-            }
-
-            if (response.saving!=null){
-                binding.textSpent.text="Your savings are $"+response.saving.toString().trim()
-            }
-
-            val weekLabels = listOf("01", "07", "14", "21")
-            val fullLabels = weekLabels.map { "$it ${response.month}" }
-
-            val weeklyAmounts = listOf(
-                response.graph_data.week_1,
-                response.graph_data.week_2,
-                response.graph_data.week_3,
-                response.graph_data.week_4
-            )
-
-            val colors = listOf(
-                ContextCompat.getColor(requireContext(), R.color.orange),
-                ContextCompat.getColor(requireContext(), R.color.light_green),
-                ContextCompat.getColor(requireContext(), R.color.red),
-                ContextCompat.getColor(requireContext(), R.color.orange)
-            )
-
-            val barData = fullLabels.mapIndexed { index, label ->
-                val parts = label.split(" ")
-                val date = parts.getOrNull(0) ?: ""
-                val month = parts.getOrNull(1) ?: ""
-                SpendingChartView.BarData(
-                    value = weeklyAmounts[index],
-                    date = date,
-                    month = month,
-                    color = colors[index]
-                )
-            }
-
-            binding.spendingChart.setData(barData, response.total_spent, response.saving)*/
+        val entries = mutableListOf<BarEntry>()
+        for (i in weekValues.indices) {
+            entries.add(BarEntry(i.toFloat(), weekValues[i]))
         }
+
+        val weekLabels = mutableListOf("01 $month", "08 $month", "15 $month", "22 $month")
+
+        val barDataSet = BarDataSet(entries, "Spending ($)").apply {
+            valueTextColor = Color.BLACK
+            valueTextSize = 12f
+            setDrawValues(true)
+            colors = listOf(Color.RED, Color.LTGRAY, Color.GREEN, Color.MAGENTA)
+        }
+
+        // BarData setup
+        val barData = BarData(barDataSet).apply {
+            barWidth = 1f
+        }
+
+        // Chart setup
+        with(binding.barChart) {
+            renderer = RoundedBarChartRenderer(this, animator, viewPortHandler, 30f)
+            data = barData
+            setFitBars(false)
+            animateY(800)
+
+            axisRight.isEnabled = false
+            axisLeft.textColor = Color.BLACK
+
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                setDrawGridLines(false)
+                granularity = 1f
+                labelCount = weekValues.size
+                textColor = Color.BLACK
+                textSize = 12f
+                axisMinimum = -0.5f
+                axisMaximum = weekValues.size - 0.5f
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return weekLabels.getOrNull(value.toInt()) ?: ""
+                    }
+                }
+            }
+
+            invalidate()
+        }
+
+        if (response.total_spent != null) {
+            binding.textSpent.text = "Total spent $" + response.total_spent.toString().trim()
+        }
+
+        if (response.saving != null) {
+            binding.textSpent.text = "Your savings are $" + response.saving.toString().trim()
+        }
+    }
 
 
     private fun redirectToPlayStore() {
@@ -265,16 +322,21 @@ class StatisticsGraphFragment : Fragment() {
         startActivity(playStoreIntent)
     }
 
-    private fun shareImageWithText(description: String,  link: String) {
+    private fun shareImageWithText(description: String, link: String) {
         // Download image using Glide
         Glide.with(requireContext())
             .asBitmap() // Request a Bitmap image
             .load(R.mipmap.app_icon) // Provide the URL to load the image from
-            .into(object : CustomTarget<Bitmap>() { override fun onResourceReady(resource: Bitmap,
-                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                ) {
                     try {
                         // Save the image to a file in the app's external storage
-                        val file = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "shared_image.png"
+                        val file = File(
+                            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                            "shared_image.png"
                         )
                         val fos = FileOutputStream(file)
                         resource.compress(Bitmap.CompressFormat.PNG, 100, fos)
@@ -299,7 +361,12 @@ class StatisticsGraphFragment : Fragment() {
                         }
 
                         // Launch the share dialog
-                        requireContext().startActivity(Intent.createChooser(shareIntent, "Share Image"))
+                        requireContext().startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                "Share Image"
+                            )
+                        )
 
                     } catch (e: Exception) {
                         e.printStackTrace()
