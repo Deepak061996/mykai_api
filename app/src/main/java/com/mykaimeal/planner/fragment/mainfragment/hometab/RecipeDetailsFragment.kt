@@ -242,8 +242,7 @@ class RecipeDetailsFragment : Fragment(), OnItemSelectListener {
         }
 
         if (viewModel.getRecipeData()?.get(0)!!.recipe?.totalNutrients?.PROCNT?.quantity != null) {
-            binding.tvProtein.text =
-                "" + viewModel.getRecipeData()?.get(0)!!.recipe?.totalNutrients?.PROCNT?.quantity?.toInt()
+            binding.tvProtein.text = "" + viewModel.getRecipeData()?.get(0)!!.recipe?.totalNutrients?.PROCNT?.quantity?.toInt()
         }
 
         if (viewModel.getRecipeData()?.get(0)!!.recipe?.totalNutrients?.CHOCDF?.quantity != null) {

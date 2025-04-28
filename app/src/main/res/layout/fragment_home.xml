@@ -593,7 +593,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:paddingHorizontal="@dimen/_10sdp"
-                                    android:paddingVertical="@dimen/_8sdp"
+                                    android:paddingVertical="@dimen/_6sdp"
                                     android:text="Plan a meal"
                                     android:textColor="@color/white"
                                     android:textSize="@dimen/_12sdp" />
