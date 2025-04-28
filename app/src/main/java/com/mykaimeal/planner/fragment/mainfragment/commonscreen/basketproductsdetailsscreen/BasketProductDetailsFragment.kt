@@ -169,18 +169,18 @@ class BasketProductDetailsFragment : Fragment(), OnItemSelectListener {
         }
 
 
-        binding.etIngDislikesSearchBar.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(editable: Editable) {
-                val query = editable.toString().trim()
-                if (query.isNotEmpty()) {
-                        filterIngredients(query)
-                } else {
-                    resetLists()
-                }
-            }
-        })
+//        binding.etIngDislikesSearchBar.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+//            override fun afterTextChanged(editable: Editable) {
+//                val query = editable.toString().trim()
+//                if (query.isNotEmpty()) {
+//                        filterIngredients(query)
+//                } else {
+//                    resetLists()
+//                }
+//            }
+//        })
 
 
     }

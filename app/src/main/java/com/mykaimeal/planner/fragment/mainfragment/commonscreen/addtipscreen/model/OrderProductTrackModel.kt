@@ -61,3 +61,18 @@ data class Quote(
     val subtotal: Int?,
     val total_without_tips: Int?
 )
+
+
+data class GetTipModel(
+    val code: Int,
+    val `data`: GetTipModelData,
+    val message: String,
+    val success: Boolean
+)
+
+data class GetTipModelData(
+    val tip10: Double,
+    val tip15: Double,
+    val tip20: Double,
+    val tip25: Double
+)

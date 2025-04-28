@@ -8,7 +8,7 @@ import com.mykaimeal.planner.databinding.AdapterCheckoutIngredientsItemBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.Ingredient
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.IngredientList
 
-class AdapterCheckoutIngredientsItem(private var ingredientsData: MutableList<Ingredient>?,
+class AdapterCheckoutIngredientsItem(private var ingredientsData: MutableList<IngredientList>?,
                                      private var requireActivity: FragmentActivity
 ):
     RecyclerView.Adapter<AdapterCheckoutIngredientsItem.ViewHolder>() {
@@ -50,7 +50,7 @@ class AdapterCheckoutIngredientsItem(private var ingredientsData: MutableList<In
         return ingredientsData!!.size
     }
 
-    fun updateList(list:MutableList<Ingredient>){
+    fun updateList(list:MutableList<IngredientList>){
         ingredientsData=list
         notifyDataSetChanged()
     }

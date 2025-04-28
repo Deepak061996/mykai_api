@@ -78,6 +78,7 @@
                 android:layout_below="@+id/tvDescriptions"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="horizontal">
+
                 <LinearLayout
                     android:id="@+id/linearNotNow"
                     android:layout_width="0dp"
@@ -100,7 +101,7 @@
 
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/llSevenDollar"
+                    android:id="@+id/llTenPerc"
                     android:layout_width="0dp"
                     android:padding="@dimen/_2sdp"
                     android:layout_height="match_parent"
@@ -126,14 +127,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/light_green"
-                        android:text="$7"
+                        android:text="$"
                         android:fontFamily="@font/poppins_semibold"
                         android:gravity="center"
                         android:textSize="@dimen/_11sdp"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/llNineDollar"
+                    android:id="@+id/llFifteenPerc"
                     android:layout_width="0dp"
                     android:padding="@dimen/_2sdp"
                     android:layout_height="match_parent"
@@ -160,13 +161,13 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:textColor="@color/light_green"
-                        android:text="$9"
+                        android:text="$"
                         android:fontFamily="@font/poppins_semibold"
                         android:textSize="@dimen/_11sdp"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/llTwelveDollar"
+                    android:id="@+id/llTwentyPerc"
                     android:layout_width="0dp"
                     android:padding="@dimen/_2sdp"
                     android:layout_height="match_parent"
@@ -193,13 +194,13 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/light_green"
                         android:gravity="center"
-                        android:text="$12"
+                        android:text="$"
                         android:fontFamily="@font/poppins_semibold"
                         android:textSize="@dimen/_11sdp"/>
 
                 </LinearLayout>
                 <LinearLayout
-                    android:id="@+id/llFifteenDollar"
+                    android:id="@+id/lltwentyFivePerc"
                     android:layout_width="0dp"
                     android:padding="@dimen/_2sdp"
                     android:layout_height="match_parent"
@@ -226,7 +227,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:textColor="@color/light_green"
-                        android:text="$15"
+                        android:text="$"
                         android:fontFamily="@font/poppins_semibold"
                         android:textSize="@dimen/_11sdp"/>
 
@@ -256,9 +257,11 @@
                     android:padding="@dimen/_10sdp"
                     android:singleLine="true"
                     android:text=""
+                    android:inputType="number"
                     android:textColor="@color/black"
                     android:textColorHint="@color/grey4"
                     android:textSize="@dimen/_11sdp" />
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -286,5 +289,6 @@
         </RelativeLayout>
 
     </ScrollView>
+
 
 </RelativeLayout>

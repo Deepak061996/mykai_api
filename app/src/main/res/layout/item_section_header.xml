@@ -51,16 +51,16 @@
                 android:textStyle="bold"
                 android:textSize="@dimen/_10sdp" />
 
-            <!--     <TextView
-                     android:id="@+id/textProductQuantity"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:text="70 ml"
-                     android:textStyle="bold"
-                     android:visibility="gone"
-                     android:textColor="#999999"
-                     android: textSize="@dimen/_10ssp"
-                      />-->
+            <TextView
+                android:id="@+id/tvIngAvNot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textProductName"
+                android:singleLine="true"
+                android:text="Not Available"
+                android:textColor="#999999"
+                android:textSize="@dimen/_10ssp"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imageSwap"

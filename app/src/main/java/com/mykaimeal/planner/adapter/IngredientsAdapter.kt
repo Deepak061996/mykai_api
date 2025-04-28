@@ -52,7 +52,9 @@ class IngredientsAdapter(private var ingredientsData: MutableList<Ingredient>?,
             if (it.pro_price!=null){
                 if (!it.pro_price.equals("Not available",true)){
                     holder.binding.tvFoodPrice.text=it.pro_price.toString()
+                    holder.binding.tvIngAvNot.visibility = View.GONE
                 }else{
+                    holder.binding.tvIngAvNot.visibility = View.VISIBLE
                     holder.binding.tvFoodPrice.text="$0"
                 }
             }

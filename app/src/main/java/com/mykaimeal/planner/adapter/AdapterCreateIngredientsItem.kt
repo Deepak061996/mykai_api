@@ -46,6 +46,9 @@ class AdapterCreateIngredientsItem(var datalist: MutableList<RecyclerViewItemMod
             uploadImage.uploadImage(position)
         }
 
+
+        holder.binding.spinnerQntType.setIsFocusable(true)
+
         holder.binding.spinnerQntType.setItems(
             listOf("tsp", "tbsp", "cup", "ml", "liter", "floz","unit", "Pint", "quart", "gallon", "gram", "kg", "mg", "ounce", "pound",
                 "pinch", "dash", "drop", "handful", "slice", "stick", "piece", "can", "bottle", "jar", "packet", "bunch", "sprig", "inch", "cm", "feet")

@@ -220,6 +220,24 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
         }
     }
 
+    override suspend fun getTipUrl(
+        successCallback: (response: NetworkResult<String>) -> Unit, tip: String?
+    ) {
+        try {
+            api.getTipUrl(tip).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                        successCallback(NetworkResult.Success(it.toString()))
+                    } ?: successCallback(NetworkResult.Error(ErrorMessage.apiError))
+                } else {
+                    successCallback(NetworkResult.Error(errorBody().toString()))
+                }
+            }
+        } catch (e: Exception) {
+            successCallback(NetworkResult.Error(e.message.toString()))
+        }
+    }
+
 
     override suspend fun getTakeAwayReason(successCallback: (response: NetworkResult<String>) -> Unit) {
         try {
@@ -2192,10 +2210,11 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
 
 
     override suspend fun getOrderProductUrl(
-        successCallback: (response: NetworkResult<String>) -> Unit
+        successCallback: (response: NetworkResult<String>) -> Unit,
+        tip:String?,cardId:String?
     ) {
         try {
-            api.getOrderProductUrl().apply {
+            api.getOrderProductUrl(tip, cardId).apply {
                 if (isSuccessful) {
                     body()?.let {
                         successCallback(NetworkResult.Success(it.toString()))

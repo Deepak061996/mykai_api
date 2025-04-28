@@ -10,6 +10,7 @@ object ApiEndPoint {
     const val mealRoutine="meal_routine"
     const val cookingFrequency="cooking_frequency"
     const val eatingOut="eating_out"
+    const val tipUrl="tip"
     const val takeAwayReason="take_away_reason"
     const val userSignup="user-signup"
     const val otpVerify="otp-verify"

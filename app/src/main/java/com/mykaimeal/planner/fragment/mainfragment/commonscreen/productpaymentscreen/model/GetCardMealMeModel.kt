@@ -14,6 +14,6 @@ data class GetCardMealMeModelData(
     val id: Int?,
     val payment_id: String?,
     val updated_at: String?,
-    val status: Int?,
+    var status: Int?,
     val user_id: Int?
 )

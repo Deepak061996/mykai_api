@@ -9,8 +9,12 @@ import javax.inject.Inject
 @HiltViewModel
 class AddTipScreenViewModel@Inject constructor(private val repository: MainRepository) : ViewModel()  {
 
-      suspend fun getOrderProductUrl(successCallback: (response: NetworkResult<String>) -> Unit){
-          repository.getOrderProductUrl{ successCallback(it) }
-      }
+    suspend fun getOrderProductUrl(successCallback: (response: NetworkResult<String>) -> Unit,tip:String?,cardId:String?){
+        repository.getOrderProductUrl({ successCallback(it) },tip,cardId)
+    }
 
+
+    suspend fun getTipUrl(successCallback: (response: NetworkResult<String>) -> Unit, tip: String?){
+        repository.getTipUrl({ successCallback(it) },tip)
+    }
 }

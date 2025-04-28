@@ -170,15 +170,16 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
 
         if ((activity as? MainActivity)?.Subscription_status==1){
             binding.btnLock.visibility=View.VISIBLE
-            viewModelData()
         }else{
             binding.btnLock.visibility=View.GONE
-            if (!hasShownPopup) {
-                addressDialog()
-                hasShownPopup = true
-            } else {
-                viewModelData()
-            }
+        }
+
+
+        if (!hasShownPopup) {
+            addressDialog()
+            hasShownPopup = true
+        } else {
+            viewModelData()
         }
 
         binding.textShoppingList.setOnClickListener {
@@ -335,6 +336,7 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
             val apiModel = Gson().fromJson(data, AddressPrimaryResponse::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
+                dialogAddress?.dismiss()
                 dialogMiles?.dismiss()
                 launchApi()
             } else {
@@ -417,7 +419,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         if (ingredientList.size > 0) {
             binding.rlIngredients.visibility = View.VISIBLE
             adapterIngredients?.updateList(ingredientList)
-
             val count=getTotalPrice()
             if (count==0.0){
                 binding.textConfirmOrder.isClickable=false
@@ -428,8 +429,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
                 binding.textNetTotalProduct.text="$$count*"
                 binding.textTotalAmount.text="$$count*"
             }
-
-
 
         } else {
             binding.textConfirmOrder.isClickable=false
@@ -516,10 +515,11 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
             } else {
-                fullAddressDialog()
+                if (tvAddress?.text.toString().isNotEmpty()){
+                    fullAddressDialog()
+                }
             }
         }
-
 
     }
 

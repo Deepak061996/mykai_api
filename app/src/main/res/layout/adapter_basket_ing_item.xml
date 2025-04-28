@@ -92,12 +92,12 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvFoodGram"
+                        android:id="@+id/tvIngAvNot"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvFoodName"
                         android:singleLine="true"
-                        android:text="60 G"
+                        android:text="Not Available"
                         android:textColor="#999999"
                         android:textSize="@dimen/_10ssp"
                         android:visibility="gone" />

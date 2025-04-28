@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -135,6 +136,7 @@ class AdapterProductsDetailsSelectItem(
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun filterList(filteredList: MutableList<BasketProductsDetailsModelData>) {
         this.datalist = filteredList
         notifyDataSetChanged()

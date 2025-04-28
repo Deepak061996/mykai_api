@@ -2,19 +2,25 @@ package com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +31,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -40,11 +47,17 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.PendingResult
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResult
+import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -58,9 +71,12 @@ import com.google.gson.Gson
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.mykaimeal.planner.OnItemLongClickListener
+import com.mykaimeal.planner.OnItemSelectListener
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.adapter.AdapterCardPreferredItem
 import com.mykaimeal.planner.adapter.AdapterCheckoutIngredientsItem
 import com.mykaimeal.planner.adapter.AdapterGetAddressItem
+import com.mykaimeal.planner.adapter.IngredientsShoppingAdapter
 import com.mykaimeal.planner.adapter.PlacesAutoCompleteAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
@@ -68,14 +84,14 @@ import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.FragmentCheckoutScreenBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.addressmapfullscreen.model.AddAddressModel
-import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.BasketScreenModelData
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.AddressPrimaryResponse
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.GetAddressListModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.GetAddressListModelData
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.Ingredient
-import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.viewmodel.BasketScreenViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModelData
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpaymentscreen.model.GetCardMealMeModelData
 import com.mykaimeal.planner.listener.OnPlacesDetailsListener
 import com.mykaimeal.planner.messageclass.ErrorMessage
 import com.mykaimeal.planner.model.Place
@@ -89,11 +105,10 @@ import java.math.RoundingMode
 import java.util.Locale
 
 @AndroidEntryPoint
-class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickListener {
+class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickListener,OnItemSelectListener {
     private lateinit var binding: FragmentCheckoutScreenBinding
     private lateinit var mapView: MapView
     private var mMap: GoogleMap? = null
-    private var status: Boolean = false
     private var openStatus: Boolean = false
     private lateinit var checkoutScreenViewModel: CheckoutScreenViewModel
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -103,11 +118,18 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     private var dialogMiles: Dialog? = null
     private var selectType: String? = ""
     private var addressId: String? = ""
+    private val tAG = "CheckOut"
+
     private lateinit var adapterCheckoutIngredients: AdapterCheckoutIngredientsItem
+    private lateinit var adapterCardPreferred: AdapterCardPreferredItem
+    private var cardMealMe: MutableList<GetCardMealMeModelData> = mutableListOf()
+
     private var latitude: String? = ""
     private var longitude: String? = ""
     private var totalPrices: String? = ""
+    private var cardId: String? = ""
     private var statusTypes: String? = "Home"
+
     private lateinit var edtStreetName: EditText
     private lateinit var edtStreetNumber: EditText
     private lateinit var edtApartNumber: EditText
@@ -126,9 +148,10 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     private var country: String? = ""
     private lateinit var commonWorkUtils: CommonWorkUtils
     private var adapterGetAddressItem: AdapterGetAddressItem? = null
-    private var addressList: MutableList<GetAddressListModelData>?=null
-    private lateinit var basketScreenViewModel: BasketScreenViewModel
-    private var ingredientList: MutableList<Ingredient> = mutableListOf()
+    private var addressList: MutableList<GetAddressListModelData> = mutableListOf()
+    private var phoneNumber: String? = ""
+    private var notes: String? = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -139,23 +162,29 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         binding = FragmentCheckoutScreenBinding.inflate(layoutInflater, container, false)
 
         checkoutScreenViewModel = ViewModelProvider(requireActivity())[CheckoutScreenViewModel::class.java]
-        basketScreenViewModel = ViewModelProvider(requireActivity())[BasketScreenViewModel::class.java]
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         locationManager = requireActivity().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
 
-
-        adapterCheckoutIngredients = AdapterCheckoutIngredientsItem(ingredientList, requireActivity())
-        binding.rcyIngredients.adapter = adapterCheckoutIngredients
-
-
         sessionManagement = SessionManagement(requireContext())
         commonWorkUtils = CommonWorkUtils(requireActivity())
+
+        adapterCardPreferred = AdapterCardPreferredItem(requireContext(),cardMealMe, this,0)
+        binding.rcyCardDetails.adapter = adapterCardPreferred
 
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
+
+        backButton()
+
+        initialize()
+
+        return binding.root
+    }
+
+    private fun backButton(){
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -163,87 +192,20 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                     findNavController().navigateUp()
                 }
             })
-
-
-//        if (basketScreenViewModel.dataBasket!=null){
-//            showDataInUIFromBasket(basketScreenViewModel.dataBasket)
-//        }
-
-        initialize()
-
-        return binding.root
-    }
-
-
-    @SuppressLint("SetTextI18n")
-    private fun showDataInUIFromBasket(dataBasket: BasketScreenModelData?) {
-        val activeStores = dataBasket?.stores?.firstOrNull { it.is_slected == 1 }
-        activeStores?.let { it ->
-            if (it.image != null) {
-                Glide.with(requireActivity())
-                    .load(it.image)
-                    .error(R.drawable.no_image)
-                    .placeholder(R.drawable.no_image)
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            binding.layProgess.root.visibility = View.GONE
-                            return false
-                        }
-
-                        override fun onResourceReady(
-                            resource: Drawable?,
-                            model: Any?,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource?,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            binding.layProgess.root.visibility = View.GONE
-                            return false
-                        }
-                    })
-                    .into(binding.imageWelmart)
-
-
-            } else {
-                binding.layProgess.root.visibility = View.GONE
-            }
-
-            it.store_name?.let {
-                binding.tvSuperMarketName.text=it
-            }
-
-        }
-        ingredientList.clear()
-        dataBasket?.ingredient?.let {
-            ingredientList.addAll(it)
-        }
-        if (ingredientList.size > 0) {
-            binding.relIngredients.visibility = View.GONE
-            adapterCheckoutIngredients.updateList(ingredientList)
-            val count = ingredientList.count { it.sch_id?.toInt() != null }
-            binding.tvItemsCount.text= "$count item"
-        } else {
-            binding.relIngredients.visibility = View.GONE
-        }
     }
 
     private fun initialize() {
 
-        if (BaseApplication.isOnline(requireContext())) {
-            getCheckoutApi()
-        } else {
-            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+        if (checkoutScreenViewModel.dataCheckOut!=null){
+            showDataInUI(checkoutScreenViewModel.dataCheckOut)
+        }else{
+            loadApi()
         }
+
 
         binding.imageBackIcon.setOnClickListener {
             findNavController().navigateUp()
         }
-
 
         binding.layEdit.setOnClickListener {
             val bundle = Bundle().apply {
@@ -256,16 +218,19 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             findNavController().navigate(R.id.addressMapFullScreenFragment, bundle)
         }
 
-
         binding.relSetHomes.setOnClickListener {
             addressDialog()
         }
 
         binding.textPayBtn.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("totalPrices", totalPrices)
+            if (validatation()){
+                val bundle = Bundle().apply {
+                    putString("totalPrices", totalPrices)
+                    putString("cardId", cardId)
+                }
+                findNavController().navigate(R.id.addTipScreenFragment, bundle)
             }
-            findNavController().navigate(R.id.addTipScreenFragment, bundle)
+
         }
 
         binding.relSetMeetAtDoor.setOnClickListener {
@@ -280,16 +245,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             findNavController().navigate(R.id.paymentCreditDebitFragment)
         }
 
-        binding.imageCheckRadio.setOnClickListener {
-            if (status) {
-                status = false
-                binding.imageCheckRadio.setImageResource(R.drawable.radio_uncheck_gray_icon)
-            } else {
-                binding.imageCheckRadio.setImageResource(R.drawable.radio_green_icon)
-                status = true
-            }
-        }
-
         binding.relSuperMarketsItems.setOnClickListener {
             if (binding.relIngredients.visibility == View.VISIBLE) {
                 binding.relIngredients.visibility = View.GONE
@@ -298,6 +253,17 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 binding.imageDown.setImageResource(R.drawable.drop_up_icon)
                 binding.relIngredients.visibility = View.VISIBLE
             }
+        }
+
+
+    }
+
+
+    private fun loadApi(){
+        if (BaseApplication.isOnline(requireContext())) {
+            getCheckoutApi()
+        } else {
+            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
     }
 
@@ -334,11 +300,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                     showDataInUI(apiModel.data)
                 }
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+               handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -348,165 +310,147 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
     @SuppressLint("SetTextI18n")
     private fun showDataInUI(data: CheckoutScreenModelData?) {
-
-        if (data!!.phone != null || data.country_code != null) {
-                val rawNumber = data.phone.toString().filter { it.isDigit() }
+        checkoutScreenViewModel.setCheckOutData(data)
+        data?.let {
+            if (it.phone != null && it.country_code != null) {
+                val rawNumber = it.phone.toString().filter { it.isDigit() }
                 val formattedNumber = if (rawNumber.length >= 10) {
-                    "-${rawNumber.substring(0, 3)}-${rawNumber.substring(3, 6)}-${rawNumber.substring(6, 10)}"
+                    "-${rawNumber.substring(0, 3)}-${
+                        rawNumber.substring(
+                            3,
+                            6
+                        )
+                    }-${rawNumber.substring(6, 10)}"
                 } else {
                     rawNumber // fallback in case the number is shorter than 10 digits
                 }
-                binding?.tvAddNumber?.text = data.country_code+formattedNumber
-                binding?.tvAddNumber?.setTextColor(Color.parseColor("#000000"))
-
-        }
-
-        data.address?.let { address ->
-            if (!address.type.isNullOrEmpty() &&
-                !address.apart_num.isNullOrEmpty() &&
-                !address.street_name.isNullOrEmpty() &&
-                !address.city.isNullOrEmpty() &&
-                !address.state.isNullOrEmpty() &&
-                !address.country.isNullOrEmpty() &&
-                !address.zipcode.isNullOrEmpty() &&
-                !address.latitude.isNullOrEmpty() &&
-                !address.longitude.isNullOrEmpty()
-            ) {
-                // Build full address string
-                val fullAddress = listOf(
-                    address.apart_num, address.street_name,
-                    address.city, address.state, address.country, address.zipcode
-                ).joinToString(" ")
-
-                // Store in variable if needed
-                userAddress = fullAddress
-                // Set full address to TextView
-                binding?.tvAddressNames?.text = fullAddress
-
-                if (address.latitude != null && address.longitude != null) {
-                    latitude = address.latitude
-                    longitude = address.longitude
-                    val lat = latitude?.toDoubleOrNull()
-                        ?: 0.0  // Convert String to Double, default to 0.0 if null
-                    val lng = longitude?.toDoubleOrNull() ?: 0.0
-
-                    updateMarker(lat, lng)
+                binding.tvAddNumber.text = it.country_code + formattedNumber
+                binding.tvAddNumber.setTextColor(Color.parseColor("#000000"))
+            }
+            if (it.address != null) {
+                if (!it.address.type.isNullOrEmpty() &&
+                    !it.address.apart_num.isNullOrEmpty() &&
+                    !it.address.street_name.isNullOrEmpty() &&
+                    !it.address.city.isNullOrEmpty() &&
+                    !it.address.state.isNullOrEmpty() &&
+                    !it.address.country.isNullOrEmpty() &&
+                    !it.address.zipcode.isNullOrEmpty() &&
+                    !it.address.latitude.isNullOrEmpty() &&
+                    !it.address.longitude.isNullOrEmpty()
+                ) {
+                    // Build full address string
+                    val fullAddress = listOf(
+                        it.address.apart_num,
+                        it.address.street_name,
+                        it.address.city,
+                        it.address.state,
+                        it.address.country,
+                        it.address.zipcode
+                    ).joinToString(" ")
+                    // Store in variable if needed
+                    userAddress = fullAddress
+                    // Set full address to TextView
+                    binding.tvAddressNames.text = fullAddress
+                    if (it.address.latitude != null && it.address.longitude != null) {
+                        latitude = it.address.latitude
+                        longitude = it.address.longitude
+                        val lat = latitude?.toDoubleOrNull()
+                            ?: 0.0  // Convert String to Double, default to 0.0 if null
+                        val lng = longitude?.toDoubleOrNull() ?: 0.0
+                        updateMarker(lat, lng)
+                    }
                 }
             }
-        }
-
-
-        if (data.Store != null) {
-            binding.tvSuperMarketName.text = data.Store.toString()
-        }
-
-        if (data.note != null) {
-            if (data.note.pickup != null) {
-                binding.tvSetDoorStep.text = data.note.pickup.toString()
+            if (it.Store != null) {
+                binding.tvSuperMarketName.text = it.Store.toString()
             }
-
-            if (data.note.description != null) {
-                binding.tvDeliveryInstructions.text = data.note.description.toString()
-                binding.tvDeliveryInstructions.setTextColor(Color.parseColor("#000000"))
+            if (it.note != null) {
+                if (it.note.pickup != null) {
+                    binding.tvSetDoorStep.text = it.note.pickup.toString()
+                }
+                if (it.note.description != null) {
+                    binding.tvDeliveryInstructions.text = it.note.description.toString()
+                    binding.tvDeliveryInstructions.setTextColor(Color.parseColor("#000000"))
+                }
             }
-        }
-
-        if (data.net_total != null) {
-            val roundedSubTotal = data.net_total.let {
-                BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+            if (it.net_total != null) {
+                val roundedSubTotal = it.net_total.let {
+                    BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+                }
+                binding.textSubTotalPrices.text = "$$roundedSubTotal"
             }
-            binding.textSubTotalPrices.text = "$$roundedSubTotal"
-        }
-
-        if (data.tax != null) {
-            val roundedBagFees = data.tax.let {
-                BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+            if (it.tax != null) {
+                val roundedBagFees = it.tax.let {
+                    BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+                }
+                binding.textBagFees.text = "$$roundedBagFees"
             }
-            binding.textBagFees.text = "$$roundedBagFees"
-        }
-
-        if (data.processing != null) {
-            val roundedServices = data.processing.let {
-                BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+            it.processing?.let { processing ->
+                val roundedServices = BigDecimal(processing).setScale(2, RoundingMode.HALF_UP).toDouble()
+                binding.textServicesPrice.text = "$$roundedServices"
             }
-            binding.textServicesPrice.text = "$$roundedServices"
-        }
-
-        if (data.delivery != null) {
-            val roundedDelivery = data.delivery.let {
-                BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+            it.delivery?.let { delivery ->
+                val roundedDelivery = BigDecimal(delivery).setScale(2, RoundingMode.HALF_UP).toDouble()
+                binding.textDeliveryPrice.text = "$$roundedDelivery"
             }
-            binding.textDeliveryPrice.text = "$$roundedDelivery"
-        }
-
-        if (data.card != null) {
-            binding.relCardDetails.visibility = View.VISIBLE
-            if (data.card.card_num != null) {
-                binding.tvCardNumber.text = "**** **** **** " + data.card.card_num.toString()
+            cardMealMe.clear()
+            if (it.card!=null){
+                cardMealMe.addAll(it.card) 
             }
-        } else {
-            binding.relCardDetails.visibility = View.GONE
-        }
-
-        if (data.total != null) {
-            val roundedTotal = data.total.let {
-                BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+            if (cardMealMe.size > 0) {
+                binding.relCardDetails.visibility = View.VISIBLE
+                adapterCardPreferred.updateList(cardMealMe)
+            } else {
+                binding.relCardDetails.visibility = View.GONE
             }
-            totalPrices = roundedTotal.toString()
-            binding.textTotalAmounts.text = "$$roundedTotal"
-        }
+            if (it.total != null) {
+                val roundedTotal = it.total.let {
+                    BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
+                }
+                totalPrices = roundedTotal.toString()
+                binding.textTotalAmounts.text = "$$roundedTotal"
+            }
+            if (it.ingredient_count != null) {
+                binding.tvItemsCount.text = it.ingredient_count.toString() + " Items"
+            }
+            if (!it.ingredient.isNullOrEmpty()) {
+                adapterCheckoutIngredients =
+                    AdapterCheckoutIngredientsItem(it.ingredient, requireActivity())
+                binding.rcyIngredients.adapter = adapterCheckoutIngredients
+            }
+            if (it.store_image!=null){
+                Glide.with(requireActivity())
+                    .load(it.store_image)
+                    .error(R.drawable.no_image)
+                    .placeholder(R.drawable.no_image)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            binding.layProgess.root.visibility = View.GONE
+                            return false
+                        }
 
-        if (data.ingredient_count != null) {
-            binding.tvItemsCount.text = data.ingredient_count.toString() + " Items"
-        }
-
-        if (!data.ingredient.isNullOrEmpty()) {
-
-        }
-
-        data.let {
-            // ✅ Load image with Glide
-            Glide.with(requireActivity())
-                .load(it.store_image)
-                .error(R.drawable.no_image)
-                .placeholder(R.drawable.no_image)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        binding.layProgess.root.visibility = View.GONE
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        binding.layProgess.root.visibility = View.GONE
-                        return false
-                    }
-                })
-                .into(binding.imageWelmart)
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            binding.layProgess.root.visibility = View.GONE
+                            return false
+                        }
+                    })
+                    .into(binding.imageWelmart)
+            }else{
+                binding.layProgess.root.visibility = View.GONE
+            }
         }
     }
-
-    private fun formatPhoneNumber(rawNumber: String): String {
-        val phoneUtil = PhoneNumberUtil.getInstance()
-        return try {
-            val numberProto = phoneUtil.parse(rawNumber, "US")
-            phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL)
-                .replace(" ", "-")
-        } catch (e: NumberParseException) {
-            rawNumber
-        }
-    }
-
 
     private fun updateMarker(lat: Double, longi: Double) {
         Log.d("Location", "****** $lat, $longi")
@@ -534,61 +478,49 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         dialogMiles = context?.let { Dialog(it) }!!
         dialogMiles?.setContentView(R.layout.alert_dialog_addresses_popup)
         dialogMiles?.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialogMiles?.window!!.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
-
+        dialogMiles?.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT)
         val apiKey = getString(R.string.api_key)
         if (!Places.isInitialized()) {
             Places.initialize(requireActivity(), apiKey)
         }
-
         val placesApi = PlaceAPI.Builder().apiKey(apiKey).build(requireContext())
-
         val relDone = dialogMiles?.findViewById<RelativeLayout>(R.id.relDone)
         val llSetWork = dialogMiles?.findViewById<LinearLayout>(R.id.llSetWork)
         val llSetHome = dialogMiles?.findViewById<LinearLayout>(R.id.llSetHome)
         val relTrialBtn = dialogMiles?.findViewById<RelativeLayout>(R.id.relTrialBtn)
-        tvAddress = dialogMiles?.findViewById<AutoCompleteTextView>(R.id.tvAddress)!!
+        val imageHome = dialogMiles?.findViewById<ImageView>(R.id.imageHome)
+        val imageWork = dialogMiles?.findViewById<ImageView>(R.id.imageWork)
+        tvAddress = dialogMiles?.findViewById(R.id.tvAddress)!!
         rcySavedAddress = dialogMiles?.findViewById(R.id.rcySavedAddress)
-
         dialogMiles?.show()
-
         getAddressList()
 
         dialogMiles?.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-
         llSetHome?.setOnClickListener {
             statusTypes = "Home"
             llSetHome.setBackgroundResource(R.drawable.outline_address_green_border_bg)
             llSetWork?.setBackgroundResource(R.drawable.height_type_bg)
-        }
 
+            imageHome?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
+            imageWork?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_grays), PorterDuff.Mode.SRC_IN)
+        }
         llSetWork?.setOnClickListener {
             statusTypes = "Work"
             llSetHome?.setBackgroundResource(R.drawable.height_type_bg)
             llSetWork.setBackgroundResource(R.drawable.outline_address_green_border_bg)
-        }
 
+            imageHome?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_grays), PorterDuff.Mode.SRC_IN)
+            imageWork?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
+        }
         relTrialBtn?.setOnClickListener {
-            dialogMiles?.dismiss()
-            if (BaseApplication.isOnline(requireContext())) {
-                if (ContextCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-                ) {
-                    getCurrentLocation()
-                } else {
-                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100)
-                }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation()
             } else {
-                BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+                requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 100)
             }
         }
-
         tvAddress.setAdapter(PlacesAutoCompleteAdapter(requireContext(), placesApi))
+
         tvAddress.setOnItemClickListener { parent, _, position, _ ->
             val place = parent.getItemAtPosition(position) as Place
             tvAddress.setText(place.description)
@@ -597,17 +529,23 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }
 
         relDone?.setOnClickListener {
-            if (selectType != "") {
-                if (BaseApplication.isOnline(requireActivity())) {
+            if (BaseApplication.isOnline(requireActivity())) {
+                if (!selectType.equals("")) {
                     addressPrimaryApi()
                 } else {
-                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+                    if (tvAddress.text.toString().isNotEmpty()){
+                        fullAddressDialog()
+                    }else{
+                        dialogMiles?.dismiss()
+                    }
                 }
             } else {
-                fullAddressDialog()
-                dialogMiles?.dismiss()
+                BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
+
         }
+
+
     }
 
     private fun getAddressList() {
@@ -650,10 +588,14 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     }
 
     private fun showDataInAddressUI(data: MutableList<GetAddressListModelData>?) {
-        addressList=data
-        adapterGetAddressItem = AdapterGetAddressItem(data, requireActivity(), this)
-        rcySavedAddress!!.adapter = adapterGetAddressItem
-
+        addressList.clear()
+        data?.let {
+            addressList.addAll(it)
+        }
+        if (addressList.size>0){
+            adapterGetAddressItem = AdapterGetAddressItem(data, requireActivity(), this)
+            rcySavedAddress?.adapter = adapterGetAddressItem
+        }
     }
 
     private fun getCurrentLocation() {
@@ -691,12 +633,10 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 if (location != null) {
                     latitude = location.latitude.toString()
                     longitude = location.longitude.toString()
-                    tvAddress.text.clear()
                     requireActivity().runOnUiThread {
                         getAddressFromLocation(location.latitude, location.longitude)
-
                     }
-
+                    tvAddress.setText(userAddress)
                 } else {
                     // When location result is null
                     val locationRequest =
@@ -704,7 +644,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                             .setInterval(10000)
                             .setFastestInterval(1000)
                             .setNumUpdates(1)
-
                     val locationCallback: LocationCallback = object : LocationCallback() {
                         override fun onLocationResult(locationResult: LocationResult) {
                             // Initialize
@@ -712,10 +651,10 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                             val location1 = locationResult.lastLocation
                             latitude = location1!!.latitude.toString()
                             longitude = location1.longitude.toString()
-                            tvAddress.text.clear()
                             requireActivity().runOnUiThread {
                                 getAddressFromLocation(location1.latitude, location1.longitude)
                             }
+                            tvAddress.setText(userAddress)
                         }
                     }
                     // Request location updates
@@ -734,6 +673,74 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ), 100
             )
+        }
+    }
+
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            displayLocationSettingsRequest(requireContext())
+        } else {
+            showLocationError(requireContext(), ErrorMessage.locationError)
+        }
+
+    }
+
+    private fun showLocationError(context: Context?, msg: String?) {
+        val dialog = context?.let { Dialog(it, R.style.BottomSheetDialog) }
+        dialog?.setCancelable(false)
+        dialog?.setContentView(R.layout.alert_dialog_box_error)
+        val tvTitle: TextView = dialog!!.findViewById(R.id.tv_text)
+        val btnOk: RelativeLayout = dialog.findViewById(R.id.btn_okay)
+        tvTitle.text = msg
+        btnOk.setOnClickListener {
+            dialog.dismiss()
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", requireContext().packageName, null)
+            intent.data = uri
+            startActivityForResult(intent, 200)
+        }
+        dialog.show()
+    }
+
+    private fun displayLocationSettingsRequest(context: Context) {
+        val googleApiClient = GoogleApiClient.Builder(context)
+            .addApi(LocationServices.API).build()
+        googleApiClient.connect()
+        val locationRequest: LocationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10000
+        locationRequest.fastestInterval = 1000
+        locationRequest.numUpdates = 1
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        builder.setAlwaysShow(true)
+        val result: PendingResult<LocationSettingsResult> =
+            LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build())
+        result.setResultCallback { result ->
+            val status: Status = result.status
+            when (status.statusCode) {
+                LocationSettingsStatusCodes.SUCCESS -> {
+                    Log.i(tAG, "All location settings are satisfied.")
+                    getCurrentLocation()
+                }
+                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                    Log.i(tAG, "Location settings are not satisfied. Show the user a dialog to upgrade location settings ")
+                    try {
+                        // Show the dialog by calling startResolutionForResult(), and check the result
+                        // in onActivityResult().
+                        status.resolution?.let {
+                            startIntentSenderForResult(it.intentSender, 100, null, 0, 0, 0, null)
+                        }
+
+                    } catch (e: IntentSender.SendIntentException) {
+                        Log.i(tAG, "PendingIntent unable to execute request.")
+                    }
+                }
+                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> Log.i(tAG, "Location settings are inadequate, and cannot be fixed here. Dialog not created.")
+
+            }
         }
     }
 
@@ -766,6 +773,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         try {
             val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1)!!
             if (addresses.isNotEmpty()) {
+
                 val address = addresses[0]
                 streetName = address.thoroughfare ?: "" // Street Name
                 streetNum = address.subThoroughfare ?: "" // Street Number
@@ -774,6 +782,8 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 states = address.adminArea ?: "" // State/Province
                 country = address.countryName ?: "" // Country
                 zipcode = address.postalCode ?: "" // Zip Code
+
+                userAddress=address.getAddressLine(0) ?: ""  // Full Address
 
                 Log.d("Address", "Street Name: $streetName")
                 Log.d("Address", "Street Number: $streetNum")
@@ -786,7 +796,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             e.printStackTrace()
         }
     }
-
 
     private fun fullAddressDialog() {
         val dialogMiles: Dialog = context?.let { Dialog(it) }!!
@@ -860,7 +869,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }
     }
 
-
     private fun addFullAddressApi() {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
@@ -913,6 +921,21 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }
     }
 
+    private fun validatation(): Boolean {
+        // Check if email/phone is empty
+        if (phoneNumber.equals("",true)) {
+            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPhone, false)
+            return false
+        } else if (notes.equals("",true)) {
+            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPickUp, false)
+            return false
+        } /*else if (card.equals("",true)) {
+            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardDetailsError, false)
+            return false
+        }*/
+        return true
+    }
+
     private fun validate(): Boolean {
         // Check if email/phone is empty
         if (edtStreetName.text.toString().trim().isEmpty()) {
@@ -961,21 +984,25 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     @SuppressLint("SetTextI18n")
     private fun handleApiAddressPrimaryResponse(data: String) {
         try {
-            val apiModel = Gson().fromJson(data, GetAddressListModel::class.java)
+            val apiModel = Gson().fromJson(data, AddressPrimaryResponse::class.java)
+            Log.d("@@@ addMea List ", "message :- $data")
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                if (apiModel.data != null && apiModel.data.size > 0) {
-                    showDataInAddressUI(apiModel.data)
-                }
+                dialogMiles?.dismiss()
+//                getCheckoutApi()
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+                handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
+        }
+    }
+
+    private fun handleError(code: Int?, message: String?) {
+        if (code == ErrorMessage.code) {
+            showAlert(message, true)
+        } else {
+            showAlert(message, false)
         }
     }
 
@@ -986,14 +1013,13 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         Log.d("Location longitude", "********$longitude")
         mMap = gmap
 
-        val lat =
-            latitude?.toDoubleOrNull() ?: 0.0  // Convert String to Double, default to 0.0 if null
+        val lat = latitude?.toDoubleOrNull() ?: 0.0  // Convert String to Double, default to 0.0 if null
         val lng = longitude?.toDoubleOrNull() ?: 0.0
         val newYork = LatLng(lat, lng)
         val customMarker = bitmapDescriptorFromVector(
             R.drawable.map_marker_icon,
-            45,
-            60
+            50,
+            50
         ) // Change with your drawable
 
         /*        val newYork = LatLng(40.7128, -74.0060)
@@ -1017,10 +1043,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     }
 
     private fun bitmapDescriptorFromVector(
-        vectorResId: Int,
-        width: Int,
-        height: Int
-    ): BitmapDescriptor? {
+        vectorResId: Int, width: Int, height: Int): BitmapDescriptor? {
         val vectorDrawable: Drawable? = ContextCompat.getDrawable(requireContext(), vectorResId)
         if (vectorDrawable == null) {
             return null
@@ -1069,15 +1092,16 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     }
 
     override fun itemLongClick(position: Int?, latitudeValue: String?, fullAddress: String?, isZiggleEnabled: String) {
-        if (isZiggleEnabled == "SelectPrimary") {
+        if (isZiggleEnabled.equals("SelectPrimary",true)) {
             selectType = isZiggleEnabled
-            addressId = id.toString()
-        } else if (isZiggleEnabled == "Edit") {
+            addressId = position.toString()
+        }
+        if (isZiggleEnabled.equals("Edit",true)) {
             val bundle = Bundle().apply {
-                putString("latitude", addressList?.get(position!!)?.latitude)
-                putString("longitude", addressList?.get(position!!)?.longitude)
+                putString("latitude", addressList.get(position!!).latitude)
+                putString("longitude", addressList.get(position).longitude)
                 putString("address", fullAddress)
-                putString("addressId", addressList?.get(position!!)?.id.toString())
+                putString("addressId", addressList.get(position).id.toString())
                 putString("type", "Checkout")
             }
             findNavController().navigate(R.id.addressMapFullScreenFragment, bundle)
@@ -1086,17 +1110,30 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
     }
 
-    @SuppressLint("DefaultLocale")
-    private fun getTotalPrice(): Double {
-        val total = ingredientList.sumOf {
-            val priceString = it.pro_price?.replace("$", "")?.trim()
-            if (priceString != null && !priceString.equals("Not available", ignoreCase = true) && !priceString.equals("Not", ignoreCase = true)) {
-                (priceString.toDoubleOrNull() ?: 0.0) * (it.sch_id?.toInt() ?: 0)
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 100) {
+            if (Activity.RESULT_OK == resultCode) {
+                getCurrentLocation()
             } else {
-                0.0
+                Toast.makeText(requireContext(), "Please turn on location", Toast.LENGTH_SHORT).show()
             }
         }
-        return String.format("%.2f", total).toDouble()
+
+        if (requestCode == 200) {
+            // This condition for check location run time permission
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation()
+            } else {
+                showLocationError(requireContext(), ErrorMessage.locationError)
+            }
+        }
+    }
+
+    override fun itemSelect(position: Int?, status: String?, type: String?) {
+
+        cardId=cardMealMe[position!!].id.toString()
     }
 
 }

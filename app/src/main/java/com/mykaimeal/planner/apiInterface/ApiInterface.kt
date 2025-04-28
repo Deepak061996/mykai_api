@@ -53,6 +53,13 @@ interface ApiInterface {
     @GET(ApiEndPoint.eatingOut)
     suspend fun getEatingOut(): Response<JsonObject>
 
+    @FormUrlEncoded
+    @POST(ApiEndPoint.tipUrl)
+    suspend fun getTipUrl(
+        @Field("tip") tip: String?
+    ): Response<JsonObject>
+
+
     @GET(ApiEndPoint.takeAwayReason)
     suspend fun getTakeAwayReason(): Response<JsonObject>
 
@@ -690,8 +697,9 @@ interface ApiInterface {
     suspend fun getCheckoutScreenUrl(): Response<JsonObject>
 
 
+    @FormUrlEncoded
     @POST(ApiEndPoint.getOrderProductUrl)
-    suspend fun getOrderProductUrl(): Response<JsonObject>
+    suspend fun getOrderProductUrl(@Field("tip") tip:String?, @Field("card_id") card_id:String?): Response<JsonObject>
 
     @POST(ApiEndPoint.getStoreProductsUrl)
     suspend fun getStoreProductUrl(): Response<JsonObject>

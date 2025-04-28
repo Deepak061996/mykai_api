@@ -2,6 +2,8 @@ package com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.
 
 import androidx.lifecycle.ViewModel
 import com.mykaimeal.planner.basedata.NetworkResult
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.BasketScreenModelData
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModelData
 import com.mykaimeal.planner.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -25,5 +27,18 @@ class CheckoutScreenViewModel @Inject constructor(private val repository: MainRe
 
     suspend fun makeAddressPrimaryUrl(successCallback: (response: NetworkResult<String>) -> Unit,id:String?) {
         repository.makeAddressPrimaryUrl({ successCallback(it) },id)
+    }
+
+
+
+
+    // hold data in view model
+
+
+    private var _dataCheckOut: CheckoutScreenModelData? = null
+    val dataCheckOut: CheckoutScreenModelData? get() = _dataCheckOut
+
+    fun setCheckOutData(data: CheckoutScreenModelData?){
+        _dataCheckOut=data
     }
 }

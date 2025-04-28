@@ -70,6 +70,7 @@ object ErrorMessage {
      const val emailPhoneError="Email/phone can't be empty."
      const val emailError="Email can't be empty."
      const val phoneError="phone can't be empty."
+     const val validPickUp:String="Please enter pickup instructions"
      const val validEmailPhone:String="Please Enter Valid Email or Phone Number"
      const val validPhone:String="Please Enter Valid Phone Number"
      const val validTotalTime:String="Please add total time in minutes"

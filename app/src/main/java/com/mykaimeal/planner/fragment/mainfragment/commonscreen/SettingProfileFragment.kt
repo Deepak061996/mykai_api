@@ -86,7 +86,7 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
         // When screen load then api call
         fetchDataOnLoad()
 
-        initialize()
+//        initialize()
 
         return binding.root
     }

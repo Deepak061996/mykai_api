@@ -57,10 +57,12 @@ class CategoryProductAdapter(private var requireActivity: FragmentActivity, priv
             }
 
             if (product.pro_id != null) {
-                if (product.pro_id != "Not available") {
+                if (product.pro_id.equals("Not available",true)) {
                     binding.imageSwap.visibility = View.VISIBLE
+                    binding.tvIngAvNot.visibility = View.GONE
                 } else {
                     binding.imageSwap.visibility = View.GONE
+                    binding.tvIngAvNot.visibility = View.VISIBLE
                 }
             }
 

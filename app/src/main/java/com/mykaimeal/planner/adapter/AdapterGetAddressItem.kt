@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,11 +35,11 @@ class AdapterGetAddressItem(private var addressList: MutableList<GetAddressListM
         if (itemList?.primary!=null){
             if (itemList.primary==1){
                 holder.binding.relHomeLayout.setBackgroundResource(R.drawable.outline_address_green_border_bg)
-            /*    holder.binding.imgPrimary.visibility=View.VISIBLE*/
+                onItemClickedListener.itemLongClick(itemList.id, itemList.latitude.toString(), itemList.longitude.toString(),"SelectPrimary")
             }else{
                 holder.binding.relHomeLayout.setBackgroundResource(R.drawable.height_type_bg)
-
             }
+
         }
 
         val addressParts = listOf(
@@ -67,20 +68,19 @@ class AdapterGetAddressItem(private var addressList: MutableList<GetAddressListM
         }
 
         holder.binding.relSelectHome.setOnClickListener{
-            if (itemList?.id!=null && itemList?.latitude!=null && itemList.longitude!=null){
+            if (itemList?.id!=null && itemList.latitude !=null && itemList.longitude!=null){
                 updateSelection(position)
-                onItemClickedListener.itemLongClick(itemList.id, latitude.toString(), longitude.toString(),"SelectPrimary")
             }
         }
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateSelection(selectedPosition: Int) {
         addressList?.forEachIndexed { index, stores ->
             stores.primary = if (index == selectedPosition) 1 else 0
+            notifyItemChanged(index,stores)
         }
-
-        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
