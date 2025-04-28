@@ -29,6 +29,16 @@ class CheckoutScreenViewModel @Inject constructor(private val repository: MainRe
         repository.makeAddressPrimaryUrl({ successCallback(it) },id)
     }
 
+    suspend fun sendOtpUrl(
+        successCallback: (response: NetworkResult<String>) -> Unit, phone: String?) {
+        repository.sendOtpUrl({ successCallback(it) }, phone)
+    }
+
+
+    suspend fun addPhoneUrl(successCallback: (response: NetworkResult<String>) -> Unit, phone: String?, otp: String?,countryCode:String?) {
+        repository.addPhoneUrl({ successCallback(it) }, phone, otp,countryCode)
+    }
+
 
 
 

@@ -57,7 +57,7 @@ class CategoryProductAdapter(private var requireActivity: FragmentActivity, priv
             }
 
             if (product.pro_id != null) {
-                if (product.pro_id.equals("Not available",true)) {
+                if (!product.pro_id.equals("Not available",true)) {
                     binding.imageSwap.visibility = View.VISIBLE
                     binding.tvIngAvNot.visibility = View.GONE
                 } else {
@@ -130,11 +130,6 @@ class CategoryProductAdapter(private var requireActivity: FragmentActivity, priv
 
             binding.imageSwap.setOnClickListener {
                 onItemSelectListener.itemSelectUnSelect(position ,"swap","Product", position)
-              /*  onItemSelectListener.itemSelect(
-                    product.id,
-                    product.name.toString(),
-                    product.pro_id.toString()
-                )*/
         }
     }
 }

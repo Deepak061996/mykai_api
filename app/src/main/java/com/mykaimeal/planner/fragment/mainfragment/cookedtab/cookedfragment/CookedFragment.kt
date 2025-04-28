@@ -105,7 +105,7 @@ class CookedFragment : Fragment(), OnItemClickListener {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigateUp()
+                    findNavController().navigate(R.id.homeFragment)
                 }
             })
     }
@@ -157,7 +157,7 @@ class CookedFragment : Fragment(), OnItemClickListener {
         }
 
         binding.imageBackIcon.setOnClickListener {
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.homeFragment)
         }
 
         binding.relCalendarYear.setOnClickListener {

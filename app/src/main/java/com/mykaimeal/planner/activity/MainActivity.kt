@@ -66,6 +66,7 @@ import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.GetUserPr
 import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.model.MealRoutineModelData
 import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.viewmodel.MealRoutineViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.viewmodel.BasketScreenViewModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
 import com.mykaimeal.planner.fragment.mainfragment.searchtab.searchscreen.model.SearchMealUrlModel
 import com.mykaimeal.planner.fragment.mainfragment.searchtab.searchscreen.model.SearchMealUrlModelData
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.homeviewmodel.HomeViewModel
@@ -1573,6 +1574,10 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     fun upBasket(){
         ViewModelProvider(this)[BasketScreenViewModel::class.java].setBasketData(null)
+    }
+
+    fun upBasketCheckOut(){
+        ViewModelProvider(this)[CheckoutScreenViewModel::class.java].setCheckOutData(null)
     }
 
     fun upDatePlan(){

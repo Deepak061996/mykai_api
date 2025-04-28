@@ -108,11 +108,13 @@ class SearchFragmentDummy : Fragment(), OnItemClickListener {
         commonWorkUtils = CommonWorkUtils(requireActivity())
         sessionManagement = SessionManagement(requireContext())
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.homeFragment)
+                }
+            })
 
 
         binding.cardViewAddRecipe.visibility=View.GONE

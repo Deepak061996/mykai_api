@@ -91,18 +91,13 @@ class AdapterProductsDetailsSelectItem(
             holder.binding.layProgess.root.visibility = View.GONE
         }
 
-        /*holder.binding.textProductName.text = datalist[position].title
-        holder.binding.textProductQuantity.text = datalist[position].quantity
-        holder.binding.textPrice.text = datalist[position].price
-        holder.binding.productImage.setImageResource(datalist[position].image)*/
-
 
         holder.binding.productImage.setOnClickListener {
-            onItemSelectListener.itemSelect(position, data.product_id, "products")
+            onItemSelectListener.itemSelect(data.sch_id, data.product_id, "products")
         }
 
         holder.binding.textProductName.setOnClickListener {
-            onItemSelectListener.itemSelect(position, data.product_id, "products")
+            onItemSelectListener.itemSelect(data.sch_id, data.product_id, "products")
         }
 
         holder.binding.productDetails.setOnClickListener {
@@ -111,7 +106,7 @@ class AdapterProductsDetailsSelectItem(
 
         holder.binding.imageMinusIcon.setOnClickListener {
             if (datalist[position].sch_id.toString().toInt() > 1) {
-                onItemSelectListener.itemSelect(position, "Minus", "Ingredients")
+                onItemSelectListener.itemSelect(position, data.product_id, "Minus")
             } else {
                 Toast.makeText(requireActivity, ErrorMessage.servingError, Toast.LENGTH_LONG).show()
             }
@@ -120,7 +115,7 @@ class AdapterProductsDetailsSelectItem(
 
         holder.binding.imageAddIcon.setOnClickListener {
             if (datalist[position].sch_id.toString().toInt() < 1000) {
-                onItemSelectListener.itemSelect(position, "Plus", "Ingredients")
+                onItemSelectListener.itemSelect(position, data.product_id, "Plus")
             }
         }
 

@@ -24,6 +24,7 @@ import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.FragmentAddNumberVerifyBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.addnumberfragment.model.OtpSendModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.addnumberfragment.viewmodel.AddNumberVerifyViewModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
 import com.mykaimeal.planner.messageclass.ErrorMessage
 import dagger.hilt.android.AndroidEntryPoint
 import `in`.aabhasjindal.otptextview.OTPListener
@@ -33,7 +34,8 @@ import java.util.Locale
 @AndroidEntryPoint
 class AddNumberVerifyFragment : Fragment() {
     private lateinit var binding: FragmentAddNumberVerifyBinding
-    private lateinit var addNumberVerifyViewModel: AddNumberVerifyViewModel
+//    private lateinit var addNumberVerifyViewModel: AddNumberVerifyViewModel
+    private lateinit var addNumberVerifyViewModel: CheckoutScreenViewModel
     private var lastNumber: String = ""
     private var userNumber: String = ""
     private var countryCode: String = "+1"
@@ -51,7 +53,7 @@ class AddNumberVerifyFragment : Fragment() {
         binding = FragmentAddNumberVerifyBinding.inflate(layoutInflater, container, false)
 
         commonWorkUtils = CommonWorkUtils(requireActivity())
-        addNumberVerifyViewModel = ViewModelProvider(requireActivity())[AddNumberVerifyViewModel::class.java]
+        addNumberVerifyViewModel = ViewModelProvider(requireActivity())[CheckoutScreenViewModel::class.java]
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -126,33 +128,6 @@ class AddNumberVerifyFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-
-        /*  binding.etRegPhone.addTextChangedListener(object : TextWatcher {
-              @SuppressLint("ResourceAsColor")
-              override fun afterTextChanged(s: Editable?) {
-                  val input = s.toString()
-                  // Enable button only if the phone number is valid (10 digits)
-                  if (input == lastNumber) {
-                      binding.tvVerify.isClickable = false
-                      binding.tvVerify.isEnabled = false
-                      binding.tvVerify.setTextColor(Color.parseColor("#D7D7D7")) // Gray color for inactive state
-                  } else {
-                      if (input.length >= 10) {
-                          binding.tvVerify.isClickable = true
-                          binding.tvVerify.isEnabled = true
-                          binding.tvVerify.setTextColor(Color.parseColor("#06C169")) // Green color for active state
-                      } else {
-                          binding.tvVerify.isClickable = false
-                          binding.tvVerify.isEnabled = false
-                          binding.tvVerify.setTextColor(Color.parseColor("#D7D7D7")) // Gray color for inactive state
-                      }
-                  }
-              }
-
-              override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-              override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-          })*/
 
         binding.countryCodePicker.setOnCountryChangeListener {
             countryCode = "+" + binding.countryCodePicker.selectedCountryCode
@@ -362,7 +337,10 @@ class AddNumberVerifyFragment : Fragment() {
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 binding.tvVerificationError.visibility = View.GONE
-                Toast.makeText(requireContext(), "" + apiModel.message, Toast.LENGTH_LONG).show()
+                addNumberVerifyViewModel.dataCheckOut?.let {
+                    it.phone=binding.etRegPhone.text.toString().trim()
+                    it.country_code=countryCode
+                }
                 findNavController().navigateUp()
             } else {
                 binding.tvVerificationError.visibility = View.VISIBLE

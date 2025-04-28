@@ -47,17 +47,13 @@ class ShoppingMissingIngredientsFragment : Fragment(), OnItemSelectListener {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding =
-            FragmentShoppingMissingIngredientsBinding.inflate(layoutInflater, container, false)
+        binding = FragmentShoppingMissingIngredientsBinding.inflate(layoutInflater, container, false)
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val bundle = Bundle().apply {
-                        putString("id", "yes")
-                    }
-                    findNavController().navigate(R.id.orderHistoryFragment, bundle)
+                   moveToBack()
                 }
             })
 
@@ -69,14 +65,18 @@ class ShoppingMissingIngredientsFragment : Fragment(), OnItemSelectListener {
         return binding.root
     }
 
+    private fun moveToBack(){
+        val bundle = Bundle().apply {
+            putString("screen", "yes")
+        }
+        findNavController().navigate(R.id.orderHistoryFragment, bundle)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun initialize() {
 
         binding.imageBackIcon.setOnClickListener {
-            val bundle = Bundle().apply {
-                putString("id", "yes")
-            }
-            findNavController().navigate(R.id.orderHistoryFragment, bundle)
+            moveToBack()
         }
 
         binding.tvAddToBasket.setOnClickListener {
@@ -106,10 +106,6 @@ class ShoppingMissingIngredientsFragment : Fragment(), OnItemSelectListener {
             } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
-           /* val bundle = Bundle().apply {
-                putString("id", "yes")
-            }
-            findNavController().navigate(R.id.orderHistoryFragment, bundle)*/
         }
 
         binding.tvPurchasedBtn.setOnClickListener {
@@ -138,11 +134,6 @@ class ShoppingMissingIngredientsFragment : Fragment(), OnItemSelectListener {
             } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
-
-           /* val bundle = Bundle().apply {
-                putString("id", "yes")
-            }
-            findNavController().navigate(R.id.orderHistoryFragment, bundle)*/
         }
 
         binding.tvSelectAllBtn.setOnClickListener {
@@ -199,7 +190,9 @@ class ShoppingMissingIngredientsFragment : Fragment(), OnItemSelectListener {
             if (apiModel.code == 200 && apiModel.success) {
                 Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
                 if (statusType[0].equals("0",true)){
-                    findNavController().navigateUp()
+                    findNavController().navigate(R.id.homeFragment)
+             /*
+                    findNavController().navigateUp()*/
                 }else{
                     clearList()
                     ingredientList!!.removeIf { ingredientsModel ->
@@ -208,7 +201,7 @@ class ShoppingMissingIngredientsFragment : Fragment(), OnItemSelectListener {
                     if (ingredientList!!.size>0){
                         /*showLatestData()*/
                     }else{
-                        findNavController().navigateUp()
+                        findNavController().navigate(R.id.homeFragment)
                     }
                 }
             } else {

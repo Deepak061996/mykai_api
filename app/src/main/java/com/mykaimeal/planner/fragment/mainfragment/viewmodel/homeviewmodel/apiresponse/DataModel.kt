@@ -5,7 +5,7 @@ data class DataModel(
     val frezzer: FrezzerModel?,
     val fridge: FrezzerModel?,
     val graph_value: Int?,
-    val is_supermarket: Int?,
+    var is_supermarket: Int?,
     val Subscription_status: Int?,
     val last_plan: String?,
     val active_plan: String?,

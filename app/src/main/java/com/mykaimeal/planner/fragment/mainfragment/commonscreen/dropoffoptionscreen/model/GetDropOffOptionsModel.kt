@@ -10,7 +10,7 @@ data class GetDropOffOptionsModel(
 
 data class GetDropOffOptionsModelData(
     val id: Int,
-    val name: String,
+    val name: String?,
     val status: Int,
     val type: Int
 )

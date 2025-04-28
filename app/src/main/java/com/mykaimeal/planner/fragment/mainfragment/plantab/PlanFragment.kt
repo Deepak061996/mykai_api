@@ -109,10 +109,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
     val dataList = arrayListOf<DataModel>()
 
     @SuppressLint("SetTextI18n")
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         binding = FragmentPlanBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[PlanViewModel::class.java]
@@ -127,13 +124,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
         (activity as MainActivity?)?.alertStatus=true
         sessionManagement = SessionManagement(requireContext())
 
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    findNavController().navigateUp()
-                }
-            })
+         backButton()
 
 
         cookbookList.clear()
@@ -184,6 +175,16 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
         showWeekDates()
 
         return binding.root
+    }
+
+    private fun backButton(){
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.homeFragment)
+                }
+            })
     }
 
     @SuppressLint("SetTextI18n")

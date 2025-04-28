@@ -96,11 +96,13 @@ class SearchFragment : Fragment(),View.OnClickListener, OnItemClickListener {
         sessionManagement = SessionManagement(requireContext())
 
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.homeFragment)
+                }
+            })
 
         initialize()
 

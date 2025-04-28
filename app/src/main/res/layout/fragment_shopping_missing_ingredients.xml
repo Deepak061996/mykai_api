@@ -55,6 +55,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:fontFamily="@font/montserrat_medium"
                 android:text="Tesco"
+                android:visibility="gone"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

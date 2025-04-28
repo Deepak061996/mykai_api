@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.gson.Gson
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.basedata.SessionManagement
@@ -288,15 +289,13 @@ class AddressMapFullScreenFragment : Fragment(), OnMapReadyCallback {
             val apiModel = Gson().fromJson(data, AddAddressModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success == true) {
-                if (screenType=="EnterYourAddress"){
+                dialogMiles.dismiss()
+                if (screenType.equals("EnterYourAddress")){
                     findNavController().navigate(R.id.notificationFragment)
                 }else {
+                    (activity as MainActivity?)?.upBasketCheckOut()
                     findNavController().navigateUp()
                 }
-
-                dialogMiles.dismiss()
-
-
             } else {
                 if (apiModel.code == ErrorMessage.code) {
                     showAlert(apiModel.message, true)

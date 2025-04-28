@@ -19,7 +19,7 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
     private lateinit var binding: FragmentOrderHistoryBinding
     private var dataList3: MutableList<DataModel> = mutableListOf()
     private var adapterOrderHistoryItem: AdapterOrderHistoryItem? = null
-    private var id: String = ""
+    private var screen: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +35,7 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
             llBottomNavigation.visibility = View.VISIBLE
         }
 
-        id = arguments?.getString("id", "") ?: ""
+        screen = arguments?.getString("screen", "") ?: ""
 
         setupBackNavigation()
 
@@ -48,7 +48,7 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
 
     private fun setupBackNavigation() {
 
-        if (id == "yes") {
+        if (screen.equals("yes",true)) {
             binding.relNoOrders.visibility = View.GONE
             binding.rcyOrderHistory.visibility = View.VISIBLE
         } else {
@@ -60,7 +60,7 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigate(R.id.settingProfileFragment)
+                    moveToScreen()
                 }
             })
     }
@@ -68,12 +68,20 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
     private fun initialize() {
 
         binding.imgBackOrderHistory.setOnClickListener {
-            findNavController().navigate(R.id.settingProfileFragment)
+             moveToScreen()
         }
 
         binding.rlStartOrder.setOnClickListener {
             binding.relNoOrders.visibility = View.GONE
             binding.rcyOrderHistory.visibility = View.VISIBLE
+        }
+    }
+
+    private fun moveToScreen(){
+        if (screen.equals("yes",true)) {
+            findNavController().navigate(R.id.homeFragment)
+        } else {
+            findNavController().navigateUp()
         }
     }
 

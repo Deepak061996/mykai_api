@@ -248,6 +248,7 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
 
         binding.textConfirmOrder.setOnClickListener {
             if (binding.textConfirmOrder.isClickable) {
+                (activity as MainActivity?)?.upBasketCheckOut()
                 findNavController().navigate(R.id.basketDetailSuperMarketFragment)
             } else {
                 showAlert(getString(R.string.available_products), false)
@@ -508,19 +509,20 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         }
 
         relDone?.setOnClickListener {
-            if (selectType != "") {
-                if (BaseApplication.isOnline(requireActivity())) {
-                    addressPrimaryApi()
-                } else {
-                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-                }
-            } else {
+            if (BaseApplication.isOnline(requireActivity())) {
                 if (tvAddress?.text.toString().isNotEmpty()){
                     fullAddressDialog()
+                }else{
+                    if (!selectType.equals("")) {
+                        addressPrimaryApi()
+                    }else{
+                        dialogMiles?.dismiss()
+                    }
                 }
+            } else {
+                BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
         }
-
     }
 
 
@@ -1136,9 +1138,11 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
                     binding.textTotalAmount.text="$0*"
                 }
             } else {
+                binding.textConfirmOrder.isClickable=false
                 handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
+            binding.textConfirmOrder.isClickable=false
             showAlert(e.message, false)
         }
     }
@@ -1209,7 +1213,9 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
        if (isZiggleEnabled.equals("SelectPrimary",true)) {
             selectType = isZiggleEnabled
             addressId = position.toString()
-        } else if (isZiggleEnabled == "Edit") {
+        }
+        if (isZiggleEnabled.equals("Edit",true)) {
+            dialogMiles?.dismiss()
             val bundle = Bundle().apply {
                 putString("latitude", addressList?.get(position!!)?.latitude)
                 putString("longitude", addressList?.get(position!!)?.longitude)
@@ -1218,7 +1224,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
                 putString("type", "Checkout")
             }
             findNavController().navigate(R.id.addressMapFullScreenFragment, bundle)
-            dialogMiles?.dismiss()
         }
     }
 

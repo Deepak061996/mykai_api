@@ -109,7 +109,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     private lateinit var binding: FragmentCheckoutScreenBinding
     private lateinit var mapView: MapView
     private var mMap: GoogleMap? = null
-    private var openStatus: Boolean = false
     private lateinit var checkoutScreenViewModel: CheckoutScreenViewModel
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private var locationManager: LocationManager? = null
@@ -196,12 +195,13 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
     private fun initialize() {
 
-        if (checkoutScreenViewModel.dataCheckOut!=null){
-            showDataInUI(checkoutScreenViewModel.dataCheckOut)
-        }else{
-            loadApi()
-        }
+//        if (checkoutScreenViewModel.dataCheckOut!=null){
+//            showDataInUI(checkoutScreenViewModel.dataCheckOut)
+//        }else{
+//            loadApi()
+//        }
 
+        loadApi()
 
         binding.imageBackIcon.setOnClickListener {
             findNavController().navigateUp()
@@ -254,7 +254,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 binding.relIngredients.visibility = View.VISIBLE
             }
         }
-
 
     }
 
@@ -530,11 +529,11 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
         relDone?.setOnClickListener {
             if (BaseApplication.isOnline(requireActivity())) {
-                if (!selectType.equals("")) {
-                    addressPrimaryApi()
-                } else {
-                    if (tvAddress.text.toString().isNotEmpty()){
-                        fullAddressDialog()
+                if (tvAddress.text.toString().isNotEmpty()){
+                    fullAddressDialog()
+                }else{
+                    if (!selectType.equals("")) {
+                        addressPrimaryApi()
                     }else{
                         dialogMiles?.dismiss()
                     }
@@ -542,9 +541,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
-
         }
-
 
     }
 
@@ -923,16 +920,13 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
     private fun validatation(): Boolean {
         // Check if email/phone is empty
-        if (phoneNumber.equals("",true)) {
+        if (binding.tvAddNumber.text.toString().equals("Add number",true)) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPhone, false)
             return false
-        } else if (notes.equals("",true)) {
+        } else if (binding.tvSetDoorStep.text.toString().equals("",true)) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPickUp, false)
             return false
-        } /*else if (card.equals("",true)) {
-            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardDetailsError, false)
-            return false
-        }*/
+        }
         return true
     }
 
@@ -989,7 +983,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 dialogMiles?.dismiss()
-//                getCheckoutApi()
+                loadApi()
             } else {
                 handleError(apiModel.code,apiModel.message)
             }
@@ -1097,17 +1091,16 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             addressId = position.toString()
         }
         if (isZiggleEnabled.equals("Edit",true)) {
+            dialogMiles?.dismiss()
             val bundle = Bundle().apply {
-                putString("latitude", addressList.get(position!!).latitude)
-                putString("longitude", addressList.get(position).longitude)
+                putString("latitude", addressList[position!!].latitude)
+                putString("longitude", addressList[position].longitude)
                 putString("address", fullAddress)
-                putString("addressId", addressList.get(position).id.toString())
+                putString("addressId", addressList[position].id.toString())
                 putString("type", "Checkout")
             }
             findNavController().navigate(R.id.addressMapFullScreenFragment, bundle)
-            dialogMiles?.dismiss()
         }
-
     }
 
     @Deprecated("Deprecated in Java")

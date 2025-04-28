@@ -396,12 +396,9 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
             R.id.relMyWallet -> navigateToFragment(R.id.walletFragment)
             R.id.relOrderHistory -> {
                 val bundle = Bundle().apply {
-                    putString("id","no")
+                    putString("screen","no")
                 }
                 findNavController().navigate(R.id.orderHistoryFragment,bundle)
-/*
-                navigateToFragment(R.id.orderHistoryFragment)
-*/
             }
             R.id.relHealthData -> navigateToFragment(R.id.healthDataFragment)
             R.id.relFeedbackSupport -> navigateToFragment(R.id.feedbackFragment)

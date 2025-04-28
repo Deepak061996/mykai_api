@@ -26,6 +26,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -116,7 +117,9 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         cookbookList.clear()
         val data = com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data("", "", 0, "", "Favorites", 0, "", 0)
         cookbookList.add(0, data)
-        
+
+
+        backButton()
         initialize()
 
 
@@ -129,6 +132,19 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
 
 
         return binding.root
+    }
+
+    private fun backButton(){
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val startMain = Intent(Intent.ACTION_MAIN)
+                    startMain.addCategory(Intent.CATEGORY_HOME)
+                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(startMain)
+                }
+            })
     }
 
     private fun getLatLong(){
@@ -251,6 +267,8 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 if (type.equals("HomeData",true)){
                     showData(apiModel.data)
                 }else{
+                    userDataLocal.is_supermarket=0
+                    viewModel.setData(userDataLocal)
                     Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_SHORT).show()
                 }
             } else {
@@ -286,11 +304,11 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             }
 
             if (userDataLocal.graph_value == 0) {
-                binding.relMonthlySavingsss.visibility = View.GONE
-                binding.relCheckSavingsss.visibility = View.VISIBLE
-            } else {
                 binding.relMonthlySavingsss.visibility = View.VISIBLE
                 binding.relCheckSavingsss.visibility = View.GONE
+            } else {
+                binding.relMonthlySavingsss.visibility = View.GONE
+                binding.relCheckSavingsss.visibility = View.VISIBLE
             }
 
             if (userDataLocal.date != null && !userDataLocal.date.equals("", true)) {
@@ -432,6 +450,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         binding.rlPlanAMealBtn.setOnClickListener(this)
         binding.imgHearRedIcons.setOnClickListener(this)
         binding.imagePlanMeal.setOnClickListener(this)
+        binding.tvPlanMeal.setOnClickListener(this)
 //        binding!!.imageRecipeSeeAll.setOnClickListener(this)
 //        binding!!.relMonthlySavings.setOnClickListener(this)
         binding.imageCheckSav.setOnClickListener(this)
@@ -553,6 +572,10 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             }
 
             R.id.rlPlanAMealBtn -> {
+                findNavController().navigate(R.id.planFragment)
+            }
+
+            R.id.tvPlanMeal -> {
                 findNavController().navigate(R.id.planFragment)
             }
 

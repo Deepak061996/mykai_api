@@ -55,13 +55,9 @@ class BasketProductDetailsFragment : Fragment(), OnItemSelectListener {
     private var image: String = ""
     private var basketProductsDetailsModelData: MutableList<BasketProductsDetailsModelData> = mutableListOf()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         binding = FragmentBasketProductDetailsBinding.inflate(layoutInflater, container, false)
-
         proId = arguments?.getString("SwapProId", "").toString()
         proName = arguments?.getString("SwapProName", "").toString()
         id = arguments?.getString("id", "").toString()
@@ -168,46 +164,53 @@ class BasketProductDetailsFragment : Fragment(), OnItemSelectListener {
             findNavController().navigate(R.id.basketIngredientsDetailsFragment, bundle)
         }
 
-
-//        binding.etIngDislikesSearchBar.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-//            override fun afterTextChanged(editable: Editable) {
-//                val query = editable.toString().trim()
-//                if (query.isNotEmpty()) {
-//                        filterIngredients(query)
-//                } else {
-//                    resetLists()
-//                }
-//            }
-//        })
-
+        binding.etIngDislikesSearchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(editable: Editable) {
+                val query = editable.toString().trim()
+                if (query.isNotEmpty()) {
+                    filterIngredients(query)
+                } else {
+                    resetLists()
+                }
+            }
+        })
 
     }
 
     private fun filterIngredients(editText: String) {
-        val filteredList: MutableList<BasketProductsDetailsModelData> =
-            java.util.ArrayList<BasketProductsDetailsModelData>()
+        val filteredList: MutableList<BasketProductsDetailsModelData> = mutableListOf()
         for (item in basketProductsDetailsModelData) {
             if (item.name!!.lowercase().contains(editText.lowercase(Locale.getDefault()))) {
                 filteredList.add(item)
             }
         }
-        if (filteredList.size > 0) {
-            adapterProductsDetailsSelectItem!!.filterList(filteredList)
-            binding.rcyProductItems.visibility = View.VISIBLE
-            binding.relNoProductsFound.visibility = View.GONE
-        } else {
+
+        try {
+            if (filteredList.size > 0) {
+                adapterProductsDetailsSelectItem?.filterList(filteredList)
+                binding.rcyProductItems.visibility = View.VISIBLE
+                binding.relNoProductsFound.visibility = View.GONE
+            } else {
+                binding.rcyProductItems.visibility = View.GONE
+                binding.relNoProductsFound.visibility = View.VISIBLE
+            }
+        }catch (e:Exception){
             binding.rcyProductItems.visibility = View.GONE
             binding.relNoProductsFound.visibility = View.VISIBLE
         }
     }
 
     private fun resetLists() {
-        binding.rcyProductItems.visibility = View.VISIBLE
-        binding.relNoProductsFound.visibility = View.GONE
-        basketProductsDetailsModelData.let { adapterProductsDetailsSelectItem!!.submitList(it) } // Reset recipe list
-
+        if (basketProductsDetailsModelData.size>0){
+            adapterProductsDetailsSelectItem?.submitList(basketProductsDetailsModelData)
+            binding.rcyProductItems.visibility = View.VISIBLE
+            binding.relNoProductsFound.visibility = View.GONE
+        }else{
+            binding.rcyProductItems.visibility = View.GONE
+            binding.relNoProductsFound.visibility = View.VISIBLE
+        }
     }
 
 
@@ -351,36 +354,32 @@ class BasketProductDetailsFragment : Fragment(), OnItemSelectListener {
         data.let {
             basketProductsDetailsModelData.addAll(data)
         }
-        if (basketProductsDetailsModelData.size > 0) {
-            binding.relNoProductsFound.visibility = View.GONE
-            binding.rcyProductItems.visibility = View.VISIBLE
-            adapterProductsDetailsSelectItem?.filterList(basketProductsDetailsModelData)
-        } else {
-            binding.relNoProductsFound.visibility = View.VISIBLE
-            binding.rcyProductItems.visibility = View.GONE
-        }
+        resetLists()
     }
 
     override fun itemSelect(position: Int?, productId: String?, type: String?) {
         if (BaseApplication.isOnline(requireActivity())) {
             if (type.equals("products",true)) {
-                val dataValue=basketProductsDetailsModelData[position!!]
-                getProductsSwapApi(productId, dataValue.sch_id.toString())
+                // when user click the listener then insert in to position such id
+                val dataValue=position
+                getProductsSwapApi(productId, dataValue.toString())
             }
             if (type.equals("swap",true)) {
-                val dataValue=basketProductsDetailsModelData[position!!]
-                val bundle = Bundle().apply {
-                    putString("SwapProId", productId)
-                    putString("SwapProName", dataValue.name )
-                    putString("foodId", dataValue.food_id )
-                    putString("schId", dataValue.sch_id.toString())
-                    putString("image", dataValue.image.toString())
-                    putString("type", "new")
+                val dataValue = basketProductsDetailsModelData.find { it.product_id == productId }
+                dataValue?.let {
+                    val bundle = Bundle().apply {
+                        putString("SwapProId", productId)
+                        putString("SwapProName", it.name )
+                        putString("foodId", it.food_id )
+                        putString("schId", it.sch_id.toString())
+                        putString("image", it.image.toString())
+                        putString("type", "new")
+                    }
+                    findNavController().navigate(R.id.basketIngredientsDetailsFragment, bundle)
                 }
-                findNavController().navigate(R.id.basketIngredientsDetailsFragment, bundle)
             }
-            if (type.equals("Ingredients")) {
-                removeAddIngServing(position, productId.toString())
+            if (type.equals("Plus") || type.equals("Minus")) {
+                removeAddIngServing(productId.toString(), type.toString())
             }
         }else{
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
@@ -388,8 +387,9 @@ class BasketProductDetailsFragment : Fragment(), OnItemSelectListener {
 
     }
 
-    private fun removeAddIngServing(position: Int?, type: String) {
-        val item = position?.let { basketProductsDetailsModelData?.get(it) }
+    private fun removeAddIngServing(productId: String?, type: String) {
+        val position = basketProductsDetailsModelData.indexOfFirst { it.product_id == productId }
+        val item = basketProductsDetailsModelData.find { it.product_id == productId }
         if (type.equals("plus", true) || type.equals("minus", true)) {
             var count = item?.sch_id
             val foodId = item?.food_id
