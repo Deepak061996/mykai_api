@@ -19,6 +19,7 @@ import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.FragmentDropOffOptionsScreenBinding
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.dropoffoptionscreen.model.DropOffOptionsModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.dropoffoptionscreen.model.GetDropOffOptionsModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.dropoffoptionscreen.model.GetDropOffOptionsModelData
@@ -31,7 +32,7 @@ import kotlinx.coroutines.launch
 class DropOffOptionsScreenFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentDropOffOptionsScreenBinding
-    private lateinit var dropOffOptionsScreenViewModel: DropOffOptionsScreenViewModel
+    private lateinit var dropOffOptionsScreenViewModel: CheckoutScreenViewModel
     private var clickedstatus: String? = "Meet at my door"
     private lateinit var commonWorkUtils: CommonWorkUtils
 
@@ -42,8 +43,7 @@ class DropOffOptionsScreenFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentDropOffOptionsScreenBinding.inflate(layoutInflater, container, false)
 
-        dropOffOptionsScreenViewModel =
-            ViewModelProvider(requireActivity())[DropOffOptionsScreenViewModel::class.java]
+        dropOffOptionsScreenViewModel = ViewModelProvider(requireActivity())[CheckoutScreenViewModel::class.java]
 
         commonWorkUtils = CommonWorkUtils(requireActivity())
 
@@ -148,7 +148,6 @@ class DropOffOptionsScreenFragment : Fragment(), View.OnClickListener {
             item.name?.let {
                 textView.text = it
             }
-
             if (item.status == 1) {
                 clickedstatus = statusTexts[index]
                 textView.setTextColor(Color.parseColor("#000000"))
@@ -387,19 +386,6 @@ class DropOffOptionsScreenFragment : Fragment(), View.OnClickListener {
         }
     }
 
-
-/*    /// add validation based on valid email or phone
-    private fun validate(): Boolean {
-        // Check if email/phone is empty
-
-        if (binding.edtInstructions.text.toString().trim().isEmpty()) {
-            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.deliveryInstructions, false)
-            return false
-        }
-        return true
-
-    }*/
-
     private fun addNotesUrl() {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
@@ -424,13 +410,12 @@ class DropOffOptionsScreenFragment : Fragment(), View.OnClickListener {
             val apiModel = Gson().fromJson(data, DropOffOptionsModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success == true) {
+                dropOffOptionsScreenViewModel.dataCheckOut?.note?.pickup=clickedstatus
+                dropOffOptionsScreenViewModel.dataCheckOut?.note?.description=binding.edtInstructions.text.toString().trim()
+                dropOffOptionsScreenViewModel.setCheckOutData(dropOffOptionsScreenViewModel.dataCheckOut)
                 findNavController().navigateUp()
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+                handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)

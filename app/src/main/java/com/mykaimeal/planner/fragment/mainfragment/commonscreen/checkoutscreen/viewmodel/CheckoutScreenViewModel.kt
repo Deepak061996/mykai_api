@@ -40,6 +40,53 @@ class CheckoutScreenViewModel @Inject constructor(private val repository: MainRe
     }
 
 
+    suspend fun addNotesUrl(successCallback: (response: NetworkResult<String>) -> Unit,pickup:String?,description:String?){
+        repository.addNotesUrl({ successCallback(it) },pickup,description)
+    }
+
+    suspend fun getNotesUrl(successCallback: (response: NetworkResult<String>) -> Unit){
+        repository.getNotesUrl{ successCallback(it) }
+    }
+
+
+
+    // card add
+    suspend fun getCardMealMeUrl(successCallback: (response: NetworkResult<String>) -> Unit) {
+        repository.getCardMealMeUrl { successCallback(it) }
+    }
+
+    suspend fun deleteCardMealMeUrl(
+        successCallback: (response: NetworkResult<String>) -> Unit,
+        id: String?
+    ) {
+        repository.deleteCardMealMeUrl({ successCallback(it) }, id)
+    }
+
+    suspend fun setPreferredCardMealMeUrl(
+        successCallback: (response: NetworkResult<String>) -> Unit,
+        id: String?
+    ) {
+        repository.setPreferredCardMealMeUrl({ successCallback(it) }, id)
+    }
+
+
+    suspend fun addCardMealMeUrl(
+        successCallback: (response: NetworkResult<String>) -> Unit,
+        cardNumber: String?,
+        expMonth: String?,
+        expYear: String?,
+        cvv: String?,
+        status: String?
+    ) {
+        repository.addCardMealMeUrl(
+            { successCallback(it) },
+            cardNumber,
+            expMonth,
+            expYear,
+            cvv,
+            status
+        )
+    }
 
 
     // hold data in view model

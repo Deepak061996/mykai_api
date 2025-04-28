@@ -101,7 +101,7 @@
                         android:id="@+id/imgMeetDoor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/radio_green_icon"
+                        android:src="@drawable/radio_uncheck_gray_icon"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"/>
 

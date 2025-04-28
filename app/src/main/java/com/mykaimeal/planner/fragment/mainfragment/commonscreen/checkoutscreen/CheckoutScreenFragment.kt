@@ -118,17 +118,14 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     private var selectType: String? = ""
     private var addressId: String? = ""
     private val tAG = "CheckOut"
-
     private lateinit var adapterCheckoutIngredients: AdapterCheckoutIngredientsItem
     private lateinit var adapterCardPreferred: AdapterCardPreferredItem
     private var cardMealMe: MutableList<GetCardMealMeModelData> = mutableListOf()
-
     private var latitude: String? = ""
     private var longitude: String? = ""
     private var totalPrices: String? = ""
     private var cardId: String? = ""
     private var statusTypes: String? = "Home"
-
     private lateinit var edtStreetName: EditText
     private lateinit var edtStreetNumber: EditText
     private lateinit var edtApartNumber: EditText
@@ -148,8 +145,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     private lateinit var commonWorkUtils: CommonWorkUtils
     private var adapterGetAddressItem: AdapterGetAddressItem? = null
     private var addressList: MutableList<GetAddressListModelData> = mutableListOf()
-    private var phoneNumber: String? = ""
-    private var notes: String? = ""
 
 
     override fun onCreateView(
@@ -195,13 +190,13 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
     private fun initialize() {
 
-//        if (checkoutScreenViewModel.dataCheckOut!=null){
-//            showDataInUI(checkoutScreenViewModel.dataCheckOut)
-//        }else{
-//            loadApi()
-//        }
+        if (checkoutScreenViewModel.dataCheckOut!=null){
+            showDataInUI(checkoutScreenViewModel.dataCheckOut)
+        }else{
+            loadApi()
+        }
 
-        loadApi()
+//        loadApi()
 
         binding.imageBackIcon.setOnClickListener {
             findNavController().navigateUp()
@@ -363,14 +358,17 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 binding.tvSuperMarketName.text = it.Store.toString()
             }
             if (it.note != null) {
-                if (it.note.pickup != null) {
-                    binding.tvSetDoorStep.text = it.note.pickup.toString()
+                it.note.pickup?.let {
+                    binding.tvSetDoorStep.text = it
                 }
-                if (it.note.description != null) {
-                    binding.tvDeliveryInstructions.text = it.note.description.toString()
-                    binding.tvDeliveryInstructions.setTextColor(Color.parseColor("#000000"))
+                it.note.description?.takeIf { it.isNotEmpty() }?.let { description ->
+                    binding.tvDeliveryInstructions.apply {
+                        text = description
+                        setTextColor(Color.parseColor("#000000"))
+                    }
                 }
             }
+
             if (it.net_total != null) {
                 val roundedSubTotal = it.net_total.let {
                     BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()
@@ -417,7 +415,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             }
             cardMealMe.clear()
             if (it.card!=null){
-                cardMealMe.addAll(it.card) 
+                cardMealMe.addAll(it.card)
             }
             if (cardMealMe.size > 0) {
                 binding.relCardDetails.visibility = View.VISIBLE
@@ -935,7 +933,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             val apiModel = Gson().fromJson(data, AddAddressModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success == true) {
-                getCheckoutApi()
+                loadApi()
             } else {
                 if (apiModel.code == ErrorMessage.code) {
                     showAlert(apiModel.message, true)
@@ -1044,11 +1042,8 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             R.drawable.map_marker_icon,
             50,
             50
-        ) // Change with your drawable
+        )
 
-        /*        val newYork = LatLng(40.7128, -74.0060)
-                val customMarker = bitmapDescriptorFromVector(R.drawable.current_location_marker,50,50) // Change with your drawable*/
-//        val customMarker = bitmapDescriptorFromVector(R.drawable.marker_icon,50,50) // Change with your drawable
         mMap?.addMarker(
             MarkerOptions()
                 .position(newYork)
@@ -1155,7 +1150,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     }
 
     override fun itemSelect(position: Int?, status: String?, type: String?) {
-
         cardId=cardMealMe[position!!].id.toString()
     }
 
