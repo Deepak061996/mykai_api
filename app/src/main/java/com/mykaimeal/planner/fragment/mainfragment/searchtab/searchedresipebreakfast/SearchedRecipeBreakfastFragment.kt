@@ -607,7 +607,7 @@ class SearchedRecipeBreakfastFragment : Fragment(), OnItemClickListener {
                     if ((activity as? MainActivity)?.addmeal!! < 1){
                         chooseDayDialog(position)
                     }else{
-                        (activity as? MainActivity)?.subscriptionAlertError()
+                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
                 }else{
                     chooseDayDialog(position)
@@ -637,7 +637,7 @@ class SearchedRecipeBreakfastFragment : Fragment(), OnItemClickListener {
                             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                         }
                     }else{
-                        (activity as? MainActivity)?.subscriptionAlertError()
+                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
                 }else{
                     if (BaseApplication.isOnline(requireActivity())) {

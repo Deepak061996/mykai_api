@@ -603,7 +603,8 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                 if (Subscription_status==1){
                     if (addmeal!! < 1){
                         chooseDayDialog()
-                    }else{ subscriptionAlertError()
+                    }else{
+                        subscriptionAlertError(this@MainActivity)
                     }
                 }else{
                     chooseDayDialog()
@@ -1141,7 +1142,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                     if (urlSearch!! <=2){
                         addRecipeFromWeb()
                     }else{
-                        subscriptionAlertError()
+                        subscriptionAlertError(this)
                     }
                 }else{
                     addRecipeFromWeb()
@@ -1162,7 +1163,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                         findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeImageFragment)
                         binding.cardViewAddRecipe.visibility = View.GONE
                     }else{
-                        subscriptionAlertError()
+                        subscriptionAlertError(this)
                     }
 
                 }else{
@@ -1237,7 +1238,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                         BaseApplication.alertError(this, ErrorMessage.networkError, false)
                     }
                     }else{
-                        subscriptionAlertError()
+                        subscriptionAlertError(this)
                    }
 
             }else{
@@ -1542,9 +1543,10 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
 
     @SuppressLint("SetTextI18n")
-    fun subscriptionAlertError(){
-        val dialog= Dialog(this, R.style.BottomSheetDialog)
+    fun subscriptionAlertError(context: Context){
+        val dialog= Dialog(context, R.style.BottomSheetDialog)
         dialog.setCancelable(true)
+        dialog.setCanceledOnTouchOutside(true)
         dialog.setContentView(R.layout.alert_dialog_subscription_error)
         val layoutParams = WindowManager.LayoutParams()
         layoutParams.copyFrom(dialog.window!!.attributes)
@@ -1554,6 +1556,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         val tvTitle: TextView =dialog.findViewById(R.id.tv_text)
         val btnOk: RelativeLayout =dialog.findViewById(R.id.btn_okay)
         val btnCancel: ImageView =dialog.findViewById(R.id.crossImages)
+        val layroot: RelativeLayout =dialog.findViewById(R.id.layroot)
+
+        layroot.setOnClickListener {
+            dialog.dismiss()
+        }
         tvTitle.text="Oops! Your limit has been exceeded. Please purchase your subscription to regain access to all features."
         btnOk.setOnClickListener {
             dialog.dismiss()
@@ -1667,7 +1674,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                     status = "Web"
                     updateSelection(relFromWeb,tvFromWeb)
                 }else{
-                    subscriptionAlertError()
+                    subscriptionAlertError(this)
                 }
 
             }else{
@@ -1687,7 +1694,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                     status = "TakingPicture"
                     updateSelection(relTakingAPicture,tvTakingAPicture)
                 }else{
-                    subscriptionAlertError()
+                    subscriptionAlertError(this)
                 }
             }else{
                 status = "TakingPicture"

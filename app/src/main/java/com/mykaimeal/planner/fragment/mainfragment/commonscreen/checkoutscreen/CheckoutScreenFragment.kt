@@ -710,11 +710,17 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
     private fun showLocationError(context: Context?, msg: String?) {
         val dialog = context?.let { Dialog(it, R.style.BottomSheetDialog) }
-        dialog?.setCancelable(false)
+        dialog?.setCancelable(true)
         dialog?.setContentView(R.layout.alert_dialog_box_error)
         val tvTitle: TextView = dialog!!.findViewById(R.id.tv_text)
         val btnOk: RelativeLayout = dialog.findViewById(R.id.btn_okay)
+        val root: RelativeLayout = dialog.findViewById(R.id.root)
         tvTitle.text = msg
+
+        root.setOnClickListener {
+            dialog.dismiss()
+        }
+
         btnOk.setOnClickListener {
             dialog.dismiss()
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

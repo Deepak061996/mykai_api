@@ -1298,7 +1298,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
                         if ((activity as? MainActivity)?.addmeal!! < 1){
                             chooseDayDialog(position, type)
                         }else{
-                            (activity as? MainActivity)?.subscriptionAlertError()
+                            (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                         }
                     }else{
                         chooseDayDialog(position, type)
@@ -1321,7 +1321,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
                             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                         }
                     }else{
-                        (activity as? MainActivity)?.subscriptionAlertError()
+                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
 
                 }else{

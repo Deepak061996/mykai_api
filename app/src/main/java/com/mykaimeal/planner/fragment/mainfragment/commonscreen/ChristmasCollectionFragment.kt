@@ -397,7 +397,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                     if ((activity as? MainActivity)?.addmeal!! < 1){
                         chooseDayDialog(position, type)
                     }else{
-                        (activity as? MainActivity)?.subscriptionAlertError()
+                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
                 }else{
                     chooseDayDialog(position, type)
@@ -432,7 +432,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                     if ((activity as? MainActivity)?.favorite!! <= 2){
                         removeRecipeDialog(position)
                     }else{
-                        (activity as? MainActivity)?.subscriptionAlertError()
+                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
                 }else{
                     removeRecipeDialog(position)

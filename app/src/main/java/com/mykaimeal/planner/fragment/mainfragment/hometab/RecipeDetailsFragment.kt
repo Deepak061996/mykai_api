@@ -310,7 +310,7 @@ class RecipeDetailsFragment : Fragment(), OnItemSelectListener {
                     // Safely get the item and position
                     chooseDayDialog()
                 }else{
-                    (activity as? MainActivity)?.subscriptionAlertError()
+                    (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                 }
             }else{
                 chooseDayDialog()

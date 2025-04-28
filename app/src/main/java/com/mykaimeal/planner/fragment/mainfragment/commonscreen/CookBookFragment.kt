@@ -110,7 +110,7 @@ class CookBookFragment : Fragment(), OnItemClickListener, OnItemSelectListener {
 //        }
 
         binding.btnLock.setOnClickListener {
-            (activity as? MainActivity)?.subscriptionAlertError()
+            (activity as? MainActivity)?.subscriptionAlertError(requireContext())
         }
 
         if (BaseApplication.isOnline(requireActivity())) {
@@ -240,7 +240,7 @@ class CookBookFragment : Fragment(), OnItemClickListener, OnItemSelectListener {
                     if ((activity as? MainActivity)?.addmeal!! < 1){
                         chooseDayDialog(position)
                     }else{
-                        (activity as? MainActivity)?.subscriptionAlertError()
+                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
 
                 }else{
@@ -278,7 +278,7 @@ class CookBookFragment : Fragment(), OnItemClickListener, OnItemSelectListener {
                         BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                     }
                 }else{
-                    (activity as? MainActivity)?.subscriptionAlertError()
+                    (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                 }
 
             }else{
@@ -744,7 +744,7 @@ class CookBookFragment : Fragment(), OnItemClickListener, OnItemSelectListener {
             findNavController().navigate(R.id.createCookBookFragment,bundle)
         } else if (position != 1) {
             if ((activity as? MainActivity)?.Subscription_status==1){
-                (activity as? MainActivity)?.subscriptionAlertError()
+                (activity as? MainActivity)?.subscriptionAlertError(requireContext())
             }else{
                 sessionManagement.setCookBookId(cookbookList[position!!].id.toString())
                 sessionManagement.setCookBookName(cookbookList[position].name)
