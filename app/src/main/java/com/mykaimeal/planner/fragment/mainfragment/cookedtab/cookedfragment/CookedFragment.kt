@@ -470,7 +470,7 @@ class CookedFragment : Fragment(), OnItemClickListener {
                             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                         }
                     }else{
-                        (activity as? MainActivity)?.subscriptionAlertError()
+                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
 
                 }else{

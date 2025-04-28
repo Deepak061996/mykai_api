@@ -112,6 +112,11 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 llIndicator.visibility = View.VISIBLE
                 llBottomNavigation.visibility = View.VISIBLE
             }
+            if (main.Subscription_status==0){
+                binding.imgFreeTrial.visibility=View.GONE
+            }else{
+                binding.imgFreeTrial.visibility=View.GONE
+            }
         }
 
         cookbookList.clear()
@@ -406,10 +411,15 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 }
             }
 
+
+
+//            getLatLong()
+
+
             userDataLocal.is_supermarket?.let {
                 if (it==1){
-                // fetch location form the user
-                getLatLong()
+                    supermarketOnLoad()
+//                    getLatLong()
                 }
             }
 
@@ -519,16 +529,10 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                         locationCallback,
                         Looper.myLooper()!!
                     )
-
                 }
             }
         } else {
-            requestPermissions(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), 100
-            )
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 100)
         }
     }
     
@@ -616,7 +620,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                                 addFavTypeDialog(position, newLikeStatus)
                             }
                         }else{
-                            (activity as? MainActivity)?.subscriptionAlertError()
+                            (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                         }
                     }else{
                         // Safely get the item and position
@@ -774,7 +778,8 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         if (requestCode == 100 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             displayLocationSettingsRequest(requireContext())
         } else {
-            showLocationError(requireContext(), ErrorMessage.locationError)
+//            findNavController().navigate(R.id.enterYourAddressFragment)
+//            showLocationError(requireContext(), ErrorMessage.locationError)
         }
     }
 

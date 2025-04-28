@@ -176,7 +176,7 @@ class AddMealCookedFragment : Fragment(), OnItemClickListener, OnItemMealTypeLis
                         if ((activity as? MainActivity)?.addmeal!! < 1){
                             addMealsApi()
                         }else{
-                            (activity as? MainActivity)?.subscriptionAlertError()
+                            (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                         }
                     }else{
                         addMealsApi()

@@ -7,6 +7,7 @@ data class DataModel(
     val graph_value: Int?,
     var is_supermarket: Int?,
     val Subscription_status: Int?,
+    val address: Int?,
     val last_plan: String?,
     val active_plan: String?,
     val monthly_savings: String?,

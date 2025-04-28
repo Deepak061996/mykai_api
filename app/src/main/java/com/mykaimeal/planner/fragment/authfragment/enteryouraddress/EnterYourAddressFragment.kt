@@ -121,8 +121,7 @@ class EnterYourAddressFragment : Fragment(), OnMapReadyCallback {
         commonWorkUtils = CommonWorkUtils(requireActivity())
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        locationManager =
-            requireActivity().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
+        locationManager = requireActivity().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
 
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
