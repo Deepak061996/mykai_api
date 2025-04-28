@@ -80,8 +80,8 @@ data class Addres(
 )
 
 data class Note(
-    val description: String?,
+    var description: String?,
     val id: Int?,
-    val pickup: String?,
+    var pickup: String?,
     val user_id: Int?
 )

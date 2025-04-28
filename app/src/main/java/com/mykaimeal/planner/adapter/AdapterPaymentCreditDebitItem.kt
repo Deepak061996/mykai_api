@@ -29,12 +29,9 @@ class AdapterPaymentCreditDebitItem(
             if (item.card_num != null) {
                 binding.textDes.text = "**** **** **** " + item.card_num
             }
+
             binding.imageIcon.setImageResource(R.drawable.ic_card_number_icon)
 
-            /*binding.select.setOnClickListener {
-                onCardBankListener.itemSelect(position, "", "")
-            }
-*/
             binding.imageThreeDots.setOnClickListener {
                 showPopup(position, binding.imageThreeDots, item.status)
             }

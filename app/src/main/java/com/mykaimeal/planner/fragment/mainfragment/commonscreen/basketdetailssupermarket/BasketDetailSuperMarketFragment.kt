@@ -150,6 +150,7 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
 
         binding.rlGoToCheckout.setOnClickListener {
             if (binding.rlGoToCheckout.isClickable) {
+                (activity as MainActivity?)?.upBasketCheckOut()
                 findNavController().navigate(R.id.checkoutScreenFragment)
             } else {
                 showAlert(getString(R.string.available_products), false)

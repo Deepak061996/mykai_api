@@ -154,14 +154,18 @@ class AddTipScreenFragment : Fragment() {
                     showDataInTipUI(apiModel.data)
                 }
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+               handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
+        }
+    }
+
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlert(message, true)
+        } else {
+            showAlert(message, false)
         }
     }
 
@@ -170,7 +174,6 @@ class AddTipScreenFragment : Fragment() {
 
         if (data.tip10 != null) {
             val roundedTipTen = data.tip10.roundToInt()
-//            val roundedTipTen = ceil(data.tip10).toInt()
             binding.tvDollarSeven.text = "$$roundedTipTen"
         }
 
@@ -259,11 +262,7 @@ class AddTipScreenFragment : Fragment() {
                         showDataInUI(apiModel.response)
                     }
                 } else {
-                    if (apiModel.code == ErrorMessage.code) {
-                        showAlert(apiModel.message, true)
-                    } else {
-                        showAlert(apiModel.message, false)
-                    }
+                    handleError(apiModel.code,apiModel.message.toString())
                 }
             } else {
                 if (apiModel.response?.error != null) {
@@ -276,16 +275,13 @@ class AddTipScreenFragment : Fragment() {
     }
 
     private fun showDataInUI(response: Response) {
-
         Toast.makeText(requireContext(), "Payment successful", Toast.LENGTH_SHORT).show()
-
         if (response.tracking_link != null) {
             val bundle = Bundle().apply {
                 putString("tracking", response.tracking_link)
             }
             findNavController().navigate(R.id.trackOrderScreenFragment, bundle)
         }
-
     }
 
     override fun onDestroyView() {

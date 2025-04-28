@@ -118,12 +118,16 @@ class AddressMapFullScreenFragment : Fragment(), OnMapReadyCallback {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (screenType=="EnterYourAddress"){
-                        findNavController().navigate(R.id.enterYourAddressFragment)
-                    }else if (screenType=="Basket"){
-                        findNavController().navigate(R.id.basketScreenFragment)
-                    }else{
-                        findNavController().navigateUp()
+                    when (screenType) {
+                        "EnterYourAddress" -> {
+                            findNavController().navigate(R.id.enterYourAddressFragment)
+                        }
+                        "Basket" -> {
+                            findNavController().navigate(R.id.basketScreenFragment)
+                        }
+                        else -> {
+                            findNavController().navigateUp()
+                        }
                     }
 
                 }

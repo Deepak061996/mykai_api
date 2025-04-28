@@ -16,7 +16,6 @@ class AdapterCardPreferredItem(var context: Context, private var datalist: Mutab
                                private var onItemSelectListener: OnItemSelectListener,
                                private var pos: Int) : RecyclerView.Adapter<AdapterCardPreferredItem.ViewHolder>() {
 
-    private var selectedPosition = pos // Default no selection
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -30,6 +29,7 @@ class AdapterCardPreferredItem(var context: Context, private var datalist: Mutab
 
         val item = datalist!![position]
         try {
+
             if (datalist!![position].card_num!=null){
                 holder.binding.tvCardNumber.text="*** *** **** "+datalist!![position].card_num.toString()
             }
@@ -47,23 +47,27 @@ class AdapterCardPreferredItem(var context: Context, private var datalist: Mutab
             // Click listener to handle selection
             holder.itemView.setOnClickListener {
                 // Deselect all items
-                datalist!!.forEach { it.status = 0 }
+                datalist?.forEachIndexed { index, item ->
+                    if (item.status != 0) {
+                        item.status = 0
+                        notifyItemChanged(index)
+                    }
+                }
                 // Select the clicked item
-                item.status = 1
-                // Refresh the whole list (or use notifyItemChanged for better performance)
-                notifyDataSetChanged()
+                val data = datalist!![position]
+                data.status = 1
+                notifyItemChanged(position)
             }
         }catch (e:Exception){
             Log.d("@Error ","*****"+e.message)
         }
-
-
     }
 
     override fun getItemCount(): Int {
         return datalist!!.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(cardMealMe: MutableList<GetCardMealMeModelData>) {
         datalist=cardMealMe
         notifyDataSetChanged()

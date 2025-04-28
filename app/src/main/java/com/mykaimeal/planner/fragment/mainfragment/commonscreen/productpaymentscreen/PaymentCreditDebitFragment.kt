@@ -16,11 +16,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.AdapterPaymentCreditDebitItem
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.FragmentPaymentCreditDebitBinding
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpaymentscreen.model.AddCardMealMeModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpaymentscreen.model.GetCardMealMeModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpaymentscreen.model.GetCardMealMeModelData
@@ -41,20 +43,23 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
     private var month: Int = 0
     private var year: Int = 0
     private var checkStatus: String = "0"
-    private lateinit var paymentCreditDebitViewModel: PaymentCreditDebitViewModel
+    private lateinit var paymentCreditDebitViewModel: CheckoutScreenViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    private var cardList: MutableList<GetCardMealMeModelData> = mutableListOf()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         binding = FragmentPaymentCreditDebitBinding.inflate(layoutInflater, container, false)
 
         commonWorkUtils = CommonWorkUtils(requireActivity())
-        paymentCreditDebitViewModel =
-            ViewModelProvider(requireActivity())[PaymentCreditDebitViewModel::class.java]
+        paymentCreditDebitViewModel = ViewModelProvider(requireActivity())[CheckoutScreenViewModel::class.java]
+
+        adapterPaymentCreditDebitItem = AdapterPaymentCreditDebitItem(requireContext(), cardList, this)
+        binding.rcvCardNumber.adapter = adapterPaymentCreditDebitItem
+
 
         setupBackNavigation()
+
         initialize()
 
         return binding.root
@@ -63,7 +68,7 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
 
     private fun setupBackNavigation() {
         requireActivity().onBackPressedDispatcher.addCallback(
-            requireActivity(),
+            viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     findNavController().navigateUp()
@@ -151,11 +156,7 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
             if (apiModel.code == 200 && apiModel.success == true) {
                 showDataInUi(apiModel.data)
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+                handleError(apiModel.code!!,apiModel.message!!)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -163,18 +164,12 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
     }
 
     private fun showDataInUi(data: MutableList<GetCardMealMeModelData>?) {
-
-        if (data != null && data.size > 0) {
-            binding.cvDebitCard3.visibility = View.GONE
-            binding.textAddCardNumber.visibility = View.VISIBLE
-            binding.relSavedCards.visibility = View.VISIBLE
-            adapterPaymentCreditDebitItem = AdapterPaymentCreditDebitItem(requireContext(), data, this)
-            binding.rcvCardNumber.adapter = adapterPaymentCreditDebitItem
-        } else {
-            binding.cvDebitCard3.visibility = View.VISIBLE
-            binding.textAddCardNumber.visibility = View.GONE
-            binding.relSavedCards.visibility = View.GONE
+        cardList.clear()
+        data?.let {
+            cardList.addAll(it)
         }
+
+        hideShow()
     }
 
     private fun cardSaveApi() {
@@ -214,21 +209,24 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
                 binding.etMonth.text = "Month"
                 binding.etYear.text = "Year"
                 Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
-
+                (activity as MainActivity?)?.upBasketCheckOut()
                 // When screen load then api call
                 getCardMealMe()
-
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+               handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
         }
 
+    }
+
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlert(message, true)
+        } else {
+            showAlert(message, false)
+        }
     }
 
     private fun showAlert(message: String?, status: Boolean) {
@@ -333,21 +331,18 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
     }
 
     override fun itemSelect(position: Int?, status: String?, type: String?) {
-        if (type!!.equals("delete", true)) {
-            if (BaseApplication.isOnline(requireActivity())) {
+        if (BaseApplication.isOnline(requireActivity())) {
+            if (type!!.equals("delete", true)) {
                 deleteApi(status)
-            } else {
-                BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
-        }else{
             if (type.equals("preferred", true)) {
-                if (BaseApplication.isOnline(requireActivity())) {
-                    preferredApi(status)
-                } else {
-                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-                }
+                preferredApi(status)
             }
+        } else {
+            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
+
+
     }
 
     private fun preferredApi(status: String?) {
@@ -355,35 +350,37 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
         lifecycleScope.launch {
             paymentCreditDebitViewModel.setPreferredCardMealMeUrl({
                 BaseApplication.dismissMe()
-                handleApiPreferredCardResponse(it)
+                handleApiPreferredCardResponse(it,status)
             }, status)
         }
     }
 
-    private fun handleApiPreferredCardResponse(result: NetworkResult<String>) {
+    private fun handleApiPreferredCardResponse(result: NetworkResult<String>,cardId:String?) {
         when (result) {
-            is NetworkResult.Success -> handleUpdatePreferredResponse(result.data.toString())
+            is NetworkResult.Success -> handleUpdatePreferredResponse(result.data.toString(),cardId)
             is NetworkResult.Error -> showAlert(result.message, false)
             else -> showAlert(result.message, false)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun handleUpdatePreferredResponse(data: String) {
+    private fun handleUpdatePreferredResponse(data: String,cardId: String?) {
         try {
             val apiModel = Gson().fromJson(data, AddCardMealMeModel::class.java)
             Log.d("@@@ Add Card", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
-                // When screen load then api call
-                getCardMealMe()
-
-            } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
+                cardList.forEachIndexed { index, card ->
+                    card.status=if (card.id == cardId?.toInt()) 1 else 0
+                    cardList[index] = card
                 }
+                adapterPaymentCreditDebitItem.upDateList(cardList)
+                paymentCreditDebitViewModel.dataCheckOut?.card?.forEachIndexed { index, card ->
+                    card.status = if (card.id == cardId?.toInt()) 1 else 0
+                    paymentCreditDebitViewModel.dataCheckOut?.card?.set(index, card)
+                }
+                Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
+            } else {
+                handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -396,40 +393,50 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
         lifecycleScope.launch {
             paymentCreditDebitViewModel.deleteCardMealMeUrl({
                 BaseApplication.dismissMe()
-                handleApiDeleteCardResponse(it)
+                handleApiDeleteCardResponse(it,status)
             }, status)
         }
     }
 
-    private fun handleApiDeleteCardResponse(result: NetworkResult<String>) {
+    private fun handleApiDeleteCardResponse(result: NetworkResult<String>,cardId:String?) {
         when (result) {
-            is NetworkResult.Success -> handleUpdateDeleteResponse(result.data.toString())
+            is NetworkResult.Success -> handleUpdateDeleteResponse(result.data.toString(),cardId)
             is NetworkResult.Error -> showAlert(result.message, false)
             else -> showAlert(result.message, false)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun handleUpdateDeleteResponse(data: String) {
+    private fun handleUpdateDeleteResponse(data: String,cardId:String?) {
         try {
             val apiModel = Gson().fromJson(data, AddCardMealMeModel::class.java)
             Log.d("@@@ Add Card", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
-                // When screen load then api call
-                getCardMealMe()
-
+                val index = cardList.indexOfFirst { it.id == cardId?.toInt() }
+                cardList.removeAt(index)
+                paymentCreditDebitViewModel.dataCheckOut?.card?.removeAll { it.id == cardId?.toInt() }
+                hideShow()
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+               handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
         }
 
+    }
+
+    private fun hideShow(){
+        if (cardList.size > 0) {
+            binding.cvDebitCard3.visibility = View.GONE
+            binding.textAddCardNumber.visibility = View.VISIBLE
+            binding.relSavedCards.visibility = View.VISIBLE
+            adapterPaymentCreditDebitItem.upDateList(cardList)
+        } else {
+            binding.cvDebitCard3.visibility = View.VISIBLE
+            binding.textAddCardNumber.visibility = View.GONE
+            binding.relSavedCards.visibility = View.GONE
+        }
     }
 
 }

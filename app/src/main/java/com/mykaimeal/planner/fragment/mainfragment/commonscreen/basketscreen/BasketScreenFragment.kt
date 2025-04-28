@@ -248,7 +248,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
 
         binding.textConfirmOrder.setOnClickListener {
             if (binding.textConfirmOrder.isClickable) {
-                (activity as MainActivity?)?.upBasketCheckOut()
                 findNavController().navigate(R.id.basketDetailSuperMarketFragment)
             } else {
                 showAlert(getString(R.string.available_products), false)
@@ -292,8 +291,14 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
     private fun handleApiBasketResponse(result: NetworkResult<String>) {
         when (result) {
             is NetworkResult.Success -> handleSuccessBasketResponse(result.data.toString())
-            is NetworkResult.Error -> showAlert(result.message, false)
-            else -> showAlert(result.message, false)
+            is NetworkResult.Error ->{
+                binding.textConfirmOrder.isClickable=false
+                showAlert(result.message, false)
+            }
+            else ->{
+                binding.textConfirmOrder.isClickable=false
+                showAlert(result.message, false)
+            }
         }
     }
 
@@ -313,11 +318,15 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
             if (apiModel.code == 200 && apiModel.success == true) {
                 if (apiModel.data != null) {
                     showDataInUI(apiModel.data)
+                }else{
+                    binding.textConfirmOrder.isClickable=false
                 }
             } else {
+                binding.textConfirmOrder.isClickable=false
                 handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
+            binding.textConfirmOrder.isClickable=false
             showAlert(e.message, false)
         }
     }
