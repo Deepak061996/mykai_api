@@ -1581,7 +1581,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     }
 
     private fun searchRecipeDialog() {
-        val dialogSearchDialog: Dialog =Dialog(this)
+        val dialogSearchDialog =Dialog(this)
         dialogSearchDialog.setContentView(R.layout.alert_dialog_search_recipe)
         dialogSearchDialog.window!!.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,

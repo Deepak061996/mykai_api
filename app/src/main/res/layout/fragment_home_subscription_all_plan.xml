@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/crossImages"
-                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:fontFamily="@font/montserrat_semibold"
                 android:text="Save time, save money, eat better"
@@ -51,7 +51,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_20sdp">
+                    android:layout_margin="@dimen/_10sdp">
 
                     <TextView
                         android:id="@+id/tvTextNames"
@@ -142,7 +142,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relSubscriptionFrame"
-                android:layout_marginHorizontal="@dimen/_15sdp">
+                android:layout_marginHorizontal="@dimen/_10sdp">
 
                 <RelativeLayout
                     android:id="@+id/relSubscriptionBasic"
@@ -315,7 +315,7 @@
                             android:background="@drawable/best_value_icon"
                             android:fontFamily="@font/poppins"
                             android:padding="@dimen/_2sdp"
-                            android:text="Popular"
+                            android:text="Best Plan"
                             android:textColor="#121212"
                             android:textSize="@dimen/_11sdp" />
 
@@ -377,7 +377,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relSubscriptionDetails"
-                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_30sdp"
                 android:layout_marginTop="@dimen/_15sdp"
                 android:background="@drawable/green_btn_background"

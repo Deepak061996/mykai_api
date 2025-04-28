@@ -31,6 +31,7 @@ import com.google.gson.Gson
 import com.mykaimeal.planner.OnItemClickListener
 import com.mykaimeal.planner.OnItemSelectListener
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.BasketYourRecipeAdapter
 import com.mykaimeal.planner.adapter.IngredientsAdapterItem
 import com.mykaimeal.planner.adapter.IngredientsShoppingAdapter
@@ -380,6 +381,7 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
                 Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
                 binding.textCheckoutTesco.isClickable=false
                 binding.textCheckoutTesco.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+                (activity as MainActivity?)?.upBasket()
                 lunchApi()
             } else {
                 if (apiModel.code == ErrorMessage.code) {
@@ -575,6 +577,7 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
                 }else{
                     binding.rcvIngredients.visibility=View.GONE
                 }
+                (activity as MainActivity?)?.upBasket()
                 Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_LONG).show()
             } else {
                 handleError(apiModel.code,apiModel.message)
@@ -637,6 +640,7 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
                 recipe.set(position!!, item!!)
                 // Update the adapter
                 adapterRecipe?.updateList(recipe)
+                (activity as MainActivity?)?.upBasket()
             } else {
                 handleError(apiModel.code,apiModel.message)
             }
@@ -709,6 +713,7 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
                 } else {
                     binding.rlYourRecipes.visibility = View.GONE
                 }
+                (activity as MainActivity?)?.upBasket()
                 Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_LONG).show()
             } else {
                 handleError(apiModel.code,apiModel.message)
