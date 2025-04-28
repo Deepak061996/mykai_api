@@ -169,7 +169,7 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         basketScreenViewModel.setBasketDetailsStore("no")
 
         if ((activity as? MainActivity)?.Subscription_status==1){
-            binding.btnLock.visibility=View.GONE
+            binding.btnLock.visibility=View.VISIBLE
             viewModelData()
         }else{
             binding.btnLock.visibility=View.GONE
@@ -189,9 +189,9 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
             launchApi()
         }
 
-//        binding.btnLock.setOnClickListener {
-//            (activity as? MainActivity)?.subscriptionAlertError()
-//        }
+        binding.btnLock.setOnClickListener {
+            (activity as? MainActivity)?.subscriptionAlertError()
+        }
 
         initialize()
 
