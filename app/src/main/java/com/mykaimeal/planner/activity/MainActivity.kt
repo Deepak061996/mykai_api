@@ -12,6 +12,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.hardware.camera2.CameraManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -61,6 +62,7 @@ import com.mykaimeal.planner.adapter.ImageViewPagerAdapter
 import com.mykaimeal.planner.adapter.IndicatorAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
+import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.ActivityMainBinding
 import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.GetUserPreference
@@ -149,6 +151,8 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     var isFlashlightOn = false
     private lateinit var cameraManager: CameraManager
     private lateinit var cameraId: String
+    private lateinit var sessionManagement: SessionManagement
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,7 +162,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         mealRoutineViewModel = ViewModelProvider(this@MainActivity)[MealRoutineViewModel::class.java]
         commonWorkUtils = CommonWorkUtils(this)
 
-        handleDeepLink(intent)
+        sessionManagement = SessionManagement(this)
 
         getFcmToken()
 
@@ -422,22 +426,54 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     }
 
-    private fun handleDeepLink(intent: Intent?) {
-        intent?.data?.let { uri ->
-            Log.d("DeepLink", "Received URI: $uri")
+    /*private fun handlingDeepLink() {
+        // Get the intent that started this activity
+        val intent = intent
+        // Check if the intent contains a URI (deep link)
+        if (intent?.action == Intent.ACTION_VIEW) {
+            val data: Uri? = intent.data
+            if (data != null && data.scheme == "zyvoo" && data.host == "property") {
+                val propertyId = data.getQueryParameter("propertyId")
+                // Now you can use the propertyId in your activity
+                Log.d(ErrorDialog.TAG, "Property ID: $propertyId")
+                // Fetch property details using the propertyId
+                val intent = Intent(this, RestaurantDetailActivity::class.java)
+                intent.putExtra("propertyId",propertyId)
+                intent.putExtra("propertyMile","")
+                startActivity(intent)
+            }
+        }
+    }*/
 
-            val screenName = uri.getQueryParameter("ScreenName")
-            val affiliateName = uri.getQueryParameter("providerName")
-            val affiliateImage = uri.getQueryParameter("providerImage")
-            val cookbooksId = uri.getQueryParameter("CookbooksID")
-            val referralCode = uri.getQueryParameter("Referrer")
-            val itemName = uri.getQueryParameter("ItemName")
+    private fun handleDeepLink() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
+        val navController = navHostFragment.navController
+        val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
+        navGraph.setStartDestination(R.id.homeFragment)
+        navController.graph = navGraph
+        // Get the intent that started this activity
+        val intent = intent
+        // Check if the intent contains a URI (deep link)
+        if (intent?.action == Intent.ACTION_VIEW) {
+            val data: Uri? = intent.data
+                Log.d("DeepLink", "Received URI: $uri")
+            if (data != null && data.scheme == "mykai" && data.host == "property") {
+                val screenName = data.getQueryParameter("ScreenName")
+               // val affiliateName = data.getQueryParameter("providerName")
+//                val affiliateImage = data.getQueryParameter("ItemName")
+                val cookbooksId = data.getQueryParameter("CookbooksID")
+               // val referralCode = data.getQueryParameter("Referrer")
+                val itemName = data.getQueryParameter("ItemName")
 
-            if (screenName == "CookBooksType" && cookbooksId != null) {
-                // Navigate or open appropriate screen
+                Log.d("***********","$screenName  & $cookbooksId")
 
-                findNavController(R.id.frameContainerMain).navigate(R.id.christmasCollectionFragment)
-//                openCookbookDetails(cookbooksId, itemName)
+                if (screenName == "CookBooksType" && cookbooksId != null) {
+                    sessionManagement.setCookBookId(cookbooksId.toString())
+                    sessionManagement.setCookBookName(cookbooksId.toString())
+                    navController.navigate(R.id.christmasCollectionFragment)
+//                    // Navigate or open appropriate screen
+//                    findNavController(R.id.frameContainerMain).navigate(R.id.christmasCollectionFragment)
+                }
             }
         }
     }
@@ -467,11 +503,8 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     }*/
 
     private fun startDestination() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
-        val navController = navHostFragment.navController
-        val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
-        navGraph.setStartDestination(R.id.homeFragment)
-        navController.graph = navGraph
+        handleDeepLink()
+
     }
 
     fun changeBottom(status: String) {

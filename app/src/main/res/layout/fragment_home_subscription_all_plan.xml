@@ -334,13 +334,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/best_value_icon"
+                            android:background="@drawable/popular_click_bg"
                             android:fontFamily="@font/inter_semibold"
                             android:includeFontPadding="false"
                             android:padding="@dimen/_2sdp"
                             android:text="Best value"
                             android:gravity="center"
-                            android:textColor="#121212"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_11sdp" />
 
                         <ImageView

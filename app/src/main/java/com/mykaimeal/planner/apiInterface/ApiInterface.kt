@@ -443,6 +443,10 @@ interface ApiInterface {
     @POST(ApiEndPoint.updateUserPreferences)
     suspend fun updateBodyGoalApi(@Field("bodygoal") bodyGoal: String?): Response<JsonObject>
 
+//    @FormUrlEncoded
+//    @POST(ApiEndPoint.updateUserPreferences)
+//    suspend fun updateBodyGoalApi(@Field("cook_book_id") cookBookId : String?): Response<JsonObject>
+
     @FormUrlEncoded
     @POST(ApiEndPoint.updateUserPreferences)
     suspend fun updateCookingFrequencyApi(@Field("cooking_frequency") cookingFrequency: String?): Response<JsonObject>

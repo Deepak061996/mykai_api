@@ -81,7 +81,7 @@ class BasketIngredientsDetailsFragment : Fragment() {
             if (!result?.unit_of_measurement.toString().equals("null",true)){
                 unitSize=result?.unit_of_measurement.toString()
             }
-            price=result?.price.toString()
+            price=result?.pro_price.toString()
         }else{
             binding.tvRemoveBasket.visibility=View.GONE
             val result = basketScreenViewModel.dataBasketItemDetails?.find { it.product_id.equals(proId) }

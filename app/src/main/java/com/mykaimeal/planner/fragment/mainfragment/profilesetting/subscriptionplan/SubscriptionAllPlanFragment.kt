@@ -131,12 +131,13 @@ class SubscriptionAllPlanFragment : Fragment() {
         binding.relSubscriptionBasic.setOnClickListener {
             selectPlan(
                 binding.relSubscriptionBasic,
-                binding.tvPopular,
+                binding.tvStarter,
                 binding.imgBasicClick,
                 binding.imagePrevious,
                 binding.tvNewKai,
                 binding.tvNewDollar,
                 listOf(binding.relPopularPlan, binding.relBestPlan),
+                listOf(binding.tvPopular, binding.tvBest),
                 listOf(binding.imagePreviousMonthly, binding.imagePreviousyearly),
                 listOf(binding.imgPopularClick, binding.imgBaseClick),
                 listOf(binding.tvProkaiUser, binding.tvLovekaiUser),
@@ -151,6 +152,7 @@ class SubscriptionAllPlanFragment : Fragment() {
                 binding.tvProkaiUser,
                 binding.tvNewDollarMonthly,
                 listOf(binding.relSubscriptionBasic, binding.relBestPlan),
+                listOf(binding.tvStarter, binding.tvBest),
                 listOf(binding.imagePrevious, binding.imagePreviousyearly),
                 listOf(binding.imgBasicClick, binding.imgBaseClick),
                 listOf(binding.tvNewKai, binding.tvLovekaiUser),
@@ -160,12 +162,13 @@ class SubscriptionAllPlanFragment : Fragment() {
         binding.relBestPlan.setOnClickListener {
             selectPlan(
                 binding.relBestPlan,
-                binding.tvPopular,
+                binding.tvBest,
                 binding.imgBaseClick,
                 binding.imagePreviousyearly,
                 binding.tvLovekaiUser,
                 binding.tvNewDollaryearly,
                 listOf(binding.relSubscriptionBasic, binding.relPopularPlan),
+                listOf(binding.tvStarter, binding.tvPopular),
                 listOf(binding.imagePrevious, binding.imagePreviousMonthly),
                 listOf(binding.imgBasicClick, binding.imgPopularClick),
                 listOf(binding.tvNewKai, binding.tvProkaiUser),
@@ -232,17 +235,21 @@ class SubscriptionAllPlanFragment : Fragment() {
         })
     }
 
-    private fun selectPlan(selectedPlan: View, tvPopular: TextView,selectedImage: ImageView, crossImage: ImageView, selectedUserText: TextView, selectedDollarText: TextView, otherPlans: List<View>, otherCroseImage: List<ImageView>, otherImages: List<ImageView>, otherUserTexts: List<TextView>, otherDollarTexts: List<TextView>, planIDUser:String,planTypeStatus:String) {
+    private fun selectPlan(selectedPlan: View, tvPopular: TextView,selectedImage: ImageView, crossImage: ImageView, selectedUserText: TextView, selectedDollarText: TextView, otherPlans: List<View>, textshow: List<TextView>, otherCroseImage: List<ImageView>, otherImages: List<ImageView>, otherUserTexts: List<TextView>, otherDollarTexts: List<TextView>, planIDUser:String,planTypeStatus:String) {
         planID=planIDUser
         planType=planTypeStatus
         selectedPlan.setBackgroundResource(R.drawable.subscription_click_bg)
+        tvPopular.setBackgroundResource(R.drawable.basic_click_bg)
+        tvPopular.setTextColor(Color.parseColor("#121212"))
         selectedImage.setImageResource(R.drawable.selected_plan_icon)
         crossImage.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN)
         selectedUserText.setTextColor(Color.parseColor("#FFFFFF"))
         selectedDollarText.setTextColor(Color.parseColor("#FFFFFF"))
+        textshow.forEach { it.setBackgroundResource(R.drawable.popular_click_bg)}
         otherPlans.forEach { it.setBackgroundResource(R.drawable.subscription_unclick_bg)}
         otherCroseImage.forEach { it.setColorFilter(Color.parseColor("#757575"), PorterDuff.Mode.SRC_IN)}
         otherImages.forEach { it.setImageResource(R.drawable.unselelected_plan_icon)}
+        textshow.forEach { it.setTextColor(Color.parseColor("#FFFFFF"))}
         otherUserTexts.forEach { it.setTextColor(Color.parseColor("#000000"))}
         otherDollarTexts.forEach { it.setTextColor(Color.parseColor("#000000"))}
     }
@@ -390,6 +397,7 @@ class SubscriptionAllPlanFragment : Fragment() {
                             binding.tvProkaiUser,
                             binding.tvNewDollarMonthly,
                             listOf(binding.relSubscriptionBasic, binding.relBestPlan),
+                            listOf(binding.tvStarter, binding.tvBest),
                             listOf(binding.imagePrevious, binding.imagePreviousyearly),
                             listOf(binding.imgBasicClick, binding.imgBaseClick),
                             listOf(binding.tvNewKai, binding.tvLovekaiUser),
@@ -397,24 +405,28 @@ class SubscriptionAllPlanFragment : Fragment() {
                         )
                         AppConstant.Premium_Annual -> selectPlan(
                             binding.relBestPlan,
-                            binding.tvPopular,
+                            binding.tvBest,
                             binding.imgBaseClick,
                             binding.imagePreviousyearly,
                             binding.tvLovekaiUser,
                             binding.tvNewDollaryearly,
                             listOf(binding.relSubscriptionBasic, binding.relPopularPlan),
+                            listOf(binding.tvPopular, binding.tvStarter),
                             listOf(binding.imagePrevious, binding.imagePreviousMonthly),
                             listOf(binding.imgBasicClick, binding.imgPopularClick),
                             listOf(binding.tvNewKai, binding.tvProkaiUser),
                             listOf(binding.tvNewDollar, binding.tvNewDollarMonthly),AppConstant.Premium_Annual,"Best")
-                        AppConstant.Premium_Weekly ->  selectPlan(
+
+
+                            AppConstant.Premium_Weekly ->  selectPlan(
                             binding.relSubscriptionBasic,
-                            binding.tvPopular,
+                            binding.tvStarter,
                             binding.imgBasicClick,
                             binding.imagePrevious,
                             binding.tvNewKai,
                             binding.tvNewDollar,
                             listOf(binding.relPopularPlan, binding.relBestPlan),
+                            listOf(binding.tvPopular, binding.tvBest),
                             listOf(binding.imagePreviousMonthly, binding.imagePreviousyearly),
                             listOf(binding.imgPopularClick, binding.imgBaseClick),
                             listOf(binding.tvProkaiUser, binding.tvLovekaiUser),
@@ -422,12 +434,13 @@ class SubscriptionAllPlanFragment : Fragment() {
                         else -> {
                             selectPlan(
                                 binding.relSubscriptionBasic,
-                                binding.tvPopular,
+                                binding.tvStarter,
                                 binding.imgBasicClick,
                                 binding.imagePrevious,
                                 binding.tvNewKai,
                                 binding.tvNewDollar,
                                 listOf(binding.relPopularPlan, binding.relBestPlan),
+                                listOf(binding.tvPopular, binding.tvBest),
                                 listOf(binding.imagePreviousMonthly, binding.imagePreviousyearly),
                                 listOf(binding.imgPopularClick, binding.imgBaseClick),
                                 listOf(binding.tvProkaiUser, binding.tvLovekaiUser),

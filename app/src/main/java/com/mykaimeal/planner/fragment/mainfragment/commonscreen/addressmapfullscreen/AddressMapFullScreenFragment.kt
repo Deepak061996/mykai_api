@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.Address
@@ -137,6 +138,8 @@ class AddressMapFullScreenFragment : Fragment(), OnMapReadyCallback {
             setStatus = "Home"
             binding!!.llSetHome.setBackgroundResource(R.drawable.outline_green_border_bg)
             binding!!.llSetWork.setBackgroundResource(R.drawable.height_type_bg)
+            binding!!.imageHome.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
+            binding!!.imageWork.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_grays), PorterDuff.Mode.SRC_IN)
 
         }
 
@@ -144,6 +147,9 @@ class AddressMapFullScreenFragment : Fragment(), OnMapReadyCallback {
             setStatus = "Work"
             binding!!.llSetHome.setBackgroundResource(R.drawable.height_type_bg)
             binding!!.llSetWork.setBackgroundResource(R.drawable.outline_address_green_border_bg)
+
+            binding!!.imageHome.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_grays), PorterDuff.Mode.SRC_IN)
+            binding!!.imageWork.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
         }
 
         binding!!.imageCrossWeb.setOnClickListener {

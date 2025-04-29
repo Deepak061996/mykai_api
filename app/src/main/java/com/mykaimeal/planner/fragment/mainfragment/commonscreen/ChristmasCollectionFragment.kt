@@ -68,34 +68,40 @@ import java.util.Date
 import java.util.Locale
 
 @AndroidEntryPoint
-class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
+class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
 
     private lateinit var binding: FragmentChristmasCollectionBinding
-    private var adapterCookBookDetailsItem:AdapterCookBookDetailsItem?=null
+    private var adapterCookBookDetailsItem: AdapterCookBookDetailsItem? = null
     private var tvWeekRange: TextView? = null
     private var rcyChooseDaySch: RecyclerView? = null
-    private var id:String?=""
-    private var name:String?=""
-    private var image:String?=""
-    private var type:String?=""
+    private var id: String? = ""
+    private var name: String? = ""
+    private var image: String? = ""
+    private var type: String? = ""
     private lateinit var viewModel: CookBookViewModel
     private var localData: MutableList<CookBookDataModel> = mutableListOf()
     val dataList = arrayListOf<DataModel>()
     private var currentDate = Date() // Current date
+
     // Define global variables
     private lateinit var startDate: Date
     private lateinit var endDate: Date
     private lateinit var commonWorkUtils: CommonWorkUtils
     private lateinit var spinnerActivityLevel: PowerSpinnerView
-    var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> = mutableListOf()
+    var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> =
+        mutableListOf()
     private lateinit var sessionManagement: SessionManagement
-    private var referLink: String =""
+    private var referLink: String = ""
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
         // Inflate the layout for this fragment
-        binding=FragmentChristmasCollectionBinding.inflate(layoutInflater, container, false)
+        binding = FragmentChristmasCollectionBinding.inflate(layoutInflater, container, false)
         sessionManagement = SessionManagement(requireContext())
         commonWorkUtils = CommonWorkUtils(requireActivity())
 
@@ -108,15 +114,35 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         viewModel = ViewModelProvider(requireActivity())[CookBookViewModel::class.java]
         cookbookList.clear()
 
-        val data= com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data("","",0,"","Favorites",0,"",0)
-        cookbookList.add(0,data)
+        val data =
+            com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data(
+                "",
+                "",
+                0,
+                "",
+                "Favorites",
+                0,
+                "",
+                0
+            )
+        cookbookList.add(0, data)
 
-         id=sessionManagement.getCookBookId()
-         name=sessionManagement.getCookBookName()
-         image=sessionManagement.getCookBookImage()
-         type=sessionManagement.getCookBookType()
+        id = sessionManagement.getCookBookId()
+        name = sessionManagement.getCookBookName()
+        image = sessionManagement.getCookBookImage()
+        type = sessionManagement.getCookBookType()
 
-         backButton()
+        backButton()
+
+        if ((activity as? MainActivity)?.Subscription_status == 1) {
+            binding.btnLock.visibility = View.VISIBLE
+        } else {
+            binding.btnLock.visibility = View.GONE
+        }
+
+        binding.btnLock.setOnClickListener {
+            (activity as? MainActivity)?.subscriptionAlertError(requireContext())
+        }
 
         initialize()
 
@@ -129,25 +155,27 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         return binding.root
     }
 
-    private fun backButton(){
-        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                sessionManagement.setCookBookId("")
-                sessionManagement.setCookBookName("")
-                sessionManagement.setCookBookImage("")
-                sessionManagement.setCookBookType("")
-                findNavController().navigateUp()
-            }
-        })
+    private fun backButton() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            requireActivity(),
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    sessionManagement.setCookBookId("")
+                    sessionManagement.setCookBookName("")
+                    sessionManagement.setCookBookImage("")
+                    sessionManagement.setCookBookType("")
+                    findNavController().navigateUp()
+                }
+            })
     }
 
-    private fun getCookBookTypeList(){
+    private fun getCookBookTypeList() {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
-            viewModel.getCookBookTypeRequest( {
+            viewModel.getCookBookTypeRequest({
                 BaseApplication.dismissMe()
                 handleApiCookBookResponse(it)
-            },id)
+            }, id)
         }
     }
 
@@ -159,8 +187,8 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         when (result) {
             is NetworkResult.Success -> handleSuccessCookBookResponse(result.data.toString())
             is NetworkResult.Error -> {
-                binding.rcyChristmasCollection.visibility=View.GONE
-                binding.tvnoData.visibility=View.VISIBLE
+                binding.rcyChristmasCollection.visibility = View.GONE
+                binding.tvnoData.visibility = View.VISIBLE
                 showAlert(result.message, false)
             }
 
@@ -182,18 +210,18 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             val apiModel = Gson().fromJson(data, CookBookListResponse::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                if (apiModel.data!=null && apiModel.data.size>0){
+                if (apiModel.data != null && apiModel.data.size > 0) {
                     cookbookList.retainAll { it == cookbookList[0] }
                     cookbookList.addAll(apiModel.data)
 
                     cookbookList.removeIf {
-                        it.id==id?.toInt()
+                        it.id == id?.toInt()
                     }
                     // OR directly modify the original list
                     spinnerActivityLevel.setItems(cookbookList.map { it.name })
                 }
             } else {
-                handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code, apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -208,21 +236,22 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             if (apiModel.code == 200 && apiModel.success) {
                 localData.clear()
                 apiModel.data?.let { localData.addAll(it) }
-                if (localData.size>0){
-                    adapterCookBookDetailsItem = AdapterCookBookDetailsItem(localData, requireActivity(),this)
+                if (localData.size > 0) {
+                    adapterCookBookDetailsItem =
+                        AdapterCookBookDetailsItem(localData, requireActivity(), this)
                     binding.rcyChristmasCollection.adapter = adapterCookBookDetailsItem
-                    binding.rcyChristmasCollection.visibility=View.VISIBLE
-                    binding.tvnoData.visibility=View.GONE
-                }else{
-                    binding.rcyChristmasCollection.visibility=View.GONE
-                    binding.tvnoData.visibility=View.VISIBLE
+                    binding.rcyChristmasCollection.visibility = View.VISIBLE
+                    binding.tvnoData.visibility = View.GONE
+                } else {
+                    binding.rcyChristmasCollection.visibility = View.GONE
+                    binding.tvnoData.visibility = View.VISIBLE
                 }
             } else {
-                handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code, apiModel.message)
             }
         } catch (e: Exception) {
-            binding.rcyChristmasCollection.visibility=View.GONE
-            binding.tvnoData.visibility=View.VISIBLE
+            binding.rcyChristmasCollection.visibility = View.GONE
+            binding.tvnoData.visibility = View.VISIBLE
             showAlert(e.message, false)
         }
     }
@@ -236,11 +265,11 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     }
 
     private fun initialize() {
-        if (name!=null){
+        if (name != null) {
             binding.tvName.text = name
         }
 
-        binding.imgBackChristmas.setOnClickListener{
+        binding.imgBackChristmas.setOnClickListener {
             sessionManagement.setCookBookId("")
             sessionManagement.setCookBookName("")
             sessionManagement.setCookBookImage("")
@@ -248,7 +277,8 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             findNavController().navigateUp()
         }
 
-        copyShareInviteLink()
+        //copyShareInviteLink()
+        generateDeepLink()
 
         binding.imgThreeDotIcon.setOnClickListener {
             if (binding.cardViewMenuPopUp.visibility == View.VISIBLE) {
@@ -258,24 +288,31 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             }
         }
 
-        binding.relEditCookBook.setOnClickListener{
+        binding.relEditCookBook.setOnClickListener {
             binding.cardViewMenuPopUp.visibility = View.GONE
-            val bundle=Bundle()
-            bundle.putString("value","Edit")
-            findNavController().navigate(R.id.createCookBookFragment,bundle)
+            val bundle = Bundle()
+            bundle.putString("value", "Edit")
+            findNavController().navigate(R.id.createCookBookFragment, bundle)
         }
 
-        binding.relShareCookBook.setOnClickListener{
-            if (type=="1"){
-                shareImageWithText("Hey! I am inviting you to download My-Kai App!"+ "\nclick on the link below:\n\n", referLink)
+        binding.relShareCookBook.setOnClickListener {
+            if (type == "1") {
+                shareImageWithText(
+                    "Hey! I am inviting you to download My-Kai App!" + "\nclick on the link below:\n\n",
+                    referLink
+                )
                 binding.cardViewMenuPopUp.visibility = View.GONE
 
-            }else{
-                commonWorkUtils.alertDialog(requireContext(),ErrorMessage.shareCookBookError,false)
+            } else {
+                commonWorkUtils.alertDialog(
+                    requireContext(),
+                    ErrorMessage.shareCookBookError,
+                    false
+                )
             }
         }
 
-        binding.relDeleteCookBook.setOnClickListener{
+        binding.relDeleteCookBook.setOnClickListener {
             binding.cardViewMenuPopUp.visibility = View.GONE
             removeCookBookDialog()
         }
@@ -295,7 +332,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         val providerName = sessionManagement.getUserName()?.toString().orEmpty()
         val providerImage = sessionManagement.getImage()?.toString().orEmpty()
 
-        val baseUrl = "https://mykaimealplanner.onelink.me/mPqu/"
+        val baseUrl = "https://applinks:mykaimealplanner.onelink.me/mPqu/"
 
         val fullUrl = Uri.parse(baseUrl).buildUpon()
             .appendQueryParameter("af_user_id", afUserId)
@@ -313,11 +350,63 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         Log.d("AF_TEST", "Custom Raw Link: $referLink")
 
 
-
     }
 
 
-    private fun shareImageWithText(description: String,  link: String) {
+    private fun generateDeepLink() {
+
+        val afUserId = sessionManagement.getId()?.toString().orEmpty()
+        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
+        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
+        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
+
+
+        // Your OneLink base URL and campaign details
+        val currentCampaign = "property_share"
+        val oneLinkId = "mPqu" // Replace with your OneLink ID
+        val brandDomain = "mykaimealplanner.onelink.me" // Your OneLink domain
+
+        // Prepare the deep link values
+        val deepLink =
+            "mykai://property?af_user_id=$afUserId&ScreenName=CookBooksType&CookbooksID=$id&ItemName=$name"
+
+        //  val deepLink = "https://property?propertyId=$propertyId&propertyType=$propertyType&city=$city"
+
+        val webLink = "https://https://admin.getmykai.com/" // Web fallback link
+
+        // Create the link generator
+        val linkGenerator = ShareInviteHelper.generateInviteUrl(requireActivity())
+            .setBaseDeeplink("https://$brandDomain/$oneLinkId")
+            .setCampaign(currentCampaign)
+            .addParameter("af_dp", deepLink) // App deep link
+            /*.addParameter("Referrer", referrerCode)
+            .addParameter("CookbooksID", id)
+            .addParameter("ItemName", name)
+            .addParameter("ScreenName", "CookBooksType")
+            .addParameter("providerName", providerName)
+            .addParameter("providerImage", providerImage)*/
+            .addParameter("af_web_dp", webLink) // Web fallback URL
+
+        // Generate the link
+        linkGenerator.generateLink(requireActivity(), object : LinkGenerator.ResponseListener {
+            override fun onResponse(s: String) {
+                // Successfully generated the link
+                Log.d("TAG", s)
+                // Example share message with the generated link
+                val message = "Check out this property: $s"
+                referLink = s
+                Log.d("***********", s)
+            }
+
+            override fun onResponseError(s: String) {
+                // Handle error if link generation fails
+                Log.e("***********", "Error Generating Link: $s")
+            }
+        })
+    }
+
+
+    private fun shareImageWithText(description: String, link: String) {
         // Download image using Glide
         Glide.with(requireContext())
             .asBitmap() // Request a Bitmap image
@@ -325,41 +414,49 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(
                     resource: Bitmap,
-                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
-                try {
-                    // Save the image to a file in the app's external storage
-                    val file = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "shared_image.png"
-                    )
-                    val fos = FileOutputStream(file)
-                    resource.compress(Bitmap.CompressFormat.PNG, 100, fos)
-                    fos.close()
+                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                ) {
+                    try {
+                        // Save the image to a file in the app's external storage
+                        val file = File(
+                            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                            "shared_image.png"
+                        )
+                        val fos = FileOutputStream(file)
+                        resource.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                        fos.close()
 
-                    // Create URI for the file using FileProvider
-                    val uri: Uri = FileProvider.getUriForFile(
-                        requireContext(),
-                        requireActivity().packageName + ".provider", // Make sure this matches your manifest provider
-                        file
-                    )
+                        // Create URI for the file using FileProvider
+                        val uri: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            requireActivity().packageName + ".provider", // Make sure this matches your manifest provider
+                            file
+                        )
 
-                    // Format the message with line breaks
-                    val formattedText = """$description$link""".trimIndent()
+                        // Format the message with line breaks
+                        val formattedText = """$description$link""".trimIndent()
 
-                    // Create an intent to share the image and text
-                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                        type = "image/png"
-                        putExtra(Intent.EXTRA_STREAM, uri)
-                        putExtra(Intent.EXTRA_TEXT, formattedText)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        // Create an intent to share the image and text
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "image/png"
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                            putExtra(Intent.EXTRA_TEXT, formattedText)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+
+                        // Launch the share dialog
+                        requireContext().startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                "Share Image"
+                            )
+                        )
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Log.d("ImageShareError", "onResourceReady: ${e.message}")
                     }
-
-                    // Launch the share dialog
-                    requireContext().startActivity(Intent.createChooser(shareIntent, "Share Image"))
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Log.d("ImageShareError", "onResourceReady: ${e.message}")
                 }
-            }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
                     // Optional: Handle if the image load is cleared or cancelled
@@ -396,16 +493,17 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     override fun itemClick(position: Int?, status: String?, type: String?) {
         when (status) {
             "1" -> {
-                if ((activity as? MainActivity)?.Subscription_status==1){
-                    if ((activity as? MainActivity)?.addmeal!! < 1){
+                if ((activity as? MainActivity)?.Subscription_status == 1) {
+                    if ((activity as? MainActivity)?.addmeal!! < 1) {
                         chooseDayDialog(position, type)
-                    }else{
+                    } else {
                         (activity as? MainActivity)?.subscriptionAlertError(requireContext())
                     }
-                }else{
+                } else {
                     chooseDayDialog(position, type)
                 }
             }
+
             "2" -> {
                 if (BaseApplication.isOnline(requireActivity())) {
                     addBasketData(localData[position!!].data?.recipe!!.uri!!, type.toString())
@@ -413,36 +511,40 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
             }
+
             "4" -> {
                 try {
                     val bundle = Bundle().apply {
-                        val data= localData[position!!].data?.recipe!!.mealType?.get(0)?.split("/")
+                        val data = localData[position!!].data?.recipe!!.mealType?.get(0)?.split("/")
                         val formattedFoodName = data?.get(0)!!.replaceFirstChar { it.uppercase() }
                         putString("uri", localData[position].data?.recipe!!.uri!!)
                         putString("mealType", formattedFoodName)
                     }
                     findNavController().navigate(R.id.recipeDetailsFragment, bundle)
-                }catch (e:Exception){
-                    BaseApplication.alertError(requireContext(),e.message.toString(), false)
+                } catch (e: Exception) {
+                    BaseApplication.alertError(requireContext(), e.message.toString(), false)
 
                 }
             }
+
             "5" -> {
                 moveRecipeDialog(position)
-            }else -> {
-            if (BaseApplication.isOnline(requireActivity())) {
-                if ((activity as? MainActivity)?.Subscription_status==1){
-                    if ((activity as? MainActivity)?.favorite!! <= 2){
-                        removeRecipeDialog(position)
-                    }else{
-                        (activity as? MainActivity)?.subscriptionAlertError(requireContext())
-                    }
-                }else{
-                    removeRecipeDialog(position)
-                }
-            } else {
-                BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
+
+            else -> {
+                if (BaseApplication.isOnline(requireActivity())) {
+                    if ((activity as? MainActivity)?.Subscription_status == 1) {
+                        if ((activity as? MainActivity)?.favorite!! <= 2) {
+                            removeRecipeDialog(position)
+                        } else {
+                            (activity as? MainActivity)?.subscriptionAlertError(requireContext())
+                        }
+                    } else {
+                        removeRecipeDialog(position)
+                    }
+                } else {
+                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+                }
             }
         }
     }
@@ -450,7 +552,10 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     private fun removeRecipeDialog(position: Int?) {
         val dialogRemoveRecipe: Dialog = context?.let { Dialog(it) }!!
         dialogRemoveRecipe.setContentView(R.layout.alert_dialog_remove_recipe)
-        dialogRemoveRecipe.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogRemoveRecipe.window!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
         dialogRemoveRecipe.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         val tvDialogCancelBtn = dialogRemoveRecipe.findViewById<TextView>(R.id.tvDialogCancelBtn)
         val tvDialogRemoveBtn = dialogRemoveRecipe.findViewById<TextView>(R.id.tvDialogRemoveBtn)
@@ -463,7 +568,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
 
         tvDialogRemoveBtn.setOnClickListener {
             if (BaseApplication.isOnline(requireActivity())) {
-                recipeLikeAndUnlikeData(position,dialogRemoveRecipe)
+                recipeLikeAndUnlikeData(position, dialogRemoveRecipe)
             } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
@@ -475,48 +580,70 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         lifecycleScope.launch {
             viewModel.likeUnlikeRequest({
                 BaseApplication.dismissMe()
-                handleLikeAndUnlikeApiResponse(it,position,dialogRemoveRecipe)
-            }, localData[position!!].data?.recipe?.uri.toString(),"0","")
+                handleLikeAndUnlikeApiResponse(it, position, dialogRemoveRecipe)
+            }, localData[position!!].data?.recipe?.uri.toString(), "0", "")
         }
     }
 
-    private fun handleDeleteCookBookApiResponse(result: NetworkResult<String>, dialogRemoveCookBook: Dialog) {
+    private fun handleDeleteCookBookApiResponse(
+        result: NetworkResult<String>,
+        dialogRemoveCookBook: Dialog
+    ) {
         when (result) {
-            is NetworkResult.Success -> handleDeleteCookBookSuccessResponse(result.data.toString(),dialogRemoveCookBook)
+            is NetworkResult.Success -> handleDeleteCookBookSuccessResponse(
+                result.data.toString(),
+                dialogRemoveCookBook
+            )
+
             is NetworkResult.Error -> showAlert(result.message, false)
             else -> showAlert(result.message, false)
         }
     }
 
-    private fun handleLikeAndUnlikeApiResponse(result: NetworkResult<String>, position: Int?, dialogRemoveRecipe: Dialog) {
+    private fun handleLikeAndUnlikeApiResponse(
+        result: NetworkResult<String>,
+        position: Int?,
+        dialogRemoveRecipe: Dialog
+    ) {
         when (result) {
-            is NetworkResult.Success -> handleLikeAndUnlikeSuccessResponse(result.data.toString(),position,dialogRemoveRecipe)
+            is NetworkResult.Success -> handleLikeAndUnlikeSuccessResponse(
+                result.data.toString(),
+                position,
+                dialogRemoveRecipe
+            )
+
             is NetworkResult.Error -> showAlert(result.message, false)
             else -> showAlert(result.message, false)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun handleLikeAndUnlikeSuccessResponse(data: String, position: Int?, dialogRemoveRecipe: Dialog) {
+    private fun handleLikeAndUnlikeSuccessResponse(
+        data: String,
+        position: Int?,
+        dialogRemoveRecipe: Dialog
+    ) {
         try {
             val apiModel = Gson().fromJson(data, SuccessResponseModel::class.java)
             Log.d("@@@ Plan List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 // Toggle the is_like value
-                localData.removeAt(position ?: return) // Safely handle null position, return if null
-                if (localData.size>0){
+                localData.removeAt(
+                    position ?: return
+                ) // Safely handle null position, return if null
+                if (localData.size > 0) {
                     adapterCookBookDetailsItem?.updateList(localData)
-                    binding.rcyChristmasCollection.visibility=View.VISIBLE
-                    binding.tvnoData.visibility=View.GONE
-                }else{
-                    binding.tvnoData.visibility=View.VISIBLE
-                    binding.rcyChristmasCollection.visibility=View.GONE
+                    binding.rcyChristmasCollection.visibility = View.VISIBLE
+                    binding.tvnoData.visibility = View.GONE
+                } else {
+                    binding.tvnoData.visibility = View.VISIBLE
+                    binding.rcyChristmasCollection.visibility = View.GONE
                 }
                 (activity as MainActivity?)?.upDateHomeData()
                 dialogRemoveRecipe.dismiss()
 
             } else {
-                handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code, apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -532,7 +659,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                 dialogRemoveCookBook.dismiss()
                 findNavController().navigateUp()
             } else {
-                handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code, apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -542,10 +669,14 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     private fun moveRecipeDialog(position: Int?) {
         val dialogMoveRecipe: Dialog = context?.let { Dialog(it) }!!
         dialogMoveRecipe.setContentView(R.layout.alert_dialog_move_dialog)
-        dialogMoveRecipe.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogMoveRecipe.window!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
         dialogMoveRecipe.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         val rlMove = dialogMoveRecipe.findViewById<RelativeLayout>(R.id.rlMove)
-        val imgCrossDiscardChanges = dialogMoveRecipe.findViewById<ImageView>(R.id.imgCrossDiscardChanges)
+        val imgCrossDiscardChanges =
+            dialogMoveRecipe.findViewById<ImageView>(R.id.imgCrossDiscardChanges)
 
         spinnerActivityLevel = dialogMoveRecipe.findViewById(R.id.spinnerActivityLevel)
 
@@ -557,12 +688,16 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         getCookBookList()
 
         rlMove.setOnClickListener {
-            if (spinnerActivityLevel.text.toString().equals("",true)){
-                BaseApplication.alertError(requireContext(), ErrorMessage.selectCookBookError, false)
-            }else {
+            if (spinnerActivityLevel.text.toString().equals("", true)) {
+                BaseApplication.alertError(
+                    requireContext(),
+                    ErrorMessage.selectCookBookError,
+                    false
+                )
+            } else {
                 if (BaseApplication.isOnline(requireActivity())) {
                     val cookbooktype = cookbookList[spinnerActivityLevel.selectedIndex].id
-                    recipeMove(position,dialogMoveRecipe,cookbooktype)
+                    recipeMove(position, dialogMoveRecipe, cookbooktype)
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
@@ -580,8 +715,8 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         lifecycleScope.launch {
             viewModel.moveRecipeRequest({
                 BaseApplication.dismissMe()
-                handleLikeAndUnlikeApiResponse(it,position,dialogRemoveRecipe)
-            }, localData[position!!].id.toString(),cookbooktype.toString())
+                handleLikeAndUnlikeApiResponse(it, position, dialogRemoveRecipe)
+            }, localData[position!!].id.toString(), cookbooktype.toString())
         }
     }
 
@@ -590,12 +725,12 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         lifecycleScope.launch {
             viewModel.deleteCookBookRequest({
                 BaseApplication.dismissMe()
-                handleDeleteCookBookApiResponse(it,dialogRemoveCookBook)
+                handleDeleteCookBookApiResponse(it, dialogRemoveCookBook)
             }, id.toString())
         }
     }
 
-    private fun getCookBookList(){
+    private fun getCookBookList() {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
             viewModel.getCookBookRequest {
@@ -605,13 +740,13 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         }
     }
 
-    private fun addBasketData(uri: String,mealType:String) {
+    private fun addBasketData(uri: String, mealType: String) {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
             viewModel.addBasketRequest({
                 BaseApplication.dismissMe()
                 handleBasketApiResponse(it)
-            }, uri,"",mealType)
+            }, uri, "", mealType)
         }
     }
 
@@ -631,7 +766,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             val apiModel = Gson().fromJson(data, SuccessResponseModel::class.java)
             Log.d("@@@ Plan List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
             } else {
                 if (apiModel.code == ErrorMessage.code) {
                     showAlert(apiModel.message, true)
@@ -648,7 +783,10 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     private fun chooseDayDialog(position: Int?, typeAdapter: String?) {
         val dialogChooseDay: Dialog = context?.let { Dialog(it) }!!
         dialogChooseDay.setContentView(R.layout.alert_dialog_choose_day)
-        dialogChooseDay.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        dialogChooseDay.window!!.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
         dialogChooseDay.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         rcyChooseDaySch = dialogChooseDay.findViewById<RecyclerView>(R.id.rcyChooseDaySch)
         tvWeekRange = dialogChooseDay.findViewById(R.id.tvWeekRange)
@@ -659,7 +797,8 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         dialogChooseDay.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         dataList.clear()
-        val daysOfWeek = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+        val daysOfWeek =
+            listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
         for (day in daysOfWeek) {
             val data = DataModel().apply {
                 title = day
@@ -680,10 +819,10 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                     break // Exit the loop early
                 }
             }
-            if (status){
-                chooseDayMealTypeDialog(position,typeAdapter)
+            if (status) {
+                chooseDayMealTypeDialog(position, typeAdapter)
                 dialogChooseDay.dismiss()
-            }else{
+            } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.weekNameError, false)
             }
         }
@@ -706,11 +845,11 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                     status = (date == formattedCurrentDate) // Compare formatted strings
                 }
             }
-            var status=false
+            var status = false
             updatedDaysBetween1.forEach {
                 status = it.date >= BaseApplication.currentDateFormat().toString()
             }
-            if (status){
+            if (status) {
                 val calendar = Calendar.getInstance()
                 calendar.time = currentDate
                 calendar.add(Calendar.WEEK_OF_YEAR, -1) // Move to next week
@@ -718,8 +857,8 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                 // Display next week dates
                 println("\nAfter clicking 'Next':")
                 showWeekDates()
-            }else{
-                Toast.makeText(requireContext(),ErrorMessage.slideError,Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(requireContext(), ErrorMessage.slideError, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -759,8 +898,8 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     fun showWeekDates() {
         Log.d("currentDate :- ", "******$currentDate")
         val (startDate, endDate) = getWeekDates(currentDate)
-        this.startDate=startDate
-        this.endDate=endDate
+        this.startDate = startDate
+        this.endDate = endDate
         println("Week Start Date: ${formatDate(startDate)}")
         println("Week End Date: ${formatDate(endDate)}")
         // Get all dates between startDate and endDate
@@ -776,22 +915,24 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         // Print the dates
         println("Days between ${startDate} and ${endDate}:")
         daysBetween.forEach { println(it) }
-        tvWeekRange?.text = ""+formatDate(startDate)+"-"+formatDate(endDate)
+        tvWeekRange?.text = "" + formatDate(startDate) + "-" + formatDate(endDate)
 
     }
 
     private fun getDaysBetween(startDate: Date, endDate: Date): MutableList<DateModel> {
         val dateList = mutableListOf<DateModel>()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Format for the date
-        val dayFormat = SimpleDateFormat("EEEE", Locale.getDefault()) // Format for the day name (e.g., Monday)
+        val dayFormat =
+            SimpleDateFormat("EEEE", Locale.getDefault()) // Format for the day name (e.g., Monday)
         val calendar = Calendar.getInstance()
         calendar.time = startDate
         while (!calendar.time.after(endDate)) {
             val date = dateFormat.format(calendar.time)  // Get the formatted date (yyyy-MM-dd)
-            val dayName = dayFormat.format(calendar.time)  // Get the day name (Monday, Tuesday, etc.)
-            val localDate= DateModel()
-            localDate.day=dayName
-            localDate.date=date
+            val dayName =
+                dayFormat.format(calendar.time)  // Get the day name (Monday, Tuesday, etc.)
+            val localDate = DateModel()
+            localDate.day = dayName
+            localDate.date = date
             // Combine both the day name and the date
             dateList.add(localDate)
             // Move to the next day
@@ -821,10 +962,15 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
 
         var type = ""
 
-        fun updateSelection(selectedType: String, selectedView: TextView, allViews: List<TextView>) {
+        fun updateSelection(
+            selectedType: String,
+            selectedView: TextView,
+            allViews: List<TextView>
+        ) {
             type = selectedType
             allViews.forEach { view ->
-                val drawable = if (view == selectedView) R.drawable.radio_select_icon else R.drawable.radio_unselect_icon
+                val drawable =
+                    if (view == selectedView) R.drawable.radio_select_icon else R.drawable.radio_unselect_icon
                 view.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawable, 0)
             }
         }
@@ -854,10 +1000,10 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
 
         rlDoneBtn.setOnClickListener {
             if (BaseApplication.isOnline(requireActivity())) {
-                if (type.equals("",true)){
+                if (type.equals("", true)) {
                     BaseApplication.alertError(requireContext(), ErrorMessage.mealTypeError, false)
-                }else{
-                    addToPlan(dialogChooseMealDay,type,position)
+                } else {
+                    addToPlan(dialogChooseMealDay, type, position)
                 }
 
             } else {
@@ -873,17 +1019,17 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         // Safely get the item and position
         val item = localData[position!!]
         if (item != null) {
-            if (item.data?.recipe?.uri!=null){
+            if (item.data?.recipe?.uri != null) {
                 jsonObject.addProperty("type", selectType)
                 jsonObject.addProperty("uri", item.data.recipe.uri)
                 // Create a JsonArray for ingredients
                 val jsonArray = JsonArray()
-                val latestList=getDaysBetween(startDate, endDate)
+                val latestList = getDaysBetween(startDate, endDate)
                 for (i in dataList.indices) {
-                    val data=DataModel()
-                    data.isOpen=dataList[i].isOpen
-                    data.title=dataList[i].title
-                    data.date=latestList[i].date
+                    val data = DataModel()
+                    data.isOpen = dataList[i].isOpen
+                    data.title = dataList[i].title
+                    data.date = latestList[i].date
                     dataList[i] = data
                 }
                 // Iterate through the ingredients and add them to the array if status is true
@@ -908,7 +1054,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         lifecycleScope.launch {
             viewModel.recipeAddToPlanRequest({
                 BaseApplication.dismissMe()
-                handleApiAddToPlanResponse(it,dialogChooseMealDay)
+                handleApiAddToPlanResponse(it, dialogChooseMealDay)
             }, jsonObject)
         }
     }
@@ -918,7 +1064,11 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         dialogChooseMealDay: Dialog
     ) {
         when (result) {
-            is NetworkResult.Success -> handleSuccessAddToPlanResponse(result.data.toString(),dialogChooseMealDay)
+            is NetworkResult.Success -> handleSuccessAddToPlanResponse(
+                result.data.toString(),
+                dialogChooseMealDay
+            )
+
             is NetworkResult.Error -> showAlert(result.message, false)
             else -> showAlert(result.message, false)
         }
@@ -933,9 +1083,9 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
                 dataList.clear()
                 (activity as MainActivity?)?.upDateHomeData()
                 dialogChooseMealDay.dismiss()
-                Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
             } else {
-                handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code, apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
