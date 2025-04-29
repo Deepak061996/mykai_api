@@ -177,15 +177,12 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
     }
 
 
-    override fun itemClicked(
-        position: Int?,
-        list: MutableList<String>?,
-        status: String?,
-        type: String?
-    ) {
-
-        if (type == "View") {
-            findNavController().navigate(R.id.orderDetailsScreenFragment)
+    override fun itemClicked(position: Int?, list: MutableList<String>?, status: String?, type: String?) {
+        if (type.equals("View",true)) {
+            val bundle = Bundle().apply {
+                putSerializable("viewDetails", orderHistoryModel[position!!])
+            }
+            findNavController().navigate(R.id.orderDetailsScreenFragment,bundle)
         } else {
             val bundle = Bundle().apply {
                 putString("tracking", "https://tracking.mealme.ai/tracking?id=-OMRihw4FhMILGO035aK")
