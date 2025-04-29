@@ -112,12 +112,17 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 llIndicator.visibility = View.VISIBLE
                 llBottomNavigation.visibility = View.VISIBLE
             }
+            if (main.Subscription_status==1){
+                binding.imgFreeTrial.visibility=View.VISIBLE
+            }else{
+                binding.imgFreeTrial.visibility=View.GONE
+            }
+
         }
 
         cookbookList.clear()
         val data = com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data("", "", 0, "", "Favorites", 0, "", 0)
         cookbookList.add(0, data)
-
 
         backButton()
         initialize()

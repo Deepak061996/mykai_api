@@ -249,37 +249,38 @@ class SubscriptionPlanOverViewFragment : Fragment() {
     }
 
 
-    private fun setUpOnBoardingIndicator() {
-        binding.layOnboardingIndicator.removeAllViews() // Clear previous indicators
+        private fun setUpOnBoardingIndicator() {
+            binding.layOnboardingIndicator.removeAllViews() // Clear previous indicators
 
-        val layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        layoutParams.setMargins(8, 0, 8, 0)
-
-        for (i in datalist.indices) {
-            val img = ImageView(requireContext())
-            img.setImageDrawable(
-                ContextCompat.getDrawable(requireContext(), R.drawable.subs_indicator_inactive)
+            val layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            img.layoutParams = layoutParams
-            binding.layOnboardingIndicator.addView(img)
-        }
-    }
+            layoutParams.setMargins(8, 0, 8, 0)
 
-    private fun currentOnBoardingIndicator(index: Int) {
-        val childCount = binding.layOnboardingIndicator.childCount
-        for (i in 0 until childCount) {
-            val imageView = binding.layOnboardingIndicator.getChildAt(i) as ImageView
-            val drawableRes = if (i == index) {
-                R.drawable.subs_indicator_active
-            } else {
-                R.drawable.subs_indicator_inactive
+            for (i in datalist.indices) {
+                val img = ImageView(requireContext())
+                img.setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), R.drawable.subs_indicator_inactive)
+                )
+                img.layoutParams = layoutParams
+                binding.layOnboardingIndicator.addView(img)
             }
-            imageView.setImageDrawable(ContextCompat.getDrawable(requireContext(), drawableRes))
         }
-    }
+
+
+     private fun currentOnBoardingIndicator(index: Int) {
+         val childCount = binding.layOnboardingIndicator.childCount
+         for (i in 0 until childCount) {
+             val imageView = binding.layOnboardingIndicator.getChildAt(i) as ImageView
+             val drawableRes = if (i == index) {
+                 R.drawable.subs_indicator_active
+             } else {
+                 R.drawable.subs_indicator_inactive
+             }
+             imageView.setImageDrawable(ContextCompat.getDrawable(requireContext(), drawableRes))
+         }
+     }
 
 
     private fun initialize() {
@@ -352,10 +353,12 @@ class SubscriptionPlanOverViewFragment : Fragment() {
                 alertError(requireContext(), ErrorMessage.networkError, false)
             }
         }
-
-
     }
 
+   /* override fun onResume() {
+        super.onResume()
+        currentOnBoardingIndicator(4) // keep track of this index globally
+    }*/
 
     private fun planPurchases() {
         billingClient?.startConnection(object : BillingClientStateListener {

@@ -174,7 +174,7 @@
                     android:layout_marginStart="@dimen/_15sdp"
                     android:layout_toEndOf="@+id/imageMeet"
                     android:fontFamily="@font/montserrat_semibold"
-                    android:text=""
+                    android:text="Meet at my door"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_13sdp" />
 

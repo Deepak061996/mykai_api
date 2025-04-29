@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViews"
         android:layout_width="@dimen/_140sdp"
@@ -162,4 +163,5 @@
             </RelativeLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
+
 </RelativeLayout>

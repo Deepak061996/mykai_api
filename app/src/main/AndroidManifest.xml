@@ -69,15 +69,16 @@
             tools:ignore="AppLinkUrlError">
 
             <intent-filter
-                android:autoVerify="true"
-                android:label="Deep link">
+                android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
+                <data android:scheme="https" android:host="mykaimealplanner.onelink.me" />
+         <!--       <data android:scheme="mykai" android:host="property" />-->
+               <!-- <data
                     android:scheme="https"
                     android:host="mykaimealplanner.onelink.me"
-                    android:pathPrefix="/mPqu" />
+                    android:pathPrefix="/mPqu" />-->
             </intent-filter>
 
         </activity>

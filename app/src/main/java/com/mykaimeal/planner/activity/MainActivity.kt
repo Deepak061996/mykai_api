@@ -420,10 +420,34 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             findNavController(R.id.frameContainerMain).navigate(R.id.searchFragment,bundle)
         }
 
-
     }
 
     private fun handleDeepLink(intent: Intent?) {
+        intent?.data?.let { uri ->
+            Log.d("DeepLink", "Received URI: $uri")
+
+            val screenName = uri.getQueryParameter("ScreenName")
+            val affiliateName = uri.getQueryParameter("providerName")
+            val affiliateImage = uri.getQueryParameter("providerImage")
+            val cookbooksId = uri.getQueryParameter("CookbooksID")
+            val referralCode = uri.getQueryParameter("Referrer")
+            val itemName = uri.getQueryParameter("ItemName")
+
+            if (screenName == "CookBooksType" && cookbooksId != null) {
+                // Navigate or open appropriate screen
+
+                findNavController(R.id.frameContainerMain).navigate(R.id.christmasCollectionFragment)
+//                openCookbookDetails(cookbooksId, itemName)
+            }
+        }
+    }
+
+    private fun openCookbookDetails(id: String, name: String?) {
+        // Launch fragment or activity
+        Log.d("DeepLink", "Navigating to cookbook ID: $id, Name: $name")
+    }
+
+   /* private fun handleDeepLink(intent: Intent?) {
         intent?.data?.let { uri ->
             val deepLinkValue = uri.getQueryParameter("deep_link_value")
             val deepLinkSub1 = uri.getQueryParameter("deep_link_sub1")
@@ -440,7 +464,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                 }
             }
         }
-    }
+    }*/
 
     private fun startDestination() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
