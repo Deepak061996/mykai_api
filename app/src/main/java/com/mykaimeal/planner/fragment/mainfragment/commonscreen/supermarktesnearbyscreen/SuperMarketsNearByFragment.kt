@@ -188,15 +188,6 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
                 // Set adapter
                 adapter = AdapterSuperMarket(stores, requireActivity(), this)
                 binding.recySuperMarket.adapter = adapter
-//                // Extract LatLng and store in list
-//                storeLocations.clear()
-//                for (store in stores) {
-//                    val address = store.address
-//                    val latitude = address?.latitude ?: 0.0  // Default to 0.0 if null
-//                    val longitude = address?.longitude ?: 0.0 // Default to 0.0 if null
-//                    storeLocations.add(LatLng(latitude, longitude))
-//                }
-                // Update Google Map
                 mMap?.let { updateMap(it) }
             }
         } catch (e: Exception) {
