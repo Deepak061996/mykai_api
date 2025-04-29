@@ -437,10 +437,10 @@ reinvented version of your favorite meal."
                 android:layout_centerHorizontal="true"
                 android:layout_marginHorizontal="@dimen/_40sdp"
                 android:layout_marginTop="@dimen/_30sdp"
-                android:fontFamily="@font/montserrat_semibold"
+                android:fontFamily="@font/inter_bold"
                 android:text="Save Time, Save Money Eat Better"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="#06C169"
                 android:textSize="@dimen/_14sdp" />
 
             <RelativeLayout
@@ -464,10 +464,10 @@ reinvented version of your favorite meal."
                     android:gravity="center"
                     android:layout_centerHorizontal="true"
                     android:layout_toEndOf="@+id/imagesTick"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="@font/inter"
                     android:text="Kai plans your meals, Compares store prices, And creates your cart so you don’t have to."
                     android:textAlignment="center"
-                    android:textColor="@color/black"
+                    android:textColor="#3D3F3A"
                     android:textSize="@dimen/_11sdp" />
 
             </RelativeLayout>
@@ -494,10 +494,10 @@ reinvented version of your favorite meal."
                     android:gravity="center"
                     android:layout_centerHorizontal="true"
                     android:layout_toEndOf="@+id/imagesTick2"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="@font/inter"
                     android:text="Kai plans your meals, Compares store prices, And creates your cart so you don’t have to."
                     android:textAlignment="center"
-                    android:textColor="@color/black"
+                    android:textColor="#3D3F3A"
                     android:textSize="@dimen/_11sdp" />
 
             </RelativeLayout>
@@ -547,6 +547,7 @@ reinvented version of your favorite meal."
                          android:layout_centerInParent="true"
                          android:paddingHorizontal="@dimen/_50sdp"
                          android:paddingVertical="@dimen/_8sdp"
+                         android:fontFamily="@font/inter_bold"
                          android:text="Start Your 7 days free trial"
                          android:textColor="@color/white"
                          android:textSize="@dimen/_12sdp" />
@@ -562,10 +563,10 @@ reinvented version of your favorite meal."
                      android:layout_gravity="center_horizontal"
                      android:layout_marginTop="@dimen/_10sdp"
                      android:layout_marginBottom="@dimen/_20sdp"
-                     android:fontFamily="@font/montserrat_semibold"
+                     android:fontFamily="@font/inter_semibold"
                      android:text="Restore Purchases"
                      android:visibility="invisible"
-                     android:textColor="@color/black"
+                     android:textColor="#3C4541"
                      android:textSize="@dimen/_14sdp" />
              </LinearLayout>
         </RelativeLayout>

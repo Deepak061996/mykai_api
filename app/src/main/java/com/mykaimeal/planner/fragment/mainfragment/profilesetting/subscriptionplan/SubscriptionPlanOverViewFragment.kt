@@ -413,9 +413,8 @@ class SubscriptionPlanOverViewFragment : Fragment() {
                 super.onPageSelected(position)
                 when (position) {
                     0 -> {
-                        binding.tvHeadingTitle.text = "Save Time, Save Money Eat Better"
-                        binding.tvDescriptions.text =
-                            "Kai plans your meals, Compares store prices, And creates your cart so you don’t have to."
+                        binding.tvHeadingTitle.text = "Save Time, Save Money,\n Eat Better"
+                        binding.tvDescriptions.text = "Kai plans your meals, Compares store prices, And creates your cart so you don’t have to."
                         binding.tvDescriptions2.text = ""
                         binding.relDescriptions2.visibility = View.INVISIBLE
                     }

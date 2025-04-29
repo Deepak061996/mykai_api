@@ -122,7 +122,7 @@ class SubscriptionAllPlanFragment : Fragment() {
                 .into(binding.imageProfile)
         }
         if (sessionManagement.getUserName() != null) {
-            binding.tvTextNames.text = "You’ve got a gift from\n"+sessionManagement.getUserName()
+//            binding.tvTextNames.text = "You’ve got a gift from\n"+sessionManagement.getUserName()
             binding.tvSecretCookBook.text = sessionManagement.getUserName()+"secret cookbook"
         }
         binding.crossImages.setOnClickListener{
