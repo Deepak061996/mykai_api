@@ -250,11 +250,6 @@ class CreateRecipeImageFragment : Fragment() {
     private fun flashWorking() {
         isFlashOn = !isFlashOn
         imageCapture?.flashMode = if (isFlashOn) ImageCapture.FLASH_MODE_ON else ImageCapture.FLASH_MODE_OFF
-
-
-
-
-
     }
 
 

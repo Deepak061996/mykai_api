@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -91,6 +92,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.jar.Manifest
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
@@ -142,6 +144,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     var urlSearch: Int?=0
     var alertStatus:Boolean=false
     private var status:String?="RecipeSearch"
+    private var dialogAddRecipe:Dialog ?=null
+
+    var isFlashlightOn = false
+    private lateinit var cameraManager: CameraManager
+    private lateinit var cameraId: String
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,6 +168,12 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
         }
 
+
+        cameraManager = getSystemService(CAMERA_SERVICE) as CameraManager
+        cameraId = cameraManager.cameraIdList.first { id ->
+            cameraManager.getCameraCharacteristics(id)
+                .get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+        }
 
 
         // Register for result
@@ -187,6 +200,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     }
 
+
+     fun toggleFlashlight() {
+        isFlashlightOn = !isFlashlightOn
+        cameraManager.setTorchMode(cameraId, isFlashlightOn)
+    }
 
     private fun startRepeatingApiCall() {
         lifecycleScope.launch {
@@ -523,12 +541,12 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             }/* else if (isValidUrl(etPasteURl.text.toString().trim())){
                 commonWorkUtils.alertDialog(this, ErrorMessage.validUrl, false)
             }*/ else {
-                binding.cardViewAddRecipe.visibility = View.GONE
 //                val bundle = Bundle().apply {
 //                    putString("url",etPasteURl.text.toString().trim())
 //                }
 //                findNavController(R.id.frameContainerMain).navigate(R.id.webViewByUrlFragment,bundle)
                 dialogWeb.dismiss()
+                dialogAddRecipe?.dismiss()
                 val intent = Intent(this, WebViewByUrlActivity::class.java)
                 intent.putExtra("url", etPasteURl.text.toString().trim())
                 resultLauncher.launch(intent)
@@ -1147,6 +1165,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             }
 
             R.id.llAddRecipe -> {
+//                addRecipeAlert(this@MainActivity)
                 findNavController(R.id.frameContainerMain).navigate(R.id.searchFragmentDummy)
                 binding.cardViewAddRecipe.visibility = View.VISIBLE
             }
@@ -1184,15 +1203,15 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             R.id.relRecipeImage->{
                 if (Subscription_status==1){
                     if (imageSearch!! <=2){
-                        findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeImageFragment)
                         binding.cardViewAddRecipe.visibility = View.GONE
+                        findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeImageFragment)
                     }else{
                         subscriptionAlertError(this)
                     }
 
                 }else{
-                    findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeImageFragment)
                     binding.cardViewAddRecipe.visibility = View.GONE
+                    findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeImageFragment)
                 }
             }
         }
@@ -1588,6 +1607,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         tvTitle.text="Oops! Your limit has been exceeded. Please purchase your subscription to regain access to all features."
         btnOk.setOnClickListener {
             dialog.dismiss()
+            dialogAddRecipe?.dismiss()
             binding.cardViewAddRecipe.visibility=View.GONE
             findNavController(R.id.frameContainerMain).navigate(R.id.homeSubscriptionAllPlanFragment)
         }
@@ -1596,6 +1616,65 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             dialog.dismiss()
         }
         dialog.show()
+    }
+
+
+
+    private fun addRecipeAlert(context: Context){
+        dialogAddRecipe= Dialog(context, R.style.BottomSheetDialog)
+        dialogAddRecipe?.setCancelable(true)
+        dialogAddRecipe?.setCanceledOnTouchOutside(true)
+        dialogAddRecipe?.setContentView(R.layout.add_recipe_alert)
+        val layoutParams = WindowManager.LayoutParams()
+        layoutParams.copyFrom(dialogAddRecipe?.window!!.attributes)
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialogAddRecipe?.window!!.attributes = layoutParams
+        val relAddRecipeWeb: RelativeLayout? =dialogAddRecipe?.findViewById(R.id.relAddRecipeWeb)
+        val relCreateNewRecipe: RelativeLayout? =dialogAddRecipe?.findViewById(R.id.relCreateNewRecipe)
+        val relRecipeImage: RelativeLayout? =dialogAddRecipe?.findViewById(R.id.relRecipeImage)
+        val layRoot: RelativeLayout? =dialogAddRecipe?.findViewById(R.id.layroot)
+
+        layRoot?.setOnClickListener {
+            dialogAddRecipe?.dismiss()
+        }
+
+        relRecipeImage?.setOnClickListener {
+            if (Subscription_status==1){
+                if (imageSearch!! <=2){
+                    dialogAddRecipe?.dismiss()
+                    findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeImageFragment)
+                }else{
+                    subscriptionAlertError(this)
+                }
+            }else{
+                dialogAddRecipe?.dismiss()
+                findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeImageFragment)
+            }
+        }
+
+
+        relCreateNewRecipe?.setOnClickListener {
+            dialogAddRecipe?.dismiss()
+            val bundle = Bundle().apply {
+                putString("name","")
+            }
+            findNavController(R.id.frameContainerMain).navigate(R.id.createRecipeFragment,bundle)
+        }
+
+        relAddRecipeWeb?.setOnClickListener {
+            if (Subscription_status==1){
+                if (urlSearch!! <=2){
+                    addRecipeFromWeb()
+                }else{
+                    subscriptionAlertError(this)
+                }
+            }else{
+                addRecipeFromWeb()
+            }
+        }
+        dialogAddRecipe?.show()
+
     }
 
 

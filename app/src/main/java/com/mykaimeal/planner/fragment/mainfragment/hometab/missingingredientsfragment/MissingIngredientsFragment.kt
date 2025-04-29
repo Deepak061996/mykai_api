@@ -120,18 +120,22 @@ class MissingIngredientsFragment : Fragment(), OnItemSelectListener {
 
         binding.tvPurchasedBtn.setOnClickListener{
              clearList()
-            availableIngredientList.clear()
+//            availableIngredientList.clear()
             if (BaseApplication.isOnline(requireActivity())) {
                 if (missingIngredientList.size > 0) {
                     try {
+                        var valueAdd = true
                         var status=false
-                        missingIngredientList.forEach { ingredientsModel ->
-                            if (ingredientsModel.status) {
-                                foodIds.add(ingredientsModel.foodId.toString())
-                                foodName.add(ingredientsModel.food.toString())
-                                statusType.add("1")
-                                availableIngredientList.add(ingredientsModel)
-                                status=true
+                        if (valueAdd){
+                            missingIngredientList.forEach { ingredientsModel ->
+                                if (ingredientsModel.status) {
+                                    foodIds.add(ingredientsModel.foodId.toString())
+                                    foodName.add(ingredientsModel.food.toString())
+                                    statusType.add("1")
+                                    availableIngredientList.add(ingredientsModel)
+                                    status=true
+                                    valueAdd=false
+                                }
                             }
                         }
                         if (status){
