@@ -150,6 +150,17 @@ object BaseApplication {
         return dateFormat.format(date)
     }
 
+    fun formatDateMonth(inputDate: String): String {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+        return try {
+            val date = inputFormat.parse(inputDate)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            inputDate // fallback in case of error
+        }
+    }
+
     fun formatDate(input: String): String? {
         return try {
             // Define the format of the input date string
