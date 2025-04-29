@@ -36,10 +36,10 @@
                 android:layout_below="@+id/crossImages"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:fontFamily="@font/montserrat_semibold"
-                android:text="Save time, save money, eat better"
+                android:fontFamily="@font/inter_bold"
+                android:text="Save Time, Save Money, Eat Better"
                 android:textColor="@color/light_green"
-                android:textSize="@dimen/_17sdp" />
+                android:textSize="@dimen/_15sdp" />
 
             <RelativeLayout
                 android:id="@+id/relSubscriptionFrame"
@@ -53,23 +53,41 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_10sdp">
 
-                    <TextView
-                        android:id="@+id/tvTextNames"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/layOut"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/_20sdp"
-                        android:textAlignment="center"
-                        android:fontFamily="@font/montserrat_semibold"
-                        android:text="You’ve got a gift from\n kai"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp" />
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:fontFamily="@font/inter_semibold"
+                            android:text="You’ve got a gift from"
+                            android:textAlignment="center"
+                            android:textColor="#1F1E1E"
+                            android:textSize="@dimen/_12sdp" />
+
+                        <TextView
+                            android:id="@+id/tvTextNames"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="kai"
+                            android:textAlignment="center"
+                            android:textColor="#1F1E1E"
+                            android:textSize="@dimen/_12sdp" />
+                    </LinearLayout>
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imageProfile"
                         android:layout_width="@dimen/_60sdp"
                         android:layout_height="@dimen/_60sdp"
-                        android:layout_below="@+id/tvTextNames"
+                        android:layout_below="@+id/layOut"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/_35sdp"
                         android:src="@drawable/mask_group_icon"
@@ -90,8 +108,8 @@
                             android:text="7- days free"
                             android:textSize="@dimen/_11sdp"
                             android:drawablePadding="@dimen/_10sdp"
-                            android:fontFamily="@font/montserrat"
-                            android:textColor="@color/black"
+                            android:fontFamily="@font/inter_semibold"
+                            android:textColor="#3C4541"
                             app:drawableStartCompat="@drawable/gift_icon" />
 
                     </RelativeLayout>
@@ -109,8 +127,8 @@
                             android:text="Lifetime 50% of  My-kai"
                             android:textSize="@dimen/_11sdp"
                             android:drawablePadding="@dimen/_10sdp"
-                            android:fontFamily="@font/montserrat"
-                            android:textColor="@color/black"
+                            android:fontFamily="@font/inter_semibold"
+                            android:textColor="#3C4541"
                             app:drawableStartCompat="@drawable/dollar_icon" />
                     </RelativeLayout>
 
@@ -129,9 +147,10 @@
                             android:text="Kai’s secret cookbook"
                             android:textSize="@dimen/_11sdp"
                             android:drawablePadding="@dimen/_10sdp"
-                            android:fontFamily="@font/montserrat"
-                            android:textColor="@color/black"
+                            android:fontFamily="@font/inter_semibold"
+                            android:textColor="#3C4541"
                             app:drawableStartCompat="@drawable/secret_cookbook_icon" />
+
                     </RelativeLayout>
 
                 </RelativeLayout>
@@ -163,9 +182,10 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:background="@drawable/basic_click_bg"
-                            android:fontFamily="@font/poppins"
+                            android:fontFamily="@font/inter_semibold"
                             android:padding="@dimen/_2sdp"
                             android:text="Starter"
+                            android:gravity="center"
                             android:textColor="#121212"
                             android:textSize="@dimen/_11sdp" />
 
@@ -189,7 +209,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:fontFamily="@font/poppins_semibold"
+                            android:fontFamily="@font/inter_semibold"
                             android:text="New to Kai"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_15sdp" />
@@ -209,7 +229,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/imagePrevious"
-                                android:fontFamily="@font/poppins_semibold"
+                                android:fontFamily="@font/inter_semibold"
                                 android:text="$1.99/ Weekly"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_11sdp" />
@@ -234,11 +254,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/popular_click_bg"
-                            android:fontFamily="@font/poppins"
+                            android:background="@drawable/basic_click_bg"
+                            android:fontFamily="@font/inter_semibold"
                             android:padding="@dimen/_2sdp"
+                            android:gravity="center"
                             android:text="Popular"
-                            android:textColor="@color/white"
+                            android:textColor="#121212"
                             android:textSize="@dimen/_11sdp" />
 
                         <ImageView
@@ -261,7 +282,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:fontFamily="@font/poppins_semibold"
+                            android:fontFamily="@font/inter_semibold"
                             android:text="Pro Kai user"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_15sdp" />
@@ -283,7 +304,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/imagePreviousMonthly"
-                                android:fontFamily="@font/poppins_semibold"
+                                android:fontFamily="@font/inter_semibold"
                                 android:text="$5.99/ Monthly"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_11sdp" />
@@ -313,9 +334,11 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:background="@drawable/best_value_icon"
-                            android:fontFamily="@font/poppins"
+                            android:fontFamily="@font/inter_semibold"
+                            android:includeFontPadding="false"
                             android:padding="@dimen/_2sdp"
-                            android:text="Best Plan"
+                            android:text="Best value"
+                            android:gravity="center"
                             android:textColor="#121212"
                             android:textSize="@dimen/_11sdp" />
 
@@ -339,7 +362,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:fontFamily="@font/poppins_semibold"
+                            android:fontFamily="@font/inter_semibold"
                             android:text="Love Kai"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_15sdp" />
@@ -361,7 +384,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/imagePreviousyearly"
-                                android:fontFamily="@font/poppins_semibold"
+                                android:fontFamily="@font/inter_semibold"
                                 android:text="$49.99/ Yearly"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_11sdp" />
@@ -389,6 +412,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:paddingVertical="@dimen/_10sdp"
+                    android:fontFamily="@font/inter_bold"
                     android:text="Start Your 7 days free trial"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
