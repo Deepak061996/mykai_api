@@ -20,7 +20,7 @@ class OrderDetailsScreenFragment : Fragment() {
     private lateinit var binding: FragmentOrderDetailsScreenBinding
     private var orderHistoryModel: MutableList<OrderHistoryModelData> = mutableListOf()
     private var adapterOrderHistoryDetailsItem: AdapterOrderHistoryDetailsItem? = null
-    private lateinit var viewDetails:OrderHistoryModelData
+    private lateinit var orderHistoryModelData:OrderHistoryModelData
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,9 +29,9 @@ class OrderDetailsScreenFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentOrderDetailsScreenBinding.inflate(inflater, container, false)
 
-        viewDetails = (arguments?.getSerializable("viewDetails") as? OrderHistoryModelData)!!
+        orderHistoryModelData = (arguments?.getSerializable("viewDetails") as? OrderHistoryModelData)!!
 
-        Log.d("dfddff","dfdggd"+viewDetails)
+        Log.d("dfddff", "dfdggd$orderHistoryModelData")
 
         val mainActivity = activity as? MainActivity
         mainActivity?.binding?.apply {
@@ -43,11 +43,18 @@ class OrderDetailsScreenFragment : Fragment() {
         binding.rcyOrderHistoryDetails.adapter = adapterOrderHistoryDetailsItem
 
         setupBackNavigation()
-
         initialize()
-
+        setDataInUI()
 
         return binding.root
+    }
+
+    private fun setDataInUI(){
+
+        if (orderHistoryModelData.order?.order_id!=null){
+            binding.tvOrderId.text="Order #"+orderHistoryModelData.order?.order_id.toString()
+        }
+
     }
 
     private fun initialize() {

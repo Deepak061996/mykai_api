@@ -244,6 +244,7 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:background="@drawable/subscription_unclick_bg"
                     android:padding="@dimen/_10sdp">
+
                     <RelativeLayout
                         android:id="@+id/relPopularClick"
                         android:layout_width="match_parent"
@@ -254,12 +255,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/basic_click_bg"
+                            android:background="@drawable/popular_click_bg"
                             android:fontFamily="@font/inter_semibold"
                             android:padding="@dimen/_2sdp"
                             android:gravity="center"
                             android:text="Popular"
-                            android:textColor="#121212"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_11sdp" />
 
                         <ImageView

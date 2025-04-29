@@ -89,9 +89,6 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     private lateinit var spinnerActivityLevel: PowerSpinnerView
     var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> = mutableListOf()
     private lateinit var sessionManagement: SessionManagement
-
-    private var savedfile: File? = null
-    private var generateLinkApp: String? =""
     private var referLink: String =""
 
 
@@ -101,13 +98,13 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         binding=FragmentChristmasCollectionBinding.inflate(layoutInflater, container, false)
         sessionManagement = SessionManagement(requireContext())
         commonWorkUtils = CommonWorkUtils(requireActivity())
-        
+
         (activity as? MainActivity)?.binding?.let {
             it.llIndicator.visibility = View.GONE
             it.llBottomNavigation.visibility = View.GONE
         }
-        
-        
+
+
         viewModel = ViewModelProvider(requireActivity())[CookBookViewModel::class.java]
         cookbookList.clear()
 
@@ -239,7 +236,6 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
     }
 
     private fun initialize() {
-
         if (name!=null){
             binding.tvName.text = name
         }
@@ -251,6 +247,8 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             sessionManagement.setCookBookType("")
             findNavController().navigateUp()
         }
+
+        copyShareInviteLink()
 
         binding.imgThreeDotIcon.setOnClickListener {
             if (binding.cardViewMenuPopUp.visibility == View.VISIBLE) {
@@ -269,10 +267,9 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
 
         binding.relShareCookBook.setOnClickListener{
             if (type=="1"){
+                shareImageWithText("Hey! I am inviting you to download My-Kai App!"+ "\nclick on the link below:\n\n", referLink)
                 binding.cardViewMenuPopUp.visibility = View.GONE
-                shareImageWithText("Hey! I am inviting you to download My-Kai App!"+
-                        "\nclick on the link below:\n\n",
-                    referLink)
+
             }else{
                 commonWorkUtils.alertDialog(requireContext(),ErrorMessage.shareCookBookError,false)
             }
@@ -287,7 +284,7 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             findNavController().navigate(R.id.createRecipeFragment)
         }
 
-        copyShareInviteLink()
+
     }
 
     @SuppressLint("RestrictedApi")
@@ -308,11 +305,15 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
             .appendQueryParameter("ScreenName", "CookBooksType")
             .appendQueryParameter("providerName", providerName)
             .appendQueryParameter("providerImage", providerImage)
+            .appendQueryParameter("af_web_dp", "https://admin.getmykai.com/") // Web fallback URL
             .build()
             .toString()
 
         referLink = fullUrl
         Log.d("AF_TEST", "Custom Raw Link: $referLink")
+
+
+
     }
 
 
@@ -321,8 +322,10 @@ class ChristmasCollectionFragment : Fragment(),OnItemClickListener {
         Glide.with(requireContext())
             .asBitmap() // Request a Bitmap image
             .load(image) // Provide the URL to load the image from
-            .into(object : CustomTarget<Bitmap>() { override fun onResourceReady(resource: Bitmap,
-                                                                                 transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
                 try {
                     // Save the image to a file in the app's external storage
                     val file = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "shared_image.png"

@@ -45,10 +45,24 @@ class SplashActivity : AppCompatActivity() {
         // Initialize screen actions
         viewModel = ViewModelProvider(this)[SubscriptionPlanViewModel::class.java]
 
+//        // Subscribe to deep link
+//        AppsFlyerLib.getInstance().subscribeForDeepLink { result ->
+//            Log.d("AF_DEEP_LINK", "Data: ${result.deepLink?.clickEvent}")
+//
+//            val deepLinkData = result.deepLink?.clickEvent
+//
+//            // You can pass the data to MainActivity
+//            val intent = Intent(this@SplashActivity, MainActivity::class.java)
+//            intent.putExtra("deep_link_data", deepLinkData.toString()) // safely handle nulls if needed
+//            startActivity(intent)
+//            finish()
+//        }
+
+//        handlingDeepLink()
+
         if (sessionManagement.getSubscriptionId().toString().equals("",true)){
             initialize()
         }else{
-
             Log.d("****", "subscription_id ${sessionManagement.getSubscriptionId()}")
             Log.d("**** ", "subscription_PurchaseToken ${sessionManagement.getPurchaseToken()}")
             Log.d("****", "planType $sessionManagement.getPlanType()")
@@ -90,11 +104,35 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
+
     private fun showAlert(message: String?, status: Boolean) {
         alertError(this, message, status)
     }
 
+    private fun handlingDeepLink() {
+        // Get the intent that started this activity
+        val intent = intent
+        // Check if the intent contains a URI (deep link)
+        if (intent?.action == Intent.ACTION_VIEW) {
+            val data: Uri? = intent.data
+            if (data != null && data.scheme == "https" && data.host == "mykaimealplanner.onelink.me") {
+
+                Log.d("AppsFlyer22", "profile")
+            /*    val propertyId = data.getQueryParameter("Referrer")
+                // Now you can use the propertyId in your activity
+                // Fetch property details using the propertyId
+                val intent = Intent(this, AuthActivity::class.java)
+             *//*   intent.putExtra("propertyId",propertyId)
+                intent.putExtra("propertyMile","")*//*
+                startActivity(intent)*/
+            }
+        }
+    }
+
     private fun initialize() {
+
+
+
 
 
         val afDevKey: String = AppsFlyerConstants.afDevKey
@@ -145,15 +183,6 @@ class SplashActivity : AppCompatActivity() {
 
         navigateNext()
 
-
-
-    }
-
-    private fun redirectToPlayStore() {
-        val playStoreIntent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse("https://play.google.com/store/apps/details?id=com.mykaimeal.planner")
-        }
-        startActivity(playStoreIntent)
     }
 
     private fun navigateNext() {

@@ -184,11 +184,12 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
             }
             findNavController().navigate(R.id.orderDetailsScreenFragment,bundle)
         } else {
-            val bundle = Bundle().apply {
-                putString("tracking", "https://tracking.mealme.ai/tracking?id=-OMRihw4FhMILGO035aK")
+            if (orderHistoryModel[position!!].order?.tracking_link!=null){
+                val bundle = Bundle().apply {
+                    putString("tracking",orderHistoryModel[position].order?.tracking_link )
+                }
+                findNavController().navigate(R.id.trackOrderScreenFragment, bundle)
             }
-            findNavController().navigate(R.id.trackOrderScreenFragment, bundle)
-
         }
 
     }

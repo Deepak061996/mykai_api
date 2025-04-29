@@ -748,7 +748,7 @@ class CookBookFragment : Fragment(), OnItemClickListener, OnItemSelectListener {
             }else{
                 sessionManagement.setCookBookId(cookbookList[position!!].id.toString())
                 sessionManagement.setCookBookName(cookbookList[position].name)
-                sessionManagement.setCookBookImage(cookbookList[position].image)
+                sessionManagement.setCookBookImage("https://admin.getmykai.com"+cookbookList[position].image)
                 sessionManagement.setCookBookType(cookbookList[position].status.toString())
                 findNavController().navigate(R.id.christmasCollectionFragment)
             }

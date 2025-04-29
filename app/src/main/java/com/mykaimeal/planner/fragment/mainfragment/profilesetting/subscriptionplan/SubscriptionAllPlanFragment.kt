@@ -76,7 +76,6 @@ class SubscriptionAllPlanFragment : Fragment() {
             llBottomNavigation.visibility = View.GONE
         }
 
-
         viewModel = ViewModelProvider(requireActivity())[SubscriptionPlanViewModel::class.java]
 
         binding.rlNextBtn.isClickable=false
@@ -85,9 +84,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         sessionManagement = SessionManagement(requireContext())
 
         backButton()
-
         initialize()
-
         startBillingApi()
 
         return binding.root
@@ -121,10 +118,10 @@ class SubscriptionAllPlanFragment : Fragment() {
                 .error(R.drawable.mask_group_icon)
                 .into(binding.imageProfile)
         }
-        if (sessionManagement.getUserName() != null) {
+        /*if (sessionManagement.getUserName() != null) {
 //            binding.tvTextNames.text = "You’ve got a gift from\n"+sessionManagement.getUserName()
             binding.tvSecretCookBook.text = sessionManagement.getUserName()+"secret cookbook"
-        }
+        }*/
         binding.crossImages.setOnClickListener{
             findNavController().navigateUp()
         }
@@ -134,6 +131,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         binding.relSubscriptionBasic.setOnClickListener {
             selectPlan(
                 binding.relSubscriptionBasic,
+                binding.tvPopular,
                 binding.imgBasicClick,
                 binding.imagePrevious,
                 binding.tvNewKai,
@@ -147,6 +145,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         binding.relPopularPlan.setOnClickListener {
             selectPlan(
                 binding.relPopularPlan,
+                binding.tvPopular,
                 binding.imgPopularClick,
                 binding.imagePreviousMonthly,
                 binding.tvProkaiUser,
@@ -161,6 +160,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         binding.relBestPlan.setOnClickListener {
             selectPlan(
                 binding.relBestPlan,
+                binding.tvPopular,
                 binding.imgBaseClick,
                 binding.imagePreviousyearly,
                 binding.tvLovekaiUser,
@@ -232,7 +232,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         })
     }
 
-    private fun selectPlan(selectedPlan: View, selectedImage: ImageView, crossImage: ImageView, selectedUserText: TextView, selectedDollarText: TextView, otherPlans: List<View>, otherCroseImage: List<ImageView>, otherImages: List<ImageView>, otherUserTexts: List<TextView>, otherDollarTexts: List<TextView>, planIDUser:String,planTypeStatus:String) {
+    private fun selectPlan(selectedPlan: View, tvPopular: TextView,selectedImage: ImageView, crossImage: ImageView, selectedUserText: TextView, selectedDollarText: TextView, otherPlans: List<View>, otherCroseImage: List<ImageView>, otherImages: List<ImageView>, otherUserTexts: List<TextView>, otherDollarTexts: List<TextView>, planIDUser:String,planTypeStatus:String) {
         planID=planIDUser
         planType=planTypeStatus
         selectedPlan.setBackgroundResource(R.drawable.subscription_click_bg)
@@ -384,6 +384,7 @@ class SubscriptionAllPlanFragment : Fragment() {
                     when(apiModel.data?.active_plan){
                         AppConstant.Premium_Monthly ->  selectPlan(
                             binding.relPopularPlan,
+                            binding.tvPopular,
                             binding.imgPopularClick,
                             binding.imagePreviousMonthly,
                             binding.tvProkaiUser,
@@ -396,6 +397,7 @@ class SubscriptionAllPlanFragment : Fragment() {
                         )
                         AppConstant.Premium_Annual -> selectPlan(
                             binding.relBestPlan,
+                            binding.tvPopular,
                             binding.imgBaseClick,
                             binding.imagePreviousyearly,
                             binding.tvLovekaiUser,
@@ -407,6 +409,7 @@ class SubscriptionAllPlanFragment : Fragment() {
                             listOf(binding.tvNewDollar, binding.tvNewDollarMonthly),AppConstant.Premium_Annual,"Best")
                         AppConstant.Premium_Weekly ->  selectPlan(
                             binding.relSubscriptionBasic,
+                            binding.tvPopular,
                             binding.imgBasicClick,
                             binding.imagePrevious,
                             binding.tvNewKai,
@@ -419,6 +422,7 @@ class SubscriptionAllPlanFragment : Fragment() {
                         else -> {
                             selectPlan(
                                 binding.relSubscriptionBasic,
+                                binding.tvPopular,
                                 binding.imgBasicClick,
                                 binding.imagePrevious,
                                 binding.tvNewKai,
