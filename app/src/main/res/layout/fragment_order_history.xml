@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.mainfragment.profilesetting.OrderHistoryFragment">
+    tools:context=".fragment.mainfragment.profilesetting.orderhistoryscreen.OrderHistoryFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -56,6 +56,7 @@
                 android:id="@+id/relNoOrders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_centerInParent="true">
 
                 <ImageView

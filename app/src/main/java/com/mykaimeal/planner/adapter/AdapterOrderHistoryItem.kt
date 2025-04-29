@@ -6,12 +6,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.mykaimeal.planner.OnItemClickedListener
-import com.mykaimeal.planner.databinding.AdapterBodyGoalsBinding
 import com.mykaimeal.planner.databinding.AdapterOrderHistoryItemBinding
-import com.mykaimeal.planner.fragment.commonfragmentscreen.allergensIngredients.model.AllergensIngredientModelData
-import com.mykaimeal.planner.model.DataModel
+import com.mykaimeal.planner.fragment.mainfragment.profilesetting.orderhistoryscreen.model.OrderHistoryModelData
 
-class AdapterOrderHistoryItem(private var datalist: List<DataModel>,
+class AdapterOrderHistoryItem(private var datalist: MutableList<OrderHistoryModelData>,
                               private var requireActivity: FragmentActivity,
                               private var onItemClickedListener: OnItemClickedListener): RecyclerView.Adapter<AdapterOrderHistoryItem.ViewHolder>() {
 
@@ -26,7 +24,7 @@ class AdapterOrderHistoryItem(private var datalist: List<DataModel>,
 
         val data= datalist[position]
 
-        if (data.isOpen){
+/*        if (data.isOpen){
             holder.binding.tvTrackOrder.visibility=View.VISIBLE
             holder.binding.tvViewOrder.visibility=View.GONE
         }else{
@@ -36,7 +34,7 @@ class AdapterOrderHistoryItem(private var datalist: List<DataModel>,
 
         holder.binding.tvDate.text=data.title+"• "+data.price+"• "+data.quantity
         holder.binding.tvDelivery.text=data.distance
-        holder.binding.imageData.setImageResource(data.image)
+        holder.binding.imageData.setImageResource(data.image)*/
 
         holder.binding.tvViewOrder.setOnClickListener{
             onItemClickedListener.itemClicked(position,null,"","View")
@@ -50,6 +48,11 @@ class AdapterOrderHistoryItem(private var datalist: List<DataModel>,
 
     override fun getItemCount(): Int {
         return datalist.size
+    }
+
+    fun updateList(dataList: MutableList<OrderHistoryModelData>) {
+        datalist=dataList
+        notifyDataSetChanged()
     }
 
     class ViewHolder(var binding: AdapterOrderHistoryItemBinding) : RecyclerView.ViewHolder(binding.root){

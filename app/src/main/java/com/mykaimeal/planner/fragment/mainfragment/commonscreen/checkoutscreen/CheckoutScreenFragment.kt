@@ -423,6 +423,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             } else {
                 binding.relCardDetails.visibility = View.GONE
             }
+
             if (it.total != null) {
                 val roundedTotal = it.total.let {
                     BigDecimal(it).setScale(2, RoundingMode.HALF_UP).toDouble()

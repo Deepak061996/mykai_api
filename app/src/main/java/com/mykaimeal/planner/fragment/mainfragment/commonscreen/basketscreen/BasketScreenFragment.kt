@@ -154,7 +154,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         locationManager = requireActivity().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
 
-
         adapter = SuperMarketListAdapter(stores, requireActivity(), this)
         binding.rcvSuperMarket.adapter = adapter
 
