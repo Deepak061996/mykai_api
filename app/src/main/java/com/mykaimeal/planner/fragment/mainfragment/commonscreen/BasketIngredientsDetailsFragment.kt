@@ -78,7 +78,9 @@ class BasketIngredientsDetailsFragment : Fragment() {
             proName=result?.pro_name.toString()
             name=result?.name.toString()
             image=result?.pro_img.toString()
-            unitSize=result?.unit_of_measurement.toString()
+            if (!result?.unit_of_measurement.toString().equals("null",true)){
+                unitSize=result?.unit_of_measurement.toString()
+            }
             price=result?.price.toString()
         }else{
             binding.tvRemoveBasket.visibility=View.GONE
@@ -86,7 +88,9 @@ class BasketIngredientsDetailsFragment : Fragment() {
             proName=result?.name.toString()
             name=result?.name_query.toString()
             image=result?.image.toString()
-            unitSize=result?.unit_of_measurement.toString()
+            if (!result?.unit_of_measurement.toString().equals("null",true)){
+                unitSize=result?.unit_of_measurement.toString()
+            }
             price=result?.formatted_price.toString()
         }
 

@@ -55,8 +55,8 @@ data class Store(
 data class Address(
     val city: String?,
     val country: String?,
-    val lat: Double?,
-    val lon: Double?,
+    val latitude: Double?=0.0,
+    val longitude: Double?=0.0,
     val state: String?,
     val street_addr: String?,
     val zipcode: String?

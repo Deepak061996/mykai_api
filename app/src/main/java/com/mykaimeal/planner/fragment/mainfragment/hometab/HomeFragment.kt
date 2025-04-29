@@ -112,11 +112,6 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 llIndicator.visibility = View.VISIBLE
                 llBottomNavigation.visibility = View.VISIBLE
             }
-            if (main.Subscription_status==0){
-                binding.imgFreeTrial.visibility=View.GONE
-            }else{
-                binding.imgFreeTrial.visibility=View.GONE
-            }
         }
 
         cookbookList.clear()
@@ -195,8 +190,14 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
     private fun handleApiResponse(result: NetworkResult<String>,type:String) {
         when (result) {
             is NetworkResult.Success -> handleSuccessResponse(result.data.toString(),type)
-            is NetworkResult.Error -> showAlert(result.message, false)
-            else -> showAlert(result.message, false)
+            is NetworkResult.Error ->{
+                subscriptionImage()
+                showAlert(result.message, false)
+            }
+            else -> {
+                subscriptionImage()
+                showAlert(result.message, false)
+            }
         }
     }
 
@@ -268,6 +269,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         try {
             val apiModel = Gson().fromJson(data, HomeApiResponse::class.java)
             Log.d("@@@ Recipe Details ", "message :- $data")
+            subscriptionImage()
             if (apiModel.code == 200 && apiModel.success) {
                 if (type.equals("HomeData",true)){
                     showData(apiModel.data)
@@ -281,7 +283,16 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             }
 
         } catch (e: Exception) {
+            subscriptionImage()
             showAlert(e.message, false)
+        }
+    }
+
+    private fun subscriptionImage(){
+        if ((activity as MainActivity?)?.Subscription_status==1){
+            binding.imgFreeTrial.visibility=View.VISIBLE
+        }else{
+            binding.imgFreeTrial.visibility=View.GONE
         }
     }
 
@@ -298,6 +309,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         try {
             viewModel.setData(data!!)
             userDataLocal = data
+
             if (userDataLocal.userData != null && userDataLocal.userData!!.size > 0) {
                 binding.relPlanMeal.visibility = View.GONE
                 binding.llRecipesCooked.visibility = View.VISIBLE
@@ -410,11 +422,6 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                     binding.tvMonthlySavingsDesc.text="Good job ${sessionManagement.getUserName()}, you are on track to save ${it} this month"
                 }
             }
-
-
-
-//            getLatLong()
-
 
             userDataLocal.is_supermarket?.let {
                 if (it==1){
