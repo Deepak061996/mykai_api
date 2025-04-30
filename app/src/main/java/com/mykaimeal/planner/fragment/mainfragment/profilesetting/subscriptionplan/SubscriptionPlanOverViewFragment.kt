@@ -60,6 +60,7 @@ class SubscriptionPlanOverViewFragment : Fragment() {
     private lateinit var viewModel: SubscriptionPlanViewModel
     private var adapters: AdapterOnBoardingSubscriptionItem? = null
     private var lastPlan:String=""
+    private var screen:String=""
     private var billingClient: BillingClient? = null
     private lateinit var sessionManagement: SessionManagement
 
@@ -70,11 +71,15 @@ class SubscriptionPlanOverViewFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentSubscriptionPlanOverViewBinding.inflate(layoutInflater, container, false)
 
-        (activity as? MainActivity)?.binding?.apply {
-            llIndicator.visibility = View.GONE
-            llBottomNavigation.visibility = View.GONE
-        }
+        screen= arguments?.getString("screen","")?:""
 
+
+        if (!screen.equals("login",true)){
+            (activity as? MainActivity)?.binding?.apply {
+                llIndicator.visibility = View.GONE
+                llBottomNavigation.visibility = View.GONE
+            }
+        }
         viewModel = ViewModelProvider(requireActivity())[SubscriptionPlanViewModel::class.java]
         sessionManagement = SessionManagement(requireContext())
 
@@ -82,7 +87,7 @@ class SubscriptionPlanOverViewFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigateUp()
+                    movToScreen()
                 }
             })
 
@@ -290,16 +295,18 @@ class SubscriptionPlanOverViewFragment : Fragment() {
                 // Move to the next item
                 binding.viewpager.currentItem += 1
             } else {
-                findNavController().navigate(R.id.homeSubscriptionAllPlanFragment)
+                val bundle = Bundle()
+                bundle.putString("screen",screen)
+                findNavController().navigate(R.id.homeSubscriptionAllPlanFragment,bundle)
             }
         }
 
         binding.crossImages.setOnClickListener {
-            findNavController().navigateUp()
+            movToScreen()
         }
 
         binding.imageBackIcon.setOnClickListener {
-            findNavController().navigateUp()
+            movToScreen()
         }
 
         datalist.clear()
@@ -352,6 +359,14 @@ class SubscriptionPlanOverViewFragment : Fragment() {
             } else {
                 alertError(requireContext(), ErrorMessage.networkError, false)
             }
+        }
+    }
+
+    private fun movToScreen(){
+        if (screen.equals("login",true)){
+            findNavController().navigate(R.id.homeSubscriptionAllPlanFragment)
+        }else{
+            findNavController().navigateUp()
         }
     }
 

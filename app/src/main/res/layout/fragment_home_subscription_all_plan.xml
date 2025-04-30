@@ -284,7 +284,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:fontFamily="@font/inter_semibold"
-                            android:text="Pro Kai user"
+                            android:text="Pro Kai User"
                             android:textColor="@color/black"
                             android:textSize="@dimen/_15sdp" />
 
@@ -414,7 +414,7 @@
                     android:layout_centerInParent="true"
                     android:paddingVertical="@dimen/_10sdp"
                     android:fontFamily="@font/inter_bold"
-                    android:text="Start Your 7 days free trial"
+                    android:text="Start your 7 day free trial"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
 

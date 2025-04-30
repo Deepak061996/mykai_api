@@ -90,8 +90,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
     private lateinit var endDate: Date
     private lateinit var commonWorkUtils: CommonWorkUtils
     private lateinit var spinnerActivityLevel: PowerSpinnerView
-    var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> =
-        mutableListOf()
+    var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> = mutableListOf()
     private lateinit var sessionManagement: SessionManagement
     private var referLink: String = ""
 
@@ -137,11 +136,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
 
         backButton()
 
-        if ((activity as? MainActivity)?.Subscription_status == 1) {
-            binding.btnLock.visibility = View.VISIBLE
-        } else {
-            binding.btnLock.visibility = View.GONE
-        }
+
 
         binding.btnLock.setOnClickListener {
             (activity as? MainActivity)?.subscriptionAlertError(requireContext())
@@ -188,11 +183,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
             val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                if (BaseApplication.isOnline(requireActivity())) {
-                    getCookBookTypeList()
-                } else {
-                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-                }
+                getCookBookTypeList()
             } else {
                 handleError(apiModel.code,apiModel.message)
             }
@@ -235,6 +226,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
             is NetworkResult.Error -> {
                 binding.rcyChristmasCollection.visibility = View.GONE
                 binding.tvnoData.visibility = View.VISIBLE
+                binding.btnLock.visibility = View.GONE
                 showAlert(result.message, false)
             }
 
@@ -282,12 +274,17 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
                 localData.clear()
                 apiModel.data?.let { localData.addAll(it) }
                 if (localData.size > 0) {
-                    adapterCookBookDetailsItem =
-                        AdapterCookBookDetailsItem(localData, requireActivity(), this)
+                    adapterCookBookDetailsItem = AdapterCookBookDetailsItem(localData, requireActivity(), this)
                     binding.rcyChristmasCollection.adapter = adapterCookBookDetailsItem
                     binding.rcyChristmasCollection.visibility = View.VISIBLE
                     binding.tvnoData.visibility = View.GONE
+                    if ((activity as? MainActivity)?.Subscription_status == 1) {
+                        binding.btnLock.visibility = View.VISIBLE
+                    } else {
+                        binding.btnLock.visibility = View.GONE
+                    }
                 } else {
+                    binding.btnLock.visibility = View.GONE
                     binding.rcyChristmasCollection.visibility = View.GONE
                     binding.tvnoData.visibility = View.VISIBLE
                 }

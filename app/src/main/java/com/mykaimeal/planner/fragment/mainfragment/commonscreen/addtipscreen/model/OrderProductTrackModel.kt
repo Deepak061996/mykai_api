@@ -71,8 +71,8 @@ data class GetTipModel(
 )
 
 data class GetTipModelData(
-    val tip10: Double,
-    val tip15: Double,
-    val tip20: Double,
-    val tip25: Double
+    val tip10: Double?,
+    val tip15: Double?,
+    val tip20: Double?,
+    val tip25: Double?
 )

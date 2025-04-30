@@ -484,10 +484,10 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
 
         // 🔹 Disable map movement
         mMap?.uiSettings?.apply {
-            isScrollGesturesEnabled = false  // ❌ Disable scrolling
-            isZoomGesturesEnabled = false    // ❌ Disable zooming
-            isTiltGesturesEnabled = false    // ❌ Disable tilt
-            isRotateGesturesEnabled = false  // ❌ Disable rotation
+            isScrollGesturesEnabled = false
+            isZoomGesturesEnabled = false
+            isTiltGesturesEnabled = false
+            isRotateGesturesEnabled = false
         }
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(newYork, 20f))
 

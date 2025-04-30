@@ -1,6 +1,5 @@
 package com.mykaimeal.planner.fragment.authfragment.notificationmodel
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
-import com.mykaimeal.planner.activity.MainActivity
+import com.mykaimeal.planner.R
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.databinding.FragmentTurnOnNotificationsBinding
@@ -95,14 +94,11 @@ class TurnOnNotificationsFragment : Fragment() {
                                 val gson = Gson()
                                 val notificationModel = gson.fromJson(it.data, NotificationModel::class.java)
                                 if (notificationModel.code == 200 && notificationModel.success) {
-                                    val intent = Intent(requireActivity(), MainActivity::class.java)
-                                    startActivity(intent)
+                                    val bundle = Bundle()
+                                    bundle.putString("screen","login")
+                                    findNavController().navigate(R.id.subscriptionPlanOverViewFragment,bundle)
                                 } else {
-                                    if (notificationModel.code == ErrorMessage.code) {
-                                        showAlertFunction(notificationModel.message, true)
-                                    } else {
-                                        showAlertFunction(notificationModel.message, false)
-                                    }
+                                  handleError(notificationModel.code,notificationModel.message)
                                 }
                             }catch (e:Exception){
                                 Log.d("Notifications","message:---"+e.message)
@@ -119,6 +115,14 @@ class TurnOnNotificationsFragment : Fragment() {
                     }
                 }, status
             )
+        }
+    }
+
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlertFunction(message, true)
+        } else {
+            showAlertFunction(message, false)
         }
     }
 

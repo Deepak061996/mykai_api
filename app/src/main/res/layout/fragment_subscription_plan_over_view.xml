@@ -548,7 +548,7 @@ reinvented version of your favorite meal."
                          android:paddingHorizontal="@dimen/_50sdp"
                          android:paddingVertical="@dimen/_8sdp"
                          android:fontFamily="@font/inter_bold"
-                         android:text="Start Your 7 days free trial"
+                         android:text="Start your 7 day free trial"
                          android:textColor="@color/white"
                          android:textSize="@dimen/_12sdp" />
 

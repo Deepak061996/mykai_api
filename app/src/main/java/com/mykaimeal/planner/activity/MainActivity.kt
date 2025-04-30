@@ -471,62 +471,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                     val bundle= Bundle()
                     bundle.putString("Screen","share")
                     navController.navigate(R.id.christmasCollectionFragment,bundle)
-//                    if (BaseApplication.isOnline(this)) {
-//                        updateCookBookId(cookbooksId,itemName)
-//                    } else {
-//                        BaseApplication.alertError(this, ErrorMessage.networkError, false)
-//                    }
                 }
             }
         }
     }
 
-    private fun updateCookBookId(cookbooksId: String?,cookbooksName: String?) {
-        BaseApplication.showMe(this)
-        lifecycleScope.launch {
-            mealRoutineViewModel.updateCookBookApi({
-                BaseApplication.dismissMe()
-                handleApiSuccessResponse(it,cookbooksId,cookbooksName)
-            }, cookbooksId)
-        }
-    }
-
-    private fun handleApiSuccessResponse(result: NetworkResult<String>,cookbooksId:String?,cookbooksName:String?) {
-        when (result) {
-            is NetworkResult.Success -> handleApiSuccResponse(result.data.toString(),cookbooksId,cookbooksName)
-            is NetworkResult.Error -> {
-                showAlert(result.message, false)
-            }
-            else -> showAlert(result.message, false)
-        }
-    }
-
-
-    @SuppressLint("SetTextI18n", "ResourceAsColor")
-    private fun handleApiSuccResponse(data: String,cookbooksId:String?,cookbooksName:String?) {
-        try {
-            val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
-            Log.d("@@@ addMea List ", "message :- $data")
-            if (apiModel.code == 200 && apiModel.success) {
-                val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
-                navGraph.setStartDestination(R.id.homeFragment)
-                navController.graph = navGraph
-                sessionManagement.setCookBookId(cookbooksId.toString())
-                sessionManagement.setCookBookName(cookbooksName.toString())
-                navController.navigate(R.id.christmasCollectionFragment)
-            } else {
-                handleError(apiModel.code,apiModel.message)
-            }
-        } catch (e: Exception) {
-            showAlert(e.message, false)
-        }
-    }
-
-
-    private fun openCookbookDetails(id: String, name: String?) {
-        // Launch fragment or activity
-        Log.d("DeepLink", "Navigating to cookbook ID: $id, Name: $name")
-    }
 
    /* private fun handleDeepLink(intent: Intent?) {
         intent?.data?.let { uri ->
@@ -615,13 +564,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         rlSearchRecipe.setOnClickListener {
             if (etPasteURl.text.toString().isEmpty()) {
                 commonWorkUtils.alertDialog(this, ErrorMessage.pasteUrl, false)
-            }/* else if (isValidUrl(etPasteURl.text.toString().trim())){
-                commonWorkUtils.alertDialog(this, ErrorMessage.validUrl, false)
-            }*/ else {
-//                val bundle = Bundle().apply {
-//                    putString("url",etPasteURl.text.toString().trim())
-//                }
-//                findNavController(R.id.frameContainerMain).navigate(R.id.webViewByUrlFragment,bundle)
+            }else {
                 dialogWeb.dismiss()
                 dialogAddRecipe?.dismiss()
                 val intent = Intent(this, WebViewByUrlActivity::class.java)
@@ -654,6 +597,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             val llDinner = findViewById<LinearLayout>(R.id.llDinner)
             val llSnaks = findViewById<LinearLayout>(R.id.llSnaks)
             val llBrunch = findViewById<LinearLayout>(R.id.llBrunch)
+            val layRoot = findViewById<RelativeLayout>(R.id.layRoot)
 
             // Text
             val textBreakfast = findViewById<TextView>(R.id.textBreakfast)
@@ -691,6 +635,10 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             setMealClickListener(llSnaks, viewSnaks, textSnaks, ErrorMessage.Snacks)
             setMealClickListener(llBrunch, viewBrunch, textBrunch, ErrorMessage.Brunch)
 
+
+            layRoot.setOnClickListener {
+                dismiss()
+            }
 
             recipesModel?.let { model ->
                 model.Breakfast?.let { breakfast ->
@@ -1242,9 +1190,9 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             }
 
             R.id.llAddRecipe -> {
-//                addRecipeAlert(this@MainActivity)
-                findNavController(R.id.frameContainerMain).navigate(R.id.searchFragmentDummy)
-                binding.cardViewAddRecipe.visibility = View.VISIBLE
+                addRecipeAlert(this@MainActivity)
+//                findNavController(R.id.frameContainerMain).navigate(R.id.searchFragmentDummy)
+//                binding.cardViewAddRecipe.visibility = View.VISIBLE
             }
 
             R.id.llPlan -> {
@@ -1686,7 +1634,9 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             dialog.dismiss()
             dialogAddRecipe?.dismiss()
             binding.cardViewAddRecipe.visibility=View.GONE
-            findNavController(R.id.frameContainerMain).navigate(R.id.homeSubscriptionAllPlanFragment)
+            val bundle = Bundle()
+            bundle.putString("screen","main")
+            findNavController(R.id.frameContainerMain).navigate(R.id.homeSubscriptionAllPlanFragment,bundle)
         }
 
         btnCancel.setOnClickListener {

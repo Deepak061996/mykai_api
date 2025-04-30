@@ -1,6 +1,7 @@
 package com.mykaimeal.planner.fragment.mainfragment.profilesetting.subscriptionplan
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -66,14 +67,20 @@ class SubscriptionAllPlanFragment : Fragment() {
     private var planType = "Starter"
     private lateinit var viewModel: SubscriptionPlanViewModel
     private lateinit var sessionManagement: SessionManagement
+    private var screen:String=""
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding=FragmentHomeSubscriptionAllPlanBinding.inflate(layoutInflater, container, false)
+        screen= arguments?.getString("screen","")?:""
 
-        (activity as? MainActivity)?.binding?.apply {
-            llIndicator.visibility = View.GONE
-            llBottomNavigation.visibility = View.GONE
+
+        if (!screen.equals("login",true)){
+            (activity as? MainActivity)?.binding?.apply {
+                llIndicator.visibility = View.GONE
+                llBottomNavigation.visibility = View.GONE
+            }
         }
 
         viewModel = ViewModelProvider(requireActivity())[SubscriptionPlanViewModel::class.java]
@@ -84,7 +91,9 @@ class SubscriptionAllPlanFragment : Fragment() {
         sessionManagement = SessionManagement(requireContext())
 
         backButton()
+
         initialize()
+
         startBillingApi()
 
         return binding.root
@@ -104,7 +113,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigateUp()
+                    movToPlan()
                 }
             })
     }
@@ -118,14 +127,12 @@ class SubscriptionAllPlanFragment : Fragment() {
                 .error(R.drawable.mask_group_icon)
                 .into(binding.imageProfile)
         }
-        /*if (sessionManagement.getUserName() != null) {
-//            binding.tvTextNames.text = "You’ve got a gift from\n"+sessionManagement.getUserName()
-            binding.tvSecretCookBook.text = sessionManagement.getUserName()+"secret cookbook"
-        }*/
-        binding.crossImages.setOnClickListener{
-            findNavController().navigateUp()
-        }
 
+
+
+        binding.crossImages.setOnClickListener{
+            movToPlan()
+        }
 
         // Usage
         binding.relSubscriptionBasic.setOnClickListener {
@@ -233,6 +240,17 @@ class SubscriptionAllPlanFragment : Fragment() {
                 }
             }
         })
+    }
+
+
+    private fun movToPlan(){
+        if (screen.equals("login",true)){
+            val intent = Intent(requireActivity(), MainActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }else{
+            findNavController().navigateUp()
+        }
     }
 
     private fun selectPlan(selectedPlan: View, tvPopular: TextView,selectedImage: ImageView, crossImage: ImageView, selectedUserText: TextView, selectedDollarText: TextView, otherPlans: List<View>, textshow: List<TextView>, otherCroseImage: List<ImageView>, otherImages: List<ImageView>, otherUserTexts: List<TextView>, otherDollarTexts: List<TextView>, planIDUser:String,planTypeStatus:String) {
@@ -386,8 +404,12 @@ class SubscriptionAllPlanFragment : Fragment() {
                     binding.rlNextBtn.isClickable=false
                     binding.rlNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
                     Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_SHORT).show()
+                    if (screen.equals("login",true)){
+                        val intent = Intent(requireActivity(), MainActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
                 }else{
-
                     when(apiModel.data?.active_plan){
                         AppConstant.Premium_Monthly ->  selectPlan(
                             binding.relPopularPlan,
@@ -447,14 +469,17 @@ class SubscriptionAllPlanFragment : Fragment() {
                                 listOf(binding.tvNewDollarMonthly, binding.tvNewDollaryearly),AppConstant.Premium_Weekly,"Starter")
                         }
                     }
-
-
                     if (apiModel.data?.Subscription_status==1){
                         binding.rlNextBtn.isClickable=true
                         binding.rlNextBtn.setBackgroundResource(R.drawable.green_btn_background)
                     }else{
                         binding.rlNextBtn.isClickable=false
                         binding.rlNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+                    }
+                    if (screen.equals("login",true)){
+                        val intent = Intent(requireActivity(), MainActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().finish()
                     }
                 }
             } else {
