@@ -33,7 +33,7 @@
                 android:src="@drawable/mask_group_icon"
                 android:layout_centerHorizontal="true"
                 app:civ_border_color="@color/orange"
-                app:civ_border_width="@dimen/_2sdp" />
+                app:civ_border_width="@dimen/_1sdp" />
             <TextView
                 android:id="@+id/tvTextNames"
                 android:layout_width="match_parent"

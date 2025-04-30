@@ -117,13 +117,9 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 llIndicator.visibility = View.VISIBLE
                 llBottomNavigation.visibility = View.VISIBLE
             }
-            if (main.Subscription_status == 1) {
-                binding.imgFreeTrial.visibility = View.VISIBLE
-            } else {
-                binding.imgFreeTrial.visibility = View.GONE
-            }
         }
 
+        subscriptionHeader()
         cookbookList.clear()
         val data =
             com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data(
@@ -150,6 +146,16 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
 
 
         return binding.root
+    }
+
+
+
+    private fun subscriptionHeader(){
+        if ((activity as MainActivity?)?.Subscription_status == 1) {
+            binding.imgFreeTrial.visibility = View.VISIBLE
+        } else {
+            binding.imgFreeTrial.visibility = View.GONE
+        }
     }
 
     private fun backButton() {
@@ -340,11 +346,13 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             viewModel.setData(data!!)
             userDataLocal = data
 
+
+            subscriptionHeader()
+
             if (userDataLocal.userData != null && userDataLocal.userData!!.size > 0) {
                 binding.relPlanMeal.visibility = View.GONE
                 binding.llRecipesCooked.visibility = View.VISIBLE
-                recipeCookedAdapter =
-                    RecipeCookedAdapter(userDataLocal.userData, requireActivity(), this)
+                recipeCookedAdapter = RecipeCookedAdapter(userDataLocal.userData, requireActivity(), this)
                 binding.rcyRecipesCooked.adapter = recipeCookedAdapter
             } else {
                 binding.relPlanMeal.visibility = View.VISIBLE
@@ -359,13 +367,6 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 binding.relCheckSavingsss.visibility = View.GONE
             }
 
-            /*    if (userDataLocal.graph_value == 0) {
-                    binding.relMonthlySavingsss.visibility = View.VISIBLE
-                    binding.relCheckSavingsss.visibility = View.GONE
-                } else {
-                    binding.relMonthlySavingsss.visibility = View.GONE
-                    binding.relCheckSavingsss.visibility = View.VISIBLE
-                }*/
 
             if (userDataLocal.date != null && !userDataLocal.date.equals("", true)) {
                 val name = BaseApplication.getColoredSpanned(
@@ -473,9 +474,6 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                     }
                 }
             }
-
-
-
 
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -637,7 +635,9 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             }
 
             R.id.imgFreeTrial->{
-                findNavController().navigate(R.id.subscriptionPlanOverViewFragment)
+                val bundle = Bundle()
+                bundle.putString("screen","main")
+                findNavController().navigate(R.id.subscriptionPlanOverViewFragment,bundle)
             }
 
           /*  R.id.imgFreeTrial -> {

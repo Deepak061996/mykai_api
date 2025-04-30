@@ -136,7 +136,7 @@
                     android:layout_height="@dimen/_70sdp"
                     android:clickable="false"
                     app:civ_border_color="@color/light_green"
-                    app:civ_border_width="@dimen/_2sdp"
+                    app:civ_border_width="@dimen/_1sdp"
                     android:src="@drawable/mask_group_icon" />
 
                 <RelativeLayout

@@ -19,7 +19,7 @@
             android:layout_height="@dimen/_40sdp"
             android:src="@drawable/mask_group_icon"
             app:civ_border_color="@color/light_green"
-            app:civ_border_width="@dimen/_2sdp" />
+            app:civ_border_width="@dimen/_1sdp" />
 
         <TextView
             android:id="@+id/tv_name"

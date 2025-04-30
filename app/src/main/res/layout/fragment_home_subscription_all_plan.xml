@@ -23,8 +23,8 @@
 
             <ImageView
                 android:id="@+id/crossImages"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_15sdp"
+                android:layout_height="@dimen/_15sdp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/_15sdp"
                 android:src="@drawable/gray_circle_fill" />
@@ -93,7 +93,7 @@
                         android:layout_marginTop="@dimen/_35sdp"
                         android:src="@drawable/mask_group_icon"
                         app:civ_border_color="@color/orange"
-                        app:civ_border_width="@dimen/_2sdp" />
+                        app:civ_border_width="@dimen/_1sdp" />
 
                     <RelativeLayout
                         android:id="@+id/relFreeTrials"

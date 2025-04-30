@@ -71,6 +71,7 @@ class SubscriptionAllPlanFragment : Fragment() {
     private var screen:String=""
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding=FragmentHomeSubscriptionAllPlanBinding.inflate(layoutInflater, container, false)
@@ -95,6 +96,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         if (!sessionManagement.getProviderName().equals("",true)){
             if (!sessionManagement.getProviderName().equals("null",true)){
                 binding.tvTextNames.text = sessionManagement.getProviderName()
+                binding.tvSecretCookBook.text = sessionManagement.getProviderName()+"’s secret cookbook"
             }
         }
 
@@ -141,16 +143,6 @@ class SubscriptionAllPlanFragment : Fragment() {
         binding.imagePrevious.paintFlags = binding.imagePrevious.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         binding.imagePreviousMonthly.paintFlags = binding.imagePreviousMonthly.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         binding.imagePreviousyearly.paintFlags = binding.imagePreviousyearly.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
-
-        if (sessionManagement.getImage() != null) {
-            Glide.with(requireContext())
-                .load(BaseUrl.imageBaseUrl + sessionManagement.getImage())
-                .placeholder(R.drawable.mask_group_icon)
-                .error(R.drawable.mask_group_icon)
-                .into(binding.imageProfile)
-        }
-
 
 
         binding.crossImages.setOnClickListener{

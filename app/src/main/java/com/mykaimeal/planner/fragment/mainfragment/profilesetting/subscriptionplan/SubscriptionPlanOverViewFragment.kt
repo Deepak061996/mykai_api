@@ -61,6 +61,7 @@ class SubscriptionPlanOverViewFragment : Fragment() {
     private var adapters: AdapterOnBoardingSubscriptionItem? = null
     private var lastPlan:String=""
     private var screen:String=""
+    private var currentIndex:Int=0
     private var billingClient: BillingClient? = null
     private lateinit var sessionManagement: SessionManagement
 
@@ -275,10 +276,11 @@ class SubscriptionPlanOverViewFragment : Fragment() {
 
 
      private fun currentOnBoardingIndicator(index: Int) {
+         currentIndex = index // Save index
          val childCount = binding.layOnboardingIndicator.childCount
          for (i in 0 until childCount) {
              val imageView = binding.layOnboardingIndicator.getChildAt(i) as ImageView
-             val drawableRes = if (i == index) {
+             val drawableRes = if (i == currentIndex ) {
                  R.drawable.subs_indicator_active
              } else {
                  R.drawable.subs_indicator_inactive
@@ -322,14 +324,14 @@ class SubscriptionPlanOverViewFragment : Fragment() {
 
         datalist.add(OnSubscriptionModel(R.drawable.image_5, false))
 
-        adapters = AdapterOnBoardingSubscriptionItem(datalist)
+        adapters = AdapterOnBoardingSubscriptionItem(requireContext(),datalist,sessionManagement.getProviderName(),sessionManagement.getProviderImage())
         binding.viewpager.adapter = adapters
         binding.viewpager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
         /// set indicator for onboarding
         setUpOnBoardingIndicator()
         /// set current indicator position
-        currentOnBoardingIndicator(0)
+        currentOnBoardingIndicator(currentIndex)
 
         viewPagerFunctionImpl()
 
