@@ -41,7 +41,7 @@ class AddTipScreenFragment : Fragment() {
     private var totalPrices = ""
     private var cardId = ""
     private var status = ""
-    private var selectedTipPercent: Int? = null // or you can use String if needed
+    private var selectedTipPercent: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -92,7 +92,6 @@ class AddTipScreenFragment : Fragment() {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
 
-
         binding.etSignEmailPhone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -109,16 +108,24 @@ class AddTipScreenFragment : Fragment() {
             }
         })
 
-        binding.linearNotNow.setOnClickListener { updateSelection(binding.linearNotNow) }
-        binding.llTenPerc.setOnClickListener { updateSelection(binding.llTenPerc) }
-        binding.llFifteenPerc.setOnClickListener { updateSelection(binding.llFifteenPerc) }
-        binding.llTwentyPerc.setOnClickListener { updateSelection(binding.llTwentyPerc) }
-        binding.lltwentyFivePerc.setOnClickListener { updateSelection(binding.lltwentyFivePerc) }
+        setupListeners()
 
         binding.rlProceedAndPay.setOnClickListener {
+
+            // (Optional) Log selected tip amount
+            val selectedTipAmount = when (selectedTipPercent) {
+                10 -> binding.tvDollarSeven.text.toString()
+                15 -> binding.tvDollarNine.text.toString()
+                20 -> binding.tvDollarTwelve.text.toString()
+                25 -> binding.tvDollarFifteen.text.toString()
+                else -> "$0"
+            }
+
+            Log.d("SelectedTip", "Tip $selectedTipPercent% -> $selectedTipAmount")
+
             if (status.isNotEmpty()) {
                 if (BaseApplication.isOnline(requireContext())) {
-                    paymentCreditDebitApi()
+                    paymentCreditDebitApi(selectedTipAmount)
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
@@ -193,7 +200,68 @@ class AddTipScreenFragment : Fragment() {
         }
     }
 
+    private fun setupListeners() {
+        binding.etSignEmailPhone.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(editText: Editable) {
+                if (editText.isNotEmpty()) {
+                    status = "1"
+                    val allViews = listOf(
+                        binding.linearNotNow,
+                        binding.llTenPerc,
+                        binding.llFifteenPerc,
+                        binding.llTwentyPerc,
+                        binding.lltwentyFivePerc
+                    )
+                    allViews.forEach { it.setBackgroundResource(R.drawable.edittext_bg) }
+                } else {
+                    status = ""
+                }
+                searchable()
+            }
+        })
 
+        binding.linearNotNow.setOnClickListener { updateSelection(binding.linearNotNow) }
+        binding.llTenPerc.setOnClickListener { updateSelection(binding.llTenPerc) }
+        binding.llFifteenPerc.setOnClickListener { updateSelection(binding.llFifteenPerc) }
+        binding.llTwentyPerc.setOnClickListener { updateSelection(binding.llTwentyPerc) }
+        binding.lltwentyFivePerc.setOnClickListener { updateSelection(binding.lltwentyFivePerc) }
+    }
+
+    private fun updateSelection(selectedView: View) {
+        status = "1"
+        searchable()
+
+        val allViews = listOf(
+            binding.linearNotNow,
+            binding.llTenPerc,
+            binding.llFifteenPerc,
+            binding.llTwentyPerc,
+            binding.lltwentyFivePerc
+        )
+        allViews.forEach { it.setBackgroundResource(R.drawable.edittext_bg) }
+        selectedView.setBackgroundResource(R.drawable.outline_green_border_bg)
+
+        selectedTipPercent = when (selectedView) {
+            binding.linearNotNow -> 0
+            binding.llTenPerc -> 10
+            binding.llFifteenPerc -> 15
+            binding.llTwentyPerc -> 20
+            binding.lltwentyFivePerc -> 25
+            else -> null
+        }
+
+        // Clear and hide keyboard
+        binding.etSignEmailPhone.text.clear()
+        binding.etSignEmailPhone.clearFocus()
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etSignEmailPhone.windowToken, 0)
+
+    }
+
+
+/*
     private fun updateSelection(selectedView: View) {
         status = "1"
         searchable()
@@ -216,7 +284,7 @@ class AddTipScreenFragment : Fragment() {
 
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etSignEmailPhone.windowToken, 0)
-    }
+    }*/
 
     private fun searchable() {
         if (status != "") {
@@ -228,13 +296,13 @@ class AddTipScreenFragment : Fragment() {
         }
     }
 
-    private fun paymentCreditDebitApi() {
+    private fun paymentCreditDebitApi(selectedTipAmount: String) {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
             addTipScreenViewModel.getOrderProductUrl({
                 BaseApplication.dismissMe()
                 handleApiOrderResponse(it)
-            },"",cardId)
+            },selectedTipAmount,cardId)
         }
     }
 

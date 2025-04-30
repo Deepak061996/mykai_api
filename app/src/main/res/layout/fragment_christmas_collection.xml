@@ -198,4 +198,13 @@
             android:textSize="@dimen/_12sdp" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/btnLock"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_below="@id/rlToolbar"
+        android:layout_height="match_parent">
+    </RelativeLayout>
 </RelativeLayout>

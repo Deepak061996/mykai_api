@@ -249,6 +249,7 @@ class AddNumberVerifyFragment : Fragment() {
         when (result) {
             is NetworkResult.Success -> handleSuccessOtpResponse(result.data.toString())
             is NetworkResult.Error -> {
+                binding.otpView.setOTP("")
                 binding.tvVerify.isClickable = true
                 binding.tvVerify.isEnabled = true
                 binding.tvVerify.setTextColor(Color.parseColor("#06C169")) // Green color for active state
@@ -275,6 +276,8 @@ class AddNumberVerifyFragment : Fragment() {
     private fun handleSuccessOtpResponse(data: String) {
         try {
             val apiModel = Gson().fromJson(data, OtpSendModel::class.java)
+            binding.otpView.setOTP("")
+            binding.tvVerificationError.visibility = View.GONE
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 lastNumber = binding.etRegPhone.text.toString().trim()
@@ -283,8 +286,7 @@ class AddNumberVerifyFragment : Fragment() {
                 binding.tvVerify.setTextColor(R.color.grey5)
                 binding.relPhoneValidation.visibility = View.VISIBLE
                 binding.tvCodeSent.text= "we have sent the code to *******$lastFourDigits"
-
-                if (status == "resend") {
+                if (status.equals("resend",true)) {
                     binding.otpView.setOTP("")
                     binding.relResendVerificationTimer.visibility = View.VISIBLE
                     binding.textResend.isEnabled = false
@@ -336,6 +338,7 @@ class AddNumberVerifyFragment : Fragment() {
             val apiModel = Gson().fromJson(data, OtpSendModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
+
                 binding.tvVerificationError.visibility = View.GONE
                 addNumberVerifyViewModel.dataCheckOut?.let {
                     it.phone=binding.etRegPhone.text.toString().trim()

@@ -86,7 +86,7 @@ object ErrorMessage {
      const val streetNameError:String="Street can't be empty."
      const val addAddressError:String="Please add your address"
      const val streetNumberError:String="Street number can't be empty."
-     const val apartNumberError:String="Apart Number can't be empty."
+     const val apartNumberError:String="Apartment Number can't be empty."
      const val cityEnterError:String="City can't be empty."
      const val statesEnterError:String="States can't be empty."
      const val countryError:String="Select country."

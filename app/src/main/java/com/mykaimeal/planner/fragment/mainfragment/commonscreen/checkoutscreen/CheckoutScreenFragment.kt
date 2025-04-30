@@ -170,7 +170,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-
         backButton()
 
         initialize()

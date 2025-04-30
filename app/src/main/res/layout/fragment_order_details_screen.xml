@@ -15,13 +15,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
             android:layout_marginTop="@dimen/_25sdp">
 
             <RelativeLayout
                 android:id="@+id/rlToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_16sdp">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/imgBackOrderDetails"
@@ -43,27 +43,47 @@
 
             </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/imageWelmart"
+
+            <RelativeLayout
+                android:id="@+id/relStoreImages"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_below="@+id/rlToolbar"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:src="@drawable/ic_welmart_rectangular_super_market" />
+                android:layout_marginTop="@dimen/_15sdp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageWelmart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_welmart_super_market"
+                    app:shapeAppearanceOverlay="@style/CornerCut" />
+
+                <include
+                    android:id="@+id/lay_progess"
+                    layout="@layout/progess_loader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:id="@+id/relOrderComDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageWelmart"
+                android:layout_below="@id/relStoreImages"
                 android:layout_marginTop="@dimen/_5sdp">
 
                 <RelativeLayout
                     android:id="@+id/relDatePrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_centerHorizontal="true">
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/_5sdp">
 
                     <TextView
                         android:id="@+id/tvOrderCompleted"
@@ -71,14 +91,14 @@
                         android:layout_height="wrap_content"
                         android:text="Order Completed"
                         android:textColor="@color/light_green"
-                        android:textSize="@dimen/_13sdp"/>
+                        android:textSize="@dimen/_13sdp" />
 
                     <TextView
                         android:id="@+id/tvDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/tvOrderCompleted"
                         android:layout_marginStart="@dimen/_5sdp"
+                        android:layout_toEndOf="@+id/tvOrderCompleted"
                         android:fontFamily="@font/montserrat_semibold"
                         android:text="11 jan"
                         android:textColor="@color/light_grays"
@@ -116,9 +136,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relOrderComDate"
                 android:layout_centerVertical="true"
-                android:textColor="@color/black"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Your order &amp; receipt"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_13sdp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -130,6 +150,222 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <View
+                android:id="@+id/viewPrices"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_below="@+id/rcyOrderHistoryDetails"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@color/grey1" />
+
+            <RelativeLayout
+                android:id="@+id/relBillingDetailAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/viewPrices"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_15sdp">
+
+                <RelativeLayout
+                    android:id="@+id/relSubTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textSubTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="Subtotal"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/textSubTotalPrices"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:paddingHorizontal="@dimen/_20sdp"
+                        android:text="$00"
+                        android:textColor="@color/light_green" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relServiceFee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relSubTotal"
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <TextView
+                        android:id="@+id/textTotalProduct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="Service Fee"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/textServiceFees"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:paddingHorizontal="@dimen/_20sdp"
+                        android:text="$00"
+                        android:textColor="@color/light_green" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/relDeliveryTip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relServiceFee"
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <TextView
+                        android:id="@+id/textServices"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text=""
+                        android:textColor="#4A4A4A" />
+
+                    <TextView
+                        android:id="@+id/textDeliveryTipPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:paddingHorizontal="@dimen/_20sdp"
+                        android:text="$00"
+                        android:textColor="@color/light_green" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/relTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relDeliveryTip"
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <TextView
+                        android:id="@+id/textTotalAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="Total"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <TextView
+                        android:id="@+id/textTotalAmounts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:paddingHorizontal="@dimen/_20sdp"
+                        android:text="$00"
+                        android:textColor="@color/light_green"
+                        android:textSize="@dimen/_12sdp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/viewAmount"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_below="@+id/relBillingDetailAmount"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:background="@color/grey1" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/viewAmount"
+                android:layout_marginTop="@dimen/_15sdp">
+
+                <TextView
+                    android:id="@+id/tvPayments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:text="Payments"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_13sdp" />
+
+                <RelativeLayout
+                    android:id="@+id/relCardDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvPayments"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <ImageView
+                        android:id="@+id/idVisaImages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/visa_rounded_image"/>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_toEndOf="@+id/idVisaImages">
+
+                        <TextView
+                            android:id="@+id/tvVisaName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/montserrat_bold"
+                            android:text="Visa card .....2027"
+                            android:textSize="@dimen/_13sdp"
+                            android:textColor="@color/black"/>
+
+
+
+                        <TextView
+                            android:id="@+id/tvCardNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="01/11/2025 10:40 am"
+                            android:fontFamily="@font/montserrat_medium"
+                            android:textSize="@dimen/_11sdp"
+                            android:layout_below="@+id/tvVisaName"
+                            android:textColor="@color/grey"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/textCardAmounts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:paddingHorizontal="@dimen/_20sdp"
+                        android:layout_centerVertical="true"
+                        android:text="$48.47"
+                        android:textColor="@color/light_green"
+                        android:textSize="@dimen/_12sdp" />
+
+
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
 

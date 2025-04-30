@@ -445,6 +445,10 @@ interface ApiInterface {
 
     @FormUrlEncoded
     @POST(ApiEndPoint.updateUserPreferences)
+    suspend fun updateCookBookApi(@Field("cook_book_id") cookBookId : String?): Response<JsonObject>
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.updateUserPreferences)
     suspend fun updateCookingFrequencyApi(@Field("cooking_frequency") cookingFrequency: String?): Response<JsonObject>
 
 

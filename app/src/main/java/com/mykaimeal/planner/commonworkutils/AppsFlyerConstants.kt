@@ -6,4 +6,8 @@ object AppsFlyerConstants {
     const val afDevKey = "M57zyjkFgb7nSQwHWN6isW"
 */
     const val afDevKey = "M57zyjkFgb7nSQwHWN6isW"
+
+
+
+//    const val afDevKey = "M57zyjkFgb7nSQwHWN6isW"
 }

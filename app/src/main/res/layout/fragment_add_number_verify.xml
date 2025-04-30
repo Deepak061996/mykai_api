@@ -248,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relDidNotResend"
                     android:layout_marginTop="@dimen/_7sdp"
-                    android:visibility="invisible">
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textResendVerification"

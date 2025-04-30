@@ -12,6 +12,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.hardware.camera2.CameraManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -24,7 +25,6 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -36,10 +36,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -61,9 +60,11 @@ import com.mykaimeal.planner.adapter.ImageViewPagerAdapter
 import com.mykaimeal.planner.adapter.IndicatorAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
+import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.ActivityMainBinding
 import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.GetUserPreference
+import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.UpdatePreferenceSuccessfully
 import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.model.MealRoutineModelData
 import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.viewmodel.MealRoutineViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.viewmodel.BasketScreenViewModel
@@ -92,7 +93,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.jar.Manifest
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
@@ -145,10 +145,12 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     var alertStatus:Boolean=false
     private var status:String?="RecipeSearch"
     private var dialogAddRecipe:Dialog ?=null
-
+    lateinit var navController : NavController
     var isFlashlightOn = false
     private lateinit var cameraManager: CameraManager
     private lateinit var cameraId: String
+    private lateinit var sessionManagement: SessionManagement
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -157,8 +159,9 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         setContentView(binding.root)
         mealRoutineViewModel = ViewModelProvider(this@MainActivity)[MealRoutineViewModel::class.java]
         commonWorkUtils = CommonWorkUtils(this)
-
-        handleDeepLink(intent)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
+        navController = navHostFragment.navController
+        sessionManagement = SessionManagement(this)
 
         getFcmToken()
 
@@ -422,25 +425,103 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     }
 
-    private fun handleDeepLink(intent: Intent?) {
-        intent?.data?.let { uri ->
-            Log.d("DeepLink", "Received URI: $uri")
+    /*private fun handlingDeepLink() {
+        // Get the intent that started this activity
+        val intent = intent
+        // Check if the intent contains a URI (deep link)
+        if (intent?.action == Intent.ACTION_VIEW) {
+            val data: Uri? = intent.data
+            if (data != null && data.scheme == "zyvoo" && data.host == "property") {
+                val propertyId = data.getQueryParameter("propertyId")
+                // Now you can use the propertyId in your activity
+                Log.d(ErrorDialog.TAG, "Property ID: $propertyId")
+                // Fetch property details using the propertyId
+                val intent = Intent(this, RestaurantDetailActivity::class.java)
+                intent.putExtra("propertyId",propertyId)
+                intent.putExtra("propertyMile","")
+                startActivity(intent)
+            }
+        }
+    }*/
 
-            val screenName = uri.getQueryParameter("ScreenName")
-            val affiliateName = uri.getQueryParameter("providerName")
-            val affiliateImage = uri.getQueryParameter("providerImage")
-            val cookbooksId = uri.getQueryParameter("CookbooksID")
-            val referralCode = uri.getQueryParameter("Referrer")
-            val itemName = uri.getQueryParameter("ItemName")
+    @SuppressLint("SuspiciousIndentation")
+    private fun handleDeepLink() {
+        val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
+        navGraph.setStartDestination(R.id.homeFragment)
+        navController.graph = navGraph
+        // Get the intent that started this activity
+        val intent = intent
+        // Check if the intent contains a URI (deep link)
+        if (intent?.action == Intent.ACTION_VIEW) {
+            val data: Uri? = intent.data
+                Log.d("DeepLink", "Received URI: $uri")
+            if (data != null && data.scheme == "mykai" && data.host == "property") {
+                val screenName = data.getQueryParameter("ScreenName")
+               // val affiliateName = data.getQueryParameter("providerName")
+//                val affiliateImage = data.getQueryParameter("ItemName")
+                val cookbooksId = data.getQueryParameter("CookbooksID")
+               // val referralCode = data.getQueryParameter("Referrer")
+                val itemName = data.getQueryParameter("ItemName")
 
-            if (screenName == "CookBooksType" && cookbooksId != null) {
-                // Navigate or open appropriate screen
+                Log.d("***********","$screenName  & $cookbooksId")
 
-                findNavController(R.id.frameContainerMain).navigate(R.id.christmasCollectionFragment)
-//                openCookbookDetails(cookbooksId, itemName)
+                if (screenName.equals("CookBooksType") && cookbooksId != null) {
+                    sessionManagement.setCookBookId(cookbooksId.toString())
+                    sessionManagement.setCookBookName(itemName.toString())
+                    val bundle= Bundle()
+                    bundle.putString("Screen","share")
+                    navController.navigate(R.id.christmasCollectionFragment,bundle)
+//                    if (BaseApplication.isOnline(this)) {
+//                        updateCookBookId(cookbooksId,itemName)
+//                    } else {
+//                        BaseApplication.alertError(this, ErrorMessage.networkError, false)
+//                    }
+                }
             }
         }
     }
+
+    private fun updateCookBookId(cookbooksId: String?,cookbooksName: String?) {
+        BaseApplication.showMe(this)
+        lifecycleScope.launch {
+            mealRoutineViewModel.updateCookBookApi({
+                BaseApplication.dismissMe()
+                handleApiSuccessResponse(it,cookbooksId,cookbooksName)
+            }, cookbooksId)
+        }
+    }
+
+    private fun handleApiSuccessResponse(result: NetworkResult<String>,cookbooksId:String?,cookbooksName:String?) {
+        when (result) {
+            is NetworkResult.Success -> handleApiSuccResponse(result.data.toString(),cookbooksId,cookbooksName)
+            is NetworkResult.Error -> {
+                showAlert(result.message, false)
+            }
+            else -> showAlert(result.message, false)
+        }
+    }
+
+
+    @SuppressLint("SetTextI18n", "ResourceAsColor")
+    private fun handleApiSuccResponse(data: String,cookbooksId:String?,cookbooksName:String?) {
+        try {
+            val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
+            Log.d("@@@ addMea List ", "message :- $data")
+            if (apiModel.code == 200 && apiModel.success) {
+                val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
+                navGraph.setStartDestination(R.id.homeFragment)
+                navController.graph = navGraph
+                sessionManagement.setCookBookId(cookbooksId.toString())
+                sessionManagement.setCookBookName(cookbooksName.toString())
+                navController.navigate(R.id.christmasCollectionFragment)
+            } else {
+                handleError(apiModel.code,apiModel.message)
+            }
+        } catch (e: Exception) {
+            showAlert(e.message, false)
+        }
+    }
+
 
     private fun openCookbookDetails(id: String, name: String?) {
         // Launch fragment or activity
@@ -467,11 +548,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     }*/
 
     private fun startDestination() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
-        val navController = navHostFragment.navController
-        val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
-        navGraph.setStartDestination(R.id.homeFragment)
-        navController.graph = navGraph
+        handleDeepLink()
     }
 
     fun changeBottom(status: String) {
