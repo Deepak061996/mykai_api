@@ -29,12 +29,15 @@
             android:textSize="@dimen/_13sdp" />
 
     </RelativeLayout>
-    <RelativeLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_below="@id/rlToolbar"
+        android:layout_above="@id/rlAddRecipes"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/rlToolbar"
-            android:layout_above="@id/rlAddRecipes"
-            android:layout_marginTop="@dimen/_10sdp">
+            android:layout_height="match_parent">
             <LinearLayout
                 android:id="@+id/llCookBookItems"
                 android:layout_width="match_parent"
@@ -86,6 +89,8 @@
                     android:textSize="@dimen/_15sdp" />
             </RelativeLayout>
         </RelativeLayout>
+    </ScrollView>
+
     <RelativeLayout
         android:id="@+id/rlAddRecipes"
         android:layout_width="wrap_content"
@@ -116,7 +121,6 @@
             android:textSize="@dimen/_12sdp" />
 
     </RelativeLayout>
-
     <RelativeLayout
         android:id="@+id/btnLock"
         android:layout_width="match_parent"
@@ -125,5 +129,4 @@
         android:layout_below="@id/rlToolbar"
         android:layout_height="match_parent">
     </RelativeLayout>
-
 </RelativeLayout>

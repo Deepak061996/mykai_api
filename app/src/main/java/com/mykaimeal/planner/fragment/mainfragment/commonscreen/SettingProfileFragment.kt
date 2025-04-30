@@ -407,7 +407,11 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
             R.id.relNotifications -> navigateToFragment(R.id.notificationFragment)
             R.id.relPrivacyTerms -> navigateToFragment(R.id.termsConditionFragment)
             R.id.relPrivacyPolicy -> navigateToFragment(R.id.privacyPolicyFragment)
-            R.id.relSubscriptionPlan -> navigateToFragment(R.id.subscriptionPlanOverViewFragment)
+            R.id.relSubscriptionPlan ->{
+                val bundle = Bundle()
+                bundle.putString("screen","main")
+                findNavController().navigate(R.id.subscriptionPlanOverViewFragment,bundle)
+            }
         }
     }
 

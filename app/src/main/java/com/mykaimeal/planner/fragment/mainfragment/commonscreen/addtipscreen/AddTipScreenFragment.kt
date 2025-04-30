@@ -41,35 +41,26 @@ class AddTipScreenFragment : Fragment() {
     private var totalPrices = ""
     private var cardId = ""
     private var status = ""
-    private var selectedTipPercent: Int? = null
+    private var selectedTipPercent: String="0"
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentAddTipScreenBinding.inflate(layoutInflater, container, false)
-
         (activity as? MainActivity)?.binding?.apply {
             llIndicator.visibility = View.GONE
             llBottomNavigation.visibility = View.GONE
         }
-
         addTipScreenViewModel = ViewModelProvider(requireActivity())[AddTipScreenViewModel::class.java]
-
         totalPrices = arguments?.getString("totalPrices") ?: ""
         cardId = arguments?.getString("cardId") ?: ""
-
         setupBackNavigation()
-
         initialize()
-
         return binding.root
     }
 
     private fun setupBackNavigation() {
         requireActivity().onBackPressedDispatcher.addCallback(
-            requireActivity(),
+            viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     findNavController().navigateUp()
@@ -79,68 +70,37 @@ class AddTipScreenFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initialize() {
-
         binding.tvDescriptions.text = "100% of your tip goes to your courier. Tips are based on your order total of $$totalPrices before any discounts or promotions."
-
         binding.relBack.setOnClickListener {
             findNavController().navigateUp()
         }
-
-        if (BaseApplication.isOnline(requireActivity())) {
-            getTipUrl()
-        } else {
-            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-        }
-
-        binding.etSignEmailPhone.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            }
-            override fun afterTextChanged(editText: Editable) {
-                if (editText.isNotEmpty()) {
-                    status = "1"
-                    val allViews = listOf(binding.linearNotNow, binding.llTenPerc, binding.llFifteenPerc, binding.llTwentyPerc, binding.lltwentyFivePerc)
-                    allViews.forEach { it.setBackgroundResource(R.drawable.edittext_bg) }
-                }else{
-                    status = ""
-                }
-                searchable()
-            }
-        })
-
+        getTipUrl()
         setupListeners()
-
         binding.rlProceedAndPay.setOnClickListener {
-
-            // (Optional) Log selected tip amount
-            val selectedTipAmount = when (selectedTipPercent) {
-                10 -> binding.tvDollarSeven.text.toString()
-                15 -> binding.tvDollarNine.text.toString()
-                20 -> binding.tvDollarTwelve.text.toString()
-                25 -> binding.tvDollarFifteen.text.toString()
-                else -> "$0"
-            }
-
-            Log.d("SelectedTip", "Tip $selectedTipPercent% -> $selectedTipAmount")
-
-            if (status.isNotEmpty()) {
+            if (binding.rlProceedAndPay.isClickable) {
                 if (BaseApplication.isOnline(requireContext())) {
-                    paymentCreditDebitApi(selectedTipAmount)
+                    paymentCreditDebitApi()
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
             }
         }
+
     }
 
     private fun getTipUrl() {
-        BaseApplication.showMe(requireContext())
-        lifecycleScope.launch {
-            addTipScreenViewModel.getTipUrl({
-                BaseApplication.dismissMe()
-                handleApiTipResponse(it)
-            }, totalPrices)
+        if (BaseApplication.isOnline(requireActivity())) {
+            BaseApplication.showMe(requireContext())
+            lifecycleScope.launch {
+                addTipScreenViewModel.getTipUrl({
+                    BaseApplication.dismissMe()
+                    handleApiTipResponse(it)
+                }, totalPrices)
+            }
+        } else {
+            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
+
     }
 
     private fun handleApiTipResponse(result: NetworkResult<String>) {
@@ -178,26 +138,23 @@ class AddTipScreenFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun showDataInTipUI(data: GetTipModelData) {
-
-        if (data.tip10 != null) {
-            val roundedTipTen = data.tip10.roundToInt()
+        data.tip10?.let {
+            val roundedTipTen = it.roundToInt()
             binding.tvDollarSeven.text = "$$roundedTipTen"
         }
-
-        if (data.tip15!=null){
-            val roundedTipFifteen = data.tip15.roundToInt()
+        data.tip15?.let {
+            val roundedTipFifteen = it.roundToInt()
             binding.tvDollarNine.text = "$$roundedTipFifteen"
         }
-
-        if (data.tip20!=null){
-            val roundedTipTwenty = data.tip20.roundToInt()
+        data.tip20?.let {
+            val roundedTipTwenty = it.roundToInt()
             binding.tvDollarTwelve.text="$$roundedTipTwenty"
         }
-
-        if (data.tip25!=null){
-            val roundedTipTwentyFive = data.tip25.roundToInt()
+        data.tip25?.let {
+            val roundedTipTwentyFive = it.roundToInt()
             binding.tvDollarFifteen.text="$$roundedTipTwentyFive"
         }
+
     }
 
     private fun setupListeners() {
@@ -206,103 +163,56 @@ class AddTipScreenFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(editText: Editable) {
                 if (editText.isNotEmpty()) {
-                    status = "1"
-                    val allViews = listOf(
-                        binding.linearNotNow,
-                        binding.llTenPerc,
-                        binding.llFifteenPerc,
-                        binding.llTwentyPerc,
-                        binding.lltwentyFivePerc
-                    )
+                    binding.rlProceedAndPay.isClickable=true
+                    binding.rlProceedAndPay.setBackgroundResource(R.drawable.green_fill_corner_bg)
+                    val allViews = listOf(binding.linearNotNow, binding.llTenPerc, binding.llFifteenPerc, binding.llTwentyPerc, binding.lltwentyFivePerc)
                     allViews.forEach { it.setBackgroundResource(R.drawable.edittext_bg) }
                 } else {
-                    status = ""
+                    selectedTipPercent=""
+                    binding.rlProceedAndPay.isClickable=true
+                    binding.rlProceedAndPay.setBackgroundResource(R.drawable.gray_btn_unselect_background)
                 }
-                searchable()
             }
         })
 
-        binding.linearNotNow.setOnClickListener { updateSelection(binding.linearNotNow) }
-        binding.llTenPerc.setOnClickListener { updateSelection(binding.llTenPerc) }
-        binding.llFifteenPerc.setOnClickListener { updateSelection(binding.llFifteenPerc) }
-        binding.llTwentyPerc.setOnClickListener { updateSelection(binding.llTwentyPerc) }
-        binding.lltwentyFivePerc.setOnClickListener { updateSelection(binding.lltwentyFivePerc) }
+        binding.linearNotNow.setOnClickListener { updateSelection(binding.linearNotNow,"0") }
+        binding.llTenPerc.setOnClickListener { updateSelection(binding.llTenPerc,binding.tvDollarSeven.text.toString()) }
+        binding.llFifteenPerc.setOnClickListener { updateSelection(binding.llFifteenPerc,binding.tvDollarNine.text.toString()) }
+        binding.llTwentyPerc.setOnClickListener { updateSelection(binding.llTwentyPerc,binding.tvDollarTwelve.text.toString()) }
+        binding.lltwentyFivePerc.setOnClickListener { updateSelection(binding.lltwentyFivePerc,binding.tvDollarFifteen.text.toString()) }
+
+
+
     }
 
-    private fun updateSelection(selectedView: View) {
-        status = "1"
-        searchable()
-
-        val allViews = listOf(
-            binding.linearNotNow,
-            binding.llTenPerc,
-            binding.llFifteenPerc,
-            binding.llTwentyPerc,
-            binding.lltwentyFivePerc
-        )
+    private fun updateSelection(selectedView: View,value:String) {
+        selectedTipPercent = value
+        val allViews = listOf(binding.linearNotNow, binding.llTenPerc, binding.llFifteenPerc, binding.llTwentyPerc, binding.lltwentyFivePerc)
         allViews.forEach { it.setBackgroundResource(R.drawable.edittext_bg) }
         selectedView.setBackgroundResource(R.drawable.outline_green_border_bg)
-
-        selectedTipPercent = when (selectedView) {
-            binding.linearNotNow -> 0
-            binding.llTenPerc -> 10
-            binding.llFifteenPerc -> 15
-            binding.llTwentyPerc -> 20
-            binding.lltwentyFivePerc -> 25
-            else -> null
-        }
-
         // Clear and hide keyboard
         binding.etSignEmailPhone.text.clear()
         binding.etSignEmailPhone.clearFocus()
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etSignEmailPhone.windowToken, 0)
-
-    }
-
-
-/*
-    private fun updateSelection(selectedView: View) {
-        status = "1"
-        searchable()
-        val allViews = listOf(binding.linearNotNow, binding.llTenPerc, binding.llFifteenPerc, binding.llTwentyPerc, binding.lltwentyFivePerc)
-        allViews.forEach { it.setBackgroundResource(R.drawable.edittext_bg) }
-        selectedView.setBackgroundResource(R.drawable.outline_green_border_bg)
-
-        // Set selected tip value
-        selectedTipPercent = when (selectedView) {
-            binding.linearNotNow -> 0
-            binding.llTenPerc -> 10
-            binding.llFifteenPerc -> 15
-            binding.llTwentyPerc -> 20
-            binding.lltwentyFivePerc -> 25
-            else -> null
-        }
-
-        binding.etSignEmailPhone.text.clear()
-        binding.etSignEmailPhone.clearFocus()
-
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.etSignEmailPhone.windowToken, 0)
-    }*/
-
-    private fun searchable() {
-        if (status != "") {
-            status = "1"
-            binding.rlProceedAndPay.setBackgroundResource(R.drawable.green_fill_corner_bg)
-        } else {
-            status = ""
+        if (selectedTipPercent.equals("",true)){
+            binding.rlProceedAndPay.isClickable=false
             binding.rlProceedAndPay.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+        }else{
+            binding.rlProceedAndPay.isClickable=true
+            binding.rlProceedAndPay.setBackgroundResource(R.drawable.green_fill_corner_bg)
         }
     }
 
-    private fun paymentCreditDebitApi(selectedTipAmount: String) {
+
+    private fun paymentCreditDebitApi() {
         BaseApplication.showMe(requireContext())
+        val tipAmount=selectedTipPercent.replace("$", "")
         lifecycleScope.launch {
             addTipScreenViewModel.getOrderProductUrl({
                 BaseApplication.dismissMe()
                 handleApiOrderResponse(it)
-            },selectedTipAmount,cardId)
+            },tipAmount,cardId)
         }
     }
 

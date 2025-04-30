@@ -56,6 +56,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnMapReadyCallback {
+
     private lateinit var binding: FragmentSuperMarketsNearByBinding
     private var adapter: AdapterSuperMarket? = null
     private lateinit var basketDetailsSuperMarketViewModel: BasketDetailsSuperMarketViewModel
@@ -202,9 +203,6 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
             stores.forEach {
                 val location= it.address?.longitude?.let { it1 -> it.address.latitude?.let { it2 ->
                     LatLng(it2, it1) } }
-//                mMap?.addMarker(MarkerOptions().position(newYork).icon(customMarker))
-//                location?.let { it1 -> MarkerOptions().position(it1).title(it.store_name) }
-//                    ?.let { it2 -> map.addMarker(it2) }
                 val imageUrl = it.image
                 val name = it.store_name
                 Glide.with(requireContext())
@@ -235,21 +233,11 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
             }
         }
 
-//        for (location in storeLocations) {
-//            map.addMarker(MarkerOptions().position(location).title("Store Location"))
-//            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 5f))
-//        }
     }
 
     override fun onMapReady(gmap: GoogleMap) {
         mMap = gmap
 
-//        val latitude =  0.0  // Default to 0.0 if null
-//        val longitude = 0.0 // Default to 0.0 if null
-//        storeLocations.add(LatLng(latitude, longitude))
-//        mMap?.let {
-//            updateMap(it)
-//        }
     }
 
     // Manage MapView Lifecycle

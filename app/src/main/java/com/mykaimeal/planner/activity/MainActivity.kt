@@ -545,13 +545,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         rlSearchRecipe.setOnClickListener {
             if (etPasteURl.text.toString().isEmpty()) {
                 commonWorkUtils.alertDialog(this, ErrorMessage.pasteUrl, false)
-            }/* else if (isValidUrl(etPasteURl.text.toString().trim())){
-                commonWorkUtils.alertDialog(this, ErrorMessage.validUrl, false)
-            }*/ else {
-//                val bundle = Bundle().apply {
-//                    putString("url",etPasteURl.text.toString().trim())
-//                }
-//                findNavController(R.id.frameContainerMain).navigate(R.id.webViewByUrlFragment,bundle)
+            }else {
                 dialogWeb.dismiss()
                 dialogAddRecipe?.dismiss()
                 val intent = Intent(this, WebViewByUrlActivity::class.java)
@@ -584,6 +578,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             val llDinner = findViewById<LinearLayout>(R.id.llDinner)
             val llSnaks = findViewById<LinearLayout>(R.id.llSnaks)
             val llBrunch = findViewById<LinearLayout>(R.id.llBrunch)
+            val layRoot = findViewById<RelativeLayout>(R.id.layRoot)
 
             // Text
             val textBreakfast = findViewById<TextView>(R.id.textBreakfast)
@@ -621,6 +616,10 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             setMealClickListener(llSnaks, viewSnaks, textSnaks, ErrorMessage.Snacks)
             setMealClickListener(llBrunch, viewBrunch, textBrunch, ErrorMessage.Brunch)
 
+
+            layRoot.setOnClickListener {
+                dismiss()
+            }
 
             recipesModel?.let { model ->
                 model.Breakfast?.let { breakfast ->
@@ -1172,9 +1171,9 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             }
 
             R.id.llAddRecipe -> {
-//                addRecipeAlert(this@MainActivity)
-                findNavController(R.id.frameContainerMain).navigate(R.id.searchFragmentDummy)
-                binding.cardViewAddRecipe.visibility = View.VISIBLE
+                addRecipeAlert(this@MainActivity)
+//                findNavController(R.id.frameContainerMain).navigate(R.id.searchFragmentDummy)
+//                binding.cardViewAddRecipe.visibility = View.VISIBLE
             }
 
             R.id.llPlan -> {
@@ -1616,7 +1615,9 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             dialog.dismiss()
             dialogAddRecipe?.dismiss()
             binding.cardViewAddRecipe.visibility=View.GONE
-            findNavController(R.id.frameContainerMain).navigate(R.id.homeSubscriptionAllPlanFragment)
+            val bundle = Bundle()
+            bundle.putString("screen","main")
+            findNavController(R.id.frameContainerMain).navigate(R.id.homeSubscriptionAllPlanFragment,bundle)
         }
 
         btnCancel.setOnClickListener {

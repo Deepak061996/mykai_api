@@ -239,13 +239,15 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
 
                 // Update the current date selection
                 currentDateSelected = updatedDaysBetween[selectedPosition].date
-
-                // Fetch data for the selected date if online
-                if (BaseApplication.isOnline(requireActivity())) {
-                    dataFatchByDate(currentDateSelected,"2")
-                } else {
-                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-                }
+                viewModel.setData(null)
+                // When screen load then api call
+                fetchDataOnLoad()
+//                // Fetch data for the selected date if online
+//                if (BaseApplication.isOnline(requireActivity())) {
+//                    dataFatchByDate(currentDateSelected,"2")
+//                } else {
+//                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+//                }
             }
         // Update the RecyclerView
         binding.recyclerViewWeekDays.adapter = calendarAdapter
@@ -1266,7 +1268,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
                                     updateModel.message,
                                     Toast.LENGTH_LONG
                                 ).show()
-
+                                viewModel.setData(null)
                                 // When screen load then api call
                                 fetchDataOnLoad()
                             } else {

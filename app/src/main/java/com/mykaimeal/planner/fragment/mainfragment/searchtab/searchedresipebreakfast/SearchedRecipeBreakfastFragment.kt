@@ -53,7 +53,6 @@ import java.util.Locale
 class SearchedRecipeBreakfastFragment : Fragment(), OnItemClickListener {
 
     private var _binding: FragmentSearchedRecipeBreakfastBinding? = null
-
     private val binding get() = _binding!!
     private var tvWeekRange: TextView? = null
     private var rcyChooseDaySch: RecyclerView? = null
@@ -71,8 +70,7 @@ class SearchedRecipeBreakfastFragment : Fragment(), OnItemClickListener {
     private var fullListDietType: MutableList<String> = mutableListOf()
     private var fullListCookTime: MutableList<String> = mutableListOf()
     private lateinit var searchedRecipeViewModel: SearchedRecipeViewModel
-    private var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> =
-        mutableListOf()
+    private var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> = mutableListOf()
 
 
     override fun onCreateView(
@@ -104,7 +102,6 @@ class SearchedRecipeBreakfastFragment : Fragment(), OnItemClickListener {
                     fullListCookTime = jsonArrayToList(cookTimeJson)as MutableList
                 }
             }
-
         }
 
         cookbookList.clear()
