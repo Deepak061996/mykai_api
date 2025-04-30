@@ -34,7 +34,7 @@ import java.util.Locale
 @AndroidEntryPoint
 class AddNumberVerifyFragment : Fragment() {
     private lateinit var binding: FragmentAddNumberVerifyBinding
-//    private lateinit var addNumberVerifyViewModel: AddNumberVerifyViewModel
+    //    private lateinit var addNumberVerifyViewModel: AddNumberVerifyViewModel
     private lateinit var addNumberVerifyViewModel: CheckoutScreenViewModel
     private var lastNumber: String = ""
     private var userNumber: String = ""
@@ -151,7 +151,9 @@ class AddNumberVerifyFragment : Fragment() {
         binding.textResend.setOnClickListener {
             status = "resend"
             if (BaseApplication.isOnline(requireActivity())) {
-                getOtpUrl()
+                if (binding.etRegPhone.text.toString().isNotEmpty()){
+                    getOtpUrl()
+                }
             } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
@@ -205,20 +207,20 @@ class AddNumberVerifyFragment : Fragment() {
 
 
     /// add validation based on valid phone number
-/*    private fun validNumber(): Boolean {
-        val email: String = binding.etRegPhone.text.toString().trim()
-        if (email.length != 12) {
-            return false
-        }
-        var onlyDigits = true
-        for (i in 0 until email.length) {
-            if (!Character.isDigit(email[i])) {
-                onlyDigits = false
-                break
+    /*    private fun validNumber(): Boolean {
+            val email: String = binding.etRegPhone.text.toString().trim()
+            if (email.length != 12) {
+                return false
             }
-        }
-        return onlyDigits
-    }*/
+            var onlyDigits = true
+            for (i in 0 until email.length) {
+                if (!Character.isDigit(email[i])) {
+                    onlyDigits = false
+                    break
+                }
+            }
+            return onlyDigits
+        }*/
 
     private fun getOtpUrl() {
         BaseApplication.showMe(requireContext())

@@ -142,7 +142,6 @@ class SplashActivity : AppCompatActivity() {
             delay(SPLASH_DELAY)
             // Check login session and navigate accordingly
             if (sessionManagement.getFirstTime()){
-
                 val intent = Intent(this@SplashActivity, IntroPageActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -152,7 +151,6 @@ class SplashActivity : AppCompatActivity() {
                     LetsStartOptionActivity::class.java
                 }
                 val intent = Intent(this@SplashActivity, targetActivity)
-                intent.putExtra("openScreen",screen)
                 startActivity(intent)
                 finish()
             }

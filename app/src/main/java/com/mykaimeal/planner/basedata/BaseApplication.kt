@@ -42,6 +42,20 @@ object BaseApplication {
         return "<font color=" + color.toString() + ">" + text.toString() + "</font>"
     }
 
+    fun detectCardType(cardNumber: String): String {
+        return when {
+            cardNumber.matches(Regex("^4[0-9]{6,}$")) -> "Visa"
+            cardNumber.matches(Regex("^5[1-5][0-9]{5,}$")) -> "MasterCard"
+            cardNumber.matches(Regex("^3[47][0-9]{5,}$")) -> "American Express"
+            cardNumber.matches(Regex("^3(?:0[0-5]|[68][0-9])[0-9]{4,}$")) -> "Diners Club"
+            cardNumber.matches(Regex("^6(?:011|5[0-9]{2})[0-9]{3,}$")) -> "Discover"
+            cardNumber.matches(Regex("^35[0-9]{4,}$")) -> "JCB"
+            cardNumber.matches(Regex("^62[0-9]{4,}$")) -> "UnionPay"
+            else -> "Unknown"
+        }
+    }
+
+
     fun  alertError(context: Context?, msg:String?,status:Boolean){
         val dialog= context?.let { Dialog(it, R.style.BottomSheetDialog) }
         dialog?.setCancelable(false)
