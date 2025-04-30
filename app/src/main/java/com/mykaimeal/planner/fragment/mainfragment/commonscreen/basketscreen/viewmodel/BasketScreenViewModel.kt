@@ -75,11 +75,7 @@ class BasketScreenViewModel @Inject constructor(private val repository: MainRepo
         repository.getSuperMarket({ successCallback(it) },latitude,longitude)
     }
 
-
-
-
-
-    // set Data in vie model
+    // set Data in view model
 
     private var _dataBasket: BasketScreenModelData? = null
 

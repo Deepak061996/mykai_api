@@ -75,7 +75,6 @@ class SplashActivity : AppCompatActivity() {
                 }, sessionManagement.getPlanType(),sessionManagement.getPurchaseToken(),sessionManagement.getSubscriptionId())
             }
         }
-
     }
 
     private fun handleApiResponse(result: NetworkResult<String>) {
@@ -85,7 +84,6 @@ class SplashActivity : AppCompatActivity() {
             else -> showAlert(result.message, false)
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun handleSuccessResponse(data: String) {
@@ -104,36 +102,11 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showAlert(message: String?, status: Boolean) {
         alertError(this, message, status)
     }
 
-    private fun handlingDeepLink() {
-        // Get the intent that started this activity
-        val intent = intent
-        // Check if the intent contains a URI (deep link)
-        if (intent?.action == Intent.ACTION_VIEW) {
-            val data: Uri? = intent.data
-            if (data != null && data.scheme == "https" && data.host == "mykaimealplanner.onelink.me") {
-
-                Log.d("AppsFlyer22", "profile")
-            /*    val propertyId = data.getQueryParameter("Referrer")
-                // Now you can use the propertyId in your activity
-                // Fetch property details using the propertyId
-                val intent = Intent(this, AuthActivity::class.java)
-             *//*   intent.putExtra("propertyId",propertyId)
-                intent.putExtra("propertyMile","")*//*
-                startActivity(intent)*/
-            }
-        }
-    }
-
     private fun initialize() {
-
-
-
-
 
         val afDevKey: String = AppsFlyerConstants.afDevKey
 

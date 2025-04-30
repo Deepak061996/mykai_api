@@ -471,81 +471,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                     val bundle= Bundle()
                     bundle.putString("Screen","share")
                     navController.navigate(R.id.christmasCollectionFragment,bundle)
-//                    if (BaseApplication.isOnline(this)) {
-//                        updateCookBookId(cookbooksId,itemName)
-//                    } else {
-//                        BaseApplication.alertError(this, ErrorMessage.networkError, false)
-//                    }
+
                 }
             }
         }
     }
-
-    private fun updateCookBookId(cookbooksId: String?,cookbooksName: String?) {
-        BaseApplication.showMe(this)
-        lifecycleScope.launch {
-            mealRoutineViewModel.updateCookBookApi({
-                BaseApplication.dismissMe()
-                handleApiSuccessResponse(it,cookbooksId,cookbooksName)
-            }, cookbooksId)
-        }
-    }
-
-    private fun handleApiSuccessResponse(result: NetworkResult<String>,cookbooksId:String?,cookbooksName:String?) {
-        when (result) {
-            is NetworkResult.Success -> handleApiSuccResponse(result.data.toString(),cookbooksId,cookbooksName)
-            is NetworkResult.Error -> {
-                showAlert(result.message, false)
-            }
-            else -> showAlert(result.message, false)
-        }
-    }
-
-
-    @SuppressLint("SetTextI18n", "ResourceAsColor")
-    private fun handleApiSuccResponse(data: String,cookbooksId:String?,cookbooksName:String?) {
-        try {
-            val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
-            Log.d("@@@ addMea List ", "message :- $data")
-            if (apiModel.code == 200 && apiModel.success) {
-                val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
-                navGraph.setStartDestination(R.id.homeFragment)
-                navController.graph = navGraph
-                sessionManagement.setCookBookId(cookbooksId.toString())
-                sessionManagement.setCookBookName(cookbooksName.toString())
-                navController.navigate(R.id.christmasCollectionFragment)
-            } else {
-                handleError(apiModel.code,apiModel.message)
-            }
-        } catch (e: Exception) {
-            showAlert(e.message, false)
-        }
-    }
-
-
-    private fun openCookbookDetails(id: String, name: String?) {
-        // Launch fragment or activity
-        Log.d("DeepLink", "Navigating to cookbook ID: $id, Name: $name")
-    }
-
-   /* private fun handleDeepLink(intent: Intent?) {
-        intent?.data?.let { uri ->
-            val deepLinkValue = uri.getQueryParameter("deep_link_value")
-            val deepLinkSub1 = uri.getQueryParameter("deep_link_sub1")
-            Log.d("DeepLink", "Deep link value: $deepLinkValue, Sub1: $deepLinkSub1")
-
-            // Navigate to the appropriate screen based on the deep link
-            when (deepLinkValue) {
-                "profile_screen" -> {
-                    // Navigate to Profile screen
-                    startActivity(Intent(this, AuthActivity::class.java))
-                }
-                else -> {
-                    // Handle other cases or show a default screen
-                }
-            }
-        }
-    }*/
 
     private fun startDestination() {
         handleDeepLink()

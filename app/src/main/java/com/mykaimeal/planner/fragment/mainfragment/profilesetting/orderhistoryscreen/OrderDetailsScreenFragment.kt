@@ -112,9 +112,14 @@ class OrderDetailsScreenFragment : Fragment() {
 
         val deliveryFee = orderHistoryModelData.order?.final_quote?.quote?.delivery_fee_cents ?: 0
         val tip = orderHistoryModelData.order?.final_quote?.tip ?: 0
+        val totalWithTip = orderHistoryModelData.order?.final_quote?.total_with_tip ?: 0
         val totalCents = deliveryFee + tip
 
         binding.textDeliveryTipPrice.text = "$"+totalCents.formatCents()
+
+        binding.textTotalAmounts.text = "$"+totalWithTip.formatCents()
+
+        binding.textCardAmounts.text = "$"+totalWithTip.formatCents()
 
     }
 

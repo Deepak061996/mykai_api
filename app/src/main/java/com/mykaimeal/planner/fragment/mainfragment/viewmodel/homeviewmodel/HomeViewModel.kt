@@ -11,12 +11,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: MainRepository) : ViewModel()  {
 
-
-
     private var _data: DataModel? = null
     val data: DataModel? get() = _data
-
-
 
     suspend fun homeDetailsRequest(successCallback: (response: NetworkResult<String>) -> Unit){
         repository.homeDetailsRequestApi{ successCallback(it) }
