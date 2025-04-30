@@ -43,6 +43,9 @@ class MealRoutineViewModel @Inject constructor(private val repository: MainRepos
     suspend fun updateMealRoutineApi(successCallback: (response: NetworkResult<String>) -> Unit,mealRoutineId: List<String>?){
         repository.updateMealRoutineApi ({ successCallback(it) },mealRoutineId)
     }
+  suspend fun updateCookBookApi(successCallback: (response: NetworkResult<String>) -> Unit,cookBookID: String?){
+        repository.updateCookBookApi ({ successCallback(it) },cookBookID)
+    }
 
     suspend fun planRequest(successCallback: (response: NetworkResult<String>) -> Unit,
                             q: String){

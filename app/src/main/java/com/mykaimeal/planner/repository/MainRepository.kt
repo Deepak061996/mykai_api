@@ -200,6 +200,7 @@ interface MainRepository {
                                            duration: String?)
 
     suspend fun updateMealRoutineApi(successCallback: (response: NetworkResult<String>) -> Unit, mealRoutineId:List<String>?)
+    suspend fun updateCookBookApi(successCallback: (response: NetworkResult<String>) -> Unit, cookBookId:String?)
 
     suspend fun updateDietaryApi(successCallback: (response: NetworkResult<String>) -> Unit, dietaryId:List<String>?)
 

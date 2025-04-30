@@ -1418,6 +1418,25 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
         }
     }
 
+    override suspend fun updateCookBookApi(
+        successCallback: (response: NetworkResult<String>) -> Unit,
+        cookBookId: String?
+    ) {
+        try {
+            api.updateCookBookApi(cookBookId).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                        successCallback(NetworkResult.Success(it.toString()))
+                    } ?: successCallback(NetworkResult.Error(ErrorMessage.apiError))
+                } else {
+                    successCallback(NetworkResult.Error(errorBody().toString()))
+                }
+            }
+        } catch (e: Exception) {
+            successCallback(NetworkResult.Error(e.message.toString()))
+        }
+    }
+
     override suspend fun updateCookingFrequencyApi(
         successCallback: (response: NetworkResult<String>) -> Unit,
         cookingFrequency: String?

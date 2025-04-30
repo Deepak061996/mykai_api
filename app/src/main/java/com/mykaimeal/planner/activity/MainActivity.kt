@@ -25,7 +25,6 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -37,10 +36,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.Companion
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -66,6 +64,7 @@ import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.ActivityMainBinding
 import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.GetUserPreference
+import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.UpdatePreferenceSuccessfully
 import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.model.MealRoutineModelData
 import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.viewmodel.MealRoutineViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.viewmodel.BasketScreenViewModel
@@ -94,7 +93,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.jar.Manifest
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
@@ -445,6 +443,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         }
     }*/
 
+    @SuppressLint("SuspiciousIndentation")
     private fun handleDeepLink() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
         val navController = navHostFragment.navController
@@ -468,15 +467,58 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
                 Log.d("***********","$screenName  & $cookbooksId")
 
                 if (screenName == "CookBooksType" && cookbooksId != null) {
-                    sessionManagement.setCookBookId(cookbooksId.toString())
-                    sessionManagement.setCookBookName(cookbooksId.toString())
-                    navController.navigate(R.id.christmasCollectionFragment)
+
+                    if (BaseApplication.isOnline(this)) {
+                        updateCookBookId(cookbooksId,navController)
+                    } else {
+                        BaseApplication.alertError(this, ErrorMessage.networkError, false)
+                    }
+
 //                    // Navigate or open appropriate screen
 //                    findNavController(R.id.frameContainerMain).navigate(R.id.christmasCollectionFragment)
                 }
             }
         }
     }
+
+    private fun updateCookBookId(cookbooksId: String?, navController: NavController) {
+        BaseApplication.showMe(this)
+        lifecycleScope.launch {
+            mealRoutineViewModel.updateCookBookApi({
+                BaseApplication.dismissMe()
+                handleApiSuccessResponse(it,cookbooksId,navController)
+            }, cookbooksId)
+        }
+    }
+
+    private fun handleApiSuccessResponse(result: NetworkResult<String>,cookbooksId:String?,navController: NavController) {
+        when (result) {
+            is NetworkResult.Success -> handleApiSuccResponse(result.data.toString(),cookbooksId,navController)
+            is NetworkResult.Error -> {
+                showAlert(result.message, false)
+            }
+            else -> showAlert(result.message, false)
+        }
+    }
+
+
+    @SuppressLint("SetTextI18n", "ResourceAsColor")
+    private fun handleApiSuccResponse(data: String,cookbooksId:String?,navController: NavController) {
+        try {
+            val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
+            Log.d("@@@ addMea List ", "message :- $data")
+            if (apiModel.code == 200 && apiModel.success) {
+                sessionManagement.setCookBookId(cookbooksId.toString())
+                sessionManagement.setCookBookName(cookbooksId.toString())
+                navController.navigate(R.id.christmasCollectionFragment)
+            } else {
+                handleError(apiModel.code,apiModel.message)
+            }
+        } catch (e: Exception) {
+            showAlert(e.message, false)
+        }
+    }
+
 
     private fun openCookbookDetails(id: String, name: String?) {
         // Launch fragment or activity
