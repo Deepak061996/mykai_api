@@ -7,12 +7,15 @@
         android:id="@+id/relCardDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_5sdp"
         android:layout_marginTop="@dimen/_10sdp">
 
         <ImageView
             android:id="@+id/idVisaImages"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_height="@dimen/_20sdp"
             android:src="@drawable/visa_rounded_image"/>
 
         <RelativeLayout
@@ -40,7 +43,6 @@
                 android:text="Preferred"
                 android:textSize="@dimen/_10sdp"
                 android:textColor="#FE9F45"/>
-
             <TextView
                 android:id="@+id/tvCardNumber"
                 android:layout_width="wrap_content"
@@ -49,9 +51,7 @@
                 android:textSize="@dimen/_13sdp"
                 android:layout_below="@+id/tvVisaName"
                 android:textColor="@color/black"/>
-
         </RelativeLayout>
-
         <ImageView
             android:id="@+id/imageCheckRadio"
             android:layout_width="wrap_content"
@@ -60,9 +60,5 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/_10sdp"
             android:src="@drawable/radio_uncheck_gray_icon"/>
-
-
     </RelativeLayout>
-
-
 </RelativeLayout>

@@ -34,7 +34,6 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var sessionManagement: SessionManagement
     private lateinit var viewModel: SubscriptionPlanViewModel
 
-    private var screen=""
 
     companion object {
         public const val SPLASH_DELAY = 3000L // 3 seconds delay
@@ -143,7 +142,6 @@ class SplashActivity : AppCompatActivity() {
             delay(SPLASH_DELAY)
             // Check login session and navigate accordingly
             if (sessionManagement.getFirstTime()){
-
                 val intent = Intent(this@SplashActivity, IntroPageActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -153,7 +151,6 @@ class SplashActivity : AppCompatActivity() {
                     LetsStartOptionActivity::class.java
                 }
                 val intent = Intent(this@SplashActivity, targetActivity)
-                intent.putExtra("openScreen",screen)
                 startActivity(intent)
                 finish()
             }

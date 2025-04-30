@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.mykaimeal.planner.OnItemSelectListener
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.databinding.AdapterCardPrefferedItemBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpaymentscreen.model.GetCardMealMeModelData
+import com.stripe.android.model.CardBrand
 
 class AdapterCardPreferredItem(var context: Context, private var datalist: MutableList<GetCardMealMeModelData>?,
                                private var onItemSelectListener: OnItemSelectListener,
@@ -24,23 +27,28 @@ class AdapterCardPreferredItem(var context: Context, private var datalist: Mutab
         return ViewHolder(binding)
     }
 
-    @SuppressLint("DiscouragedApi", "NotifyDataSetChanged")
+    @SuppressLint("DiscouragedApi", "NotifyDataSetChanged", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = datalist!![position]
         try {
 
-            if (datalist!![position].card_num!=null){
-                holder.binding.tvCardNumber.text="*** *** **** "+datalist!![position].card_num.toString()
+            datalist!![position].card_num?.let {
+                holder.binding.tvCardNumber.text= "*** *** **** $it"
+                val name = BaseApplication.detectCardType(it.toString())
+
+                holder.binding.tvVisaName.text=name
+                val icon: Int = CardBrand.valueOf(name).icon
+                Glide.with(context)
+                    .load(context.getDrawable(icon))
+                    .into(holder.binding.idVisaImages)
             }
 
             // Set visibility and icon based on status
             if (item.status == 1) {
-                holder.binding.tvPreferred.visibility = View.VISIBLE
                 holder.binding.imageCheckRadio.setImageResource(R.drawable.radio_green_icon)
                 onItemSelectListener.itemSelect(position,"","CardDetails")
             } else {
-                holder.binding.tvPreferred.visibility = View.GONE
                 holder.binding.imageCheckRadio.setImageResource(R.drawable.radio_uncheck_gray_icon)
             }
 
@@ -58,6 +66,7 @@ class AdapterCardPreferredItem(var context: Context, private var datalist: Mutab
                 data.status = 1
                 notifyItemChanged(position)
             }
+
         }catch (e:Exception){
             Log.d("@Error ","*****"+e.message)
         }

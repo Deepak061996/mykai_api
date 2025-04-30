@@ -57,7 +57,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/_15sdp"
                     app:civ_border_color="@color/light_green"
-                    app:civ_border_width="@dimen/_2sdp"
+                    app:civ_border_width="@dimen/_1sdp"
                     android:src="@drawable/mask_group_icon"/>
 
                 <TextView

@@ -39,6 +39,7 @@ import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.AdapterCookBookDetailsItem
 import com.mykaimeal.planner.adapter.ChooseDayAdapter
+import com.mykaimeal.planner.apiInterface.BaseUrl
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.basedata.SessionManagement
@@ -46,6 +47,7 @@ import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.FragmentChristmasCollectionBinding
 import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.UpdatePreferenceSuccessfully
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.CookBookViewModel
+import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.UserCookBokModel
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.apiresponse.CookBookDataModel
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.apiresponse.CookBookListApiResponse
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.CookBookListResponse
@@ -140,7 +142,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
         initialize()
 
         if (BaseApplication.isOnline(requireActivity())) {
-            if (Screen.equals("share")){
+            if (Screen.equals("share",true)){
                 updateCookBookId()
             }else{
                 getCookBookTypeList()
@@ -175,9 +177,21 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     private fun handleApiSuccResponse(data: String) {
         try {
-            val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
+            val apiModel = Gson().fromJson(data, UserCookBokModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
+                apiModel.data?.cook_book?.id?.let {
+                    id=it.toString()
+                }
+                apiModel.data?.cook_book?.name?.let {
+                    name=it
+                }
+                apiModel.data?.cook_book?.image?.let {
+                    image= BaseUrl.imageBaseUrl+it
+                }
+                apiModel.data?.cook_book?.status?.let {
+                    type=it.toString()
+                }
                 getCookBookTypeList()
             } else {
                 handleError(apiModel.code,apiModel.message)
@@ -267,6 +281,11 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
             val apiModel = Gson().fromJson(data, CookBookListApiResponse::class.java)
             Log.d("@@@ addMea List Collection", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
+                if(apiModel.shared==0){
+                    binding.imgThreeDotIcon.visibility=View.VISIBLE
+                }else{
+                    binding.imgThreeDotIcon.visibility=View.GONE
+                }
                 localData.clear()
                 apiModel.data?.let { localData.addAll(it) }
                 if (localData.size > 0) {

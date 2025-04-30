@@ -946,12 +946,16 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     }
 
     private fun validatation(): Boolean {
+        val status = cardMealMe.any { it.status == 1 }
         // Check if email/phone is empty
         if (binding.tvAddNumber.text.toString().equals("Add number",true)) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPhone, false)
             return false
         } else if (binding.tvSetDoorStep.text.toString().equals("",true)) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPickUp, false)
+            return false
+        }else if (status==false) {
+            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardError, false)
             return false
         }
         return true

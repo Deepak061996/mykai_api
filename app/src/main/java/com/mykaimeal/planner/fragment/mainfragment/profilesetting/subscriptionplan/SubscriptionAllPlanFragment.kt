@@ -3,6 +3,7 @@ package com.mykaimeal.planner.fragment.mainfragment.profilesetting.subscriptionp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
@@ -70,6 +71,7 @@ class SubscriptionAllPlanFragment : Fragment() {
     private var screen:String=""
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding=FragmentHomeSubscriptionAllPlanBinding.inflate(layoutInflater, container, false)
@@ -93,6 +95,7 @@ class SubscriptionAllPlanFragment : Fragment() {
         if (!sessionManagement.getProviderName().equals("",true)){
             if (!sessionManagement.getProviderName().equals("null",true)){
                 binding.tvTextNames.text = sessionManagement.getProviderName()
+                binding.tvSecretCookBook.text = sessionManagement.getProviderName()+"’s secret cookbook"
             }
         }
 
@@ -135,14 +138,10 @@ class SubscriptionAllPlanFragment : Fragment() {
 
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     private fun initialize() {
-        if (sessionManagement.getImage() != null) {
-            Glide.with(requireContext())
-                .load(BaseUrl.imageBaseUrl + sessionManagement.getImage())
-                .placeholder(R.drawable.mask_group_icon)
-                .error(R.drawable.mask_group_icon)
-                .into(binding.imageProfile)
-        }
 
+        binding.imagePrevious.paintFlags = binding.imagePrevious.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        binding.imagePreviousMonthly.paintFlags = binding.imagePreviousMonthly.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        binding.imagePreviousyearly.paintFlags = binding.imagePreviousyearly.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
 
         binding.crossImages.setOnClickListener{
@@ -268,21 +267,47 @@ class SubscriptionAllPlanFragment : Fragment() {
         }
     }
 
-    private fun selectPlan(selectedPlan: View, tvPopular: TextView,selectedImage: ImageView, crossImage: ImageView, selectedUserText: TextView, selectedDollarText: TextView, otherPlans: List<View>, textshow: List<TextView>, otherCroseImage: List<ImageView>, otherImages: List<ImageView>, otherUserTexts: List<TextView>, otherDollarTexts: List<TextView>, planIDUser:String,planTypeStatus:String) {
+    private fun selectPlan(selectedPlan: View,
+                           tvPopular: TextView,
+                           selectedImage: ImageView,
+                           crossImage: TextView,
+                           selectedUserText: TextView,
+                           selectedDollarText: TextView,
+                           otherPlans: List<View>,
+                           textshow: List<TextView>,
+                           otherCroseImage: List<TextView>,
+                           otherImages: List<ImageView>,
+                           otherUserTexts: List<TextView>,
+                           otherDollarTexts: List<TextView>,
+                           planIDUser:String,planTypeStatus:String) {
         planID=planIDUser
         planType=planTypeStatus
         selectedPlan.setBackgroundResource(R.drawable.subscription_click_bg)
-        tvPopular.setBackgroundResource(R.drawable.basic_click_bg)
-        tvPopular.setTextColor(Color.parseColor("#121212"))
+
+        if (tvPopular==binding.tvBest){
+            tvPopular.setBackgroundResource(R.drawable.best_value_icon)
+            tvPopular.setTextColor(Color.parseColor("#000000"))
+        }else{
+            tvPopular.setBackgroundResource(R.drawable.basic_click_bg)
+            tvPopular.setTextColor(Color.parseColor("#121212"))
+        }
+
         selectedImage.setImageResource(R.drawable.selected_plan_icon)
-        crossImage.setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN)
+        crossImage.setTextColor(Color.parseColor("#FFFFFF"))
         selectedUserText.setTextColor(Color.parseColor("#FFFFFF"))
         selectedDollarText.setTextColor(Color.parseColor("#FFFFFF"))
-        textshow.forEach { it.setBackgroundResource(R.drawable.popular_click_bg)}
+        textshow.forEach {
+            if (it==binding.tvBest){
+                it.setTextColor(Color.parseColor("#000000"))
+                it.setBackgroundResource(R.drawable.best_value_icon)
+            }else{
+                it.setTextColor(Color.parseColor("#FFFFFF"))
+                it.setBackgroundResource(R.drawable.popular_click_bg)
+            }
+        }
         otherPlans.forEach { it.setBackgroundResource(R.drawable.subscription_unclick_bg)}
-        otherCroseImage.forEach { it.setColorFilter(Color.parseColor("#757575"), PorterDuff.Mode.SRC_IN)}
+        otherCroseImage.forEach { it.setTextColor(Color.parseColor("#757575"))}
         otherImages.forEach { it.setImageResource(R.drawable.unselelected_plan_icon)}
-        textshow.forEach { it.setTextColor(Color.parseColor("#FFFFFF"))}
         otherUserTexts.forEach { it.setTextColor(Color.parseColor("#000000"))}
         otherDollarTexts.forEach { it.setTextColor(Color.parseColor("#000000"))}
     }
@@ -521,6 +546,7 @@ class SubscriptionAllPlanFragment : Fragment() {
 
     private fun getPrices() {
         billingClient!!.startConnection(object : BillingClientStateListener {
+            @SuppressLint("SetTextI18n")
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     val executorService = Executors.newSingleThreadExecutor()
@@ -561,9 +587,22 @@ class SubscriptionAllPlanFragment : Fragment() {
                         } catch (e: InterruptedException) {
                             e.printStackTrace()
                         }
+
                         binding.tvNewDollar.text=premiumWeekly
                         binding.tvNewDollarMonthly.text=premiumMonthly
                         binding.tvNewDollaryearly.text=premiumAnnual
+
+                        try {
+                            binding.imagePrevious.text=premiumWeekly[0]+"3.99/ Weekly"
+                            binding.imagePreviousMonthly.text=premiumMonthly[0]+"11.99/ Monthly"
+                            binding.imagePreviousyearly.text=premiumAnnual[0]+"99.99/ Yearly"
+                        }catch (e:Exception){
+                            binding.imagePrevious.text="$3.99/ Weekly"
+                            binding.imagePreviousMonthly.text="$11.99/ Monthly"
+                            binding.imagePreviousyearly.text="$99.99/ Yearly"
+                        }
+
+
                         BaseApplication.dismissMe()
                     }
                 }
