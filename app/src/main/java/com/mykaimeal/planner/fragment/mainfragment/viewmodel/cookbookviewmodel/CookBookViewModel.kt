@@ -15,6 +15,11 @@ class CookBookViewModel @Inject constructor(private val repository: MainReposito
         repository.getCookBookRequestApi { successCallback(it) }
     }
 
+
+    suspend fun updateCookBookApi(successCallback: (response: NetworkResult<String>) -> Unit,cookBookID: String?){
+        repository.updateCookBookApi ({ successCallback(it) },cookBookID)
+    }
+
     suspend fun getCookBookTypeRequest(
         successCallback: (response: NetworkResult<String>) -> Unit,
         id: String?

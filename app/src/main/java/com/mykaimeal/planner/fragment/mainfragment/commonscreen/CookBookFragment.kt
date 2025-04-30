@@ -750,7 +750,9 @@ class CookBookFragment : Fragment(), OnItemClickListener, OnItemSelectListener {
                 sessionManagement.setCookBookName(cookbookList[position].name)
                 sessionManagement.setCookBookImage("https://admin.getmykai.com"+cookbookList[position].image)
                 sessionManagement.setCookBookType(cookbookList[position].status.toString())
-                findNavController().navigate(R.id.christmasCollectionFragment)
+                val bundle= Bundle()
+                bundle.putString("Screen","cookbook")
+                findNavController().navigate(R.id.christmasCollectionFragment,bundle)
             }
 
         }

@@ -92,7 +92,6 @@ class AddTipScreenFragment : Fragment() {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
 
-
         binding.etSignEmailPhone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -109,11 +108,7 @@ class AddTipScreenFragment : Fragment() {
             }
         })
 
-        binding.linearNotNow.setOnClickListener { updateSelection(binding.linearNotNow) }
-        binding.llTenPerc.setOnClickListener { updateSelection(binding.llTenPerc) }
-        binding.llFifteenPerc.setOnClickListener { updateSelection(binding.llFifteenPerc) }
-        binding.llTwentyPerc.setOnClickListener { updateSelection(binding.llTwentyPerc) }
-        binding.lltwentyFivePerc.setOnClickListener { updateSelection(binding.lltwentyFivePerc) }
+        setupListeners()
 
         binding.rlProceedAndPay.setOnClickListener {
 
@@ -130,7 +125,7 @@ class AddTipScreenFragment : Fragment() {
 
             if (status.isNotEmpty()) {
                 if (BaseApplication.isOnline(requireContext())) {
-                    paymentCreditDebitApi()
+                    paymentCreditDebitApi(selectedTipAmount)
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
@@ -301,13 +296,13 @@ class AddTipScreenFragment : Fragment() {
         }
     }
 
-    private fun paymentCreditDebitApi() {
+    private fun paymentCreditDebitApi(selectedTipAmount: String) {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
             addTipScreenViewModel.getOrderProductUrl({
                 BaseApplication.dismissMe()
                 handleApiOrderResponse(it)
-            },"",cardId)
+            },selectedTipAmount,cardId)
         }
     }
 

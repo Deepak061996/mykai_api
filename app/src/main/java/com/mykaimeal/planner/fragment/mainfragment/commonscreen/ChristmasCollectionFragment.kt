@@ -44,6 +44,7 @@ import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.FragmentChristmasCollectionBinding
+import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.UpdatePreferenceSuccessfully
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.LinkGenerateModel
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.CookBookViewModel
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.apiresponse.CookBookDataModel
@@ -76,6 +77,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
     private var rcyChooseDaySch: RecyclerView? = null
     private var id: String? = ""
     private var name: String? = ""
+    private var Screen: String? = ""
     private var image: String? = ""
     private var type: String? = ""
     private lateinit var viewModel: CookBookViewModel
@@ -110,6 +112,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
             it.llBottomNavigation.visibility = View.GONE
         }
 
+        Screen=arguments?.getString("Screen","")?:""
 
         viewModel = ViewModelProvider(requireActivity())[CookBookViewModel::class.java]
         cookbookList.clear()
@@ -147,12 +150,55 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
         initialize()
 
         if (BaseApplication.isOnline(requireActivity())) {
-            getCookBookTypeList()
-        } else {
+            if (Screen.equals("share")){
+                updateCookBookId()
+            }else{
+                getCookBookTypeList()
+            }
+        }else{
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
 
+
         return binding.root
+    }
+
+    private fun updateCookBookId() {
+        BaseApplication.showMe(requireContext())
+        lifecycleScope.launch {
+            viewModel.updateCookBookApi({
+                BaseApplication.dismissMe()
+                handleApiSuccessResponse(it)
+            }, id)
+        }
+    }
+    private fun handleApiSuccessResponse(result: NetworkResult<String>) {
+        when (result) {
+            is NetworkResult.Success -> handleApiSuccResponse(result.data.toString())
+            is NetworkResult.Error -> {
+                showAlert(result.message, false)
+            }
+            else -> showAlert(result.message, false)
+        }
+    }
+
+    @SuppressLint("SetTextI18n", "ResourceAsColor")
+    private fun handleApiSuccResponse(data: String) {
+        try {
+            val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
+            Log.d("@@@ addMea List ", "message :- $data")
+            if (apiModel.code == 200 && apiModel.success) {
+                if (BaseApplication.isOnline(requireActivity())) {
+                    getCookBookTypeList()
+                } else {
+                    BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+                }
+            } else {
+                handleError(apiModel.code,apiModel.message)
+            }
+        } catch (e: Exception) {
+            showAlert(e.message, false)
+        }
     }
 
     private fun backButton() {
@@ -213,7 +259,6 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
                 if (apiModel.data != null && apiModel.data.size > 0) {
                     cookbookList.retainAll { it == cookbookList[0] }
                     cookbookList.addAll(apiModel.data)
-
                     cookbookList.removeIf {
                         it.id == id?.toInt()
                     }

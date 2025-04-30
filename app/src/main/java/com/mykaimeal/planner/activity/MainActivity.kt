@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     var alertStatus:Boolean=false
     private var status:String?="RecipeSearch"
     private var dialogAddRecipe:Dialog ?=null
-
+    lateinit var navController : NavController
     var isFlashlightOn = false
     private lateinit var cameraManager: CameraManager
     private lateinit var cameraId: String
@@ -159,7 +159,8 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         setContentView(binding.root)
         mealRoutineViewModel = ViewModelProvider(this@MainActivity)[MealRoutineViewModel::class.java]
         commonWorkUtils = CommonWorkUtils(this)
-
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
+        navController = navHostFragment.navController
         sessionManagement = SessionManagement(this)
 
         getFcmToken()
@@ -445,8 +446,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     @SuppressLint("SuspiciousIndentation")
     private fun handleDeepLink() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
-        val navController = navHostFragment.navController
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
         navGraph.setStartDestination(R.id.homeFragment)
         navController.graph = navGraph
@@ -466,34 +465,35 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
                 Log.d("***********","$screenName  & $cookbooksId")
 
-                if (screenName == "CookBooksType" && cookbooksId != null) {
-
-                    if (BaseApplication.isOnline(this)) {
-                        updateCookBookId(cookbooksId,navController)
-                    } else {
-                        BaseApplication.alertError(this, ErrorMessage.networkError, false)
-                    }
-
-//                    // Navigate or open appropriate screen
-//                    findNavController(R.id.frameContainerMain).navigate(R.id.christmasCollectionFragment)
+                if (screenName.equals("CookBooksType") && cookbooksId != null) {
+                    sessionManagement.setCookBookId(cookbooksId.toString())
+                    sessionManagement.setCookBookName(itemName.toString())
+                    val bundle= Bundle()
+                    bundle.putString("Screen","share")
+                    navController.navigate(R.id.christmasCollectionFragment,bundle)
+//                    if (BaseApplication.isOnline(this)) {
+//                        updateCookBookId(cookbooksId,itemName)
+//                    } else {
+//                        BaseApplication.alertError(this, ErrorMessage.networkError, false)
+//                    }
                 }
             }
         }
     }
 
-    private fun updateCookBookId(cookbooksId: String?, navController: NavController) {
+    private fun updateCookBookId(cookbooksId: String?,cookbooksName: String?) {
         BaseApplication.showMe(this)
         lifecycleScope.launch {
             mealRoutineViewModel.updateCookBookApi({
                 BaseApplication.dismissMe()
-                handleApiSuccessResponse(it,cookbooksId,navController)
+                handleApiSuccessResponse(it,cookbooksId,cookbooksName)
             }, cookbooksId)
         }
     }
 
-    private fun handleApiSuccessResponse(result: NetworkResult<String>,cookbooksId:String?,navController: NavController) {
+    private fun handleApiSuccessResponse(result: NetworkResult<String>,cookbooksId:String?,cookbooksName:String?) {
         when (result) {
-            is NetworkResult.Success -> handleApiSuccResponse(result.data.toString(),cookbooksId,navController)
+            is NetworkResult.Success -> handleApiSuccResponse(result.data.toString(),cookbooksId,cookbooksName)
             is NetworkResult.Error -> {
                 showAlert(result.message, false)
             }
@@ -503,13 +503,16 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
 
     @SuppressLint("SetTextI18n", "ResourceAsColor")
-    private fun handleApiSuccResponse(data: String,cookbooksId:String?,navController: NavController) {
+    private fun handleApiSuccResponse(data: String,cookbooksId:String?,cookbooksName:String?) {
         try {
             val apiModel = Gson().fromJson(data, UpdatePreferenceSuccessfully::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
+                val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
+                navGraph.setStartDestination(R.id.homeFragment)
+                navController.graph = navGraph
                 sessionManagement.setCookBookId(cookbooksId.toString())
-                sessionManagement.setCookBookName(cookbooksId.toString())
+                sessionManagement.setCookBookName(cookbooksName.toString())
                 navController.navigate(R.id.christmasCollectionFragment)
             } else {
                 handleError(apiModel.code,apiModel.message)
@@ -546,7 +549,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     private fun startDestination() {
         handleDeepLink()
-
     }
 
     fun changeBottom(status: String) {
