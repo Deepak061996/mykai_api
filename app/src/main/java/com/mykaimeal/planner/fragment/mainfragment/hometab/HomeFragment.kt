@@ -428,12 +428,18 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 }
             }
 
-            userDataLocal.is_supermarket?.let {
+            userDataLocal.address?.let {
                 if (it==1){
-                    supermarketOnLoad()
+                    userDataLocal.is_supermarket?.let {
+                        if (it==1){
+                            supermarketOnLoad()
 //                    getLatLong()
+                        }
+                    }
                 }
             }
+
+
 
 
         } catch (e: Exception) {

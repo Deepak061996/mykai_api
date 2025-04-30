@@ -130,13 +130,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun initialize() {
-
-
-
-
-
         val afDevKey: String = AppsFlyerConstants.afDevKey
-
         // Initialize AppsFlyer
         AppsFlyerLib.getInstance().init(afDevKey, object : AppsFlyerConversionListener {
             override fun onConversionDataSuccess(data: Map<String, Any>) {

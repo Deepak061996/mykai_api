@@ -131,6 +131,7 @@
     <string name="snacks">Snacks</string>
     <string name="select_supermarkets_to_compare">Select Supermarkets to compare</string>
     <string name="no_of_recipes_found">no of recipes found</string>
+    <string name="add_a_recipe_from_web">Add a recipe from web</string>
 
 
 </resources>

@@ -169,17 +169,18 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
 
         if ((activity as? MainActivity)?.Subscription_status==1){
             binding.btnLock.visibility=View.VISIBLE
+            if (!hasShownPopup) {
+                addressDialog()
+                hasShownPopup = true
+            } else {
+                viewModelData()
+            }
         }else{
             binding.btnLock.visibility=View.GONE
-        }
-
-
-        if (!hasShownPopup) {
-            addressDialog()
-            hasShownPopup = true
-        } else {
             viewModelData()
         }
+
+
 
         binding.textShoppingList.setOnClickListener {
             findNavController().navigate(R.id.shoppingListFragment)

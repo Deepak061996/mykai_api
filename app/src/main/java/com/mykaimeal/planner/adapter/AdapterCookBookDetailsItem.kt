@@ -46,6 +46,13 @@ class AdapterCookBookDetailsItem(var datalist: MutableList<CookBookDataModel>?, 
             holder.binding.cardViewItems.visibility=View.GONE
         }
 
+
+        if (data?.shared==0){
+            holder.binding.imgThreeDot.visibility=View.VISIBLE
+        }else{
+            holder.binding.imgThreeDot.visibility=View.GONE
+        }
+
         if (data?.data?.recipe?.label!=null){
             holder.binding.tvBreakfast.text= data.data.recipe.label
         }

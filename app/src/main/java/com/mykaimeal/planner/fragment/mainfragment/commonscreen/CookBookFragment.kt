@@ -30,6 +30,7 @@ import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.AdapterCookBookDetailsItem
 import com.mykaimeal.planner.adapter.AdapterCookBookItem
 import com.mykaimeal.planner.adapter.ChooseDayAdapter
+import com.mykaimeal.planner.apiInterface.BaseUrl
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.basedata.SessionManagement
@@ -748,7 +749,7 @@ class CookBookFragment : Fragment(), OnItemClickListener, OnItemSelectListener {
             }else{
                 sessionManagement.setCookBookId(cookbookList[position!!].id.toString())
                 sessionManagement.setCookBookName(cookbookList[position].name)
-                sessionManagement.setCookBookImage("https://admin.getmykai.com"+cookbookList[position].image)
+                sessionManagement.setCookBookImage(BaseUrl.imageBaseUrl+cookbookList[position].image)
                 sessionManagement.setCookBookType(cookbookList[position].status.toString())
                 val bundle= Bundle()
                 bundle.putString("Screen","cookbook")

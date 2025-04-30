@@ -37,6 +37,7 @@
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:fontFamily="@font/inter_bold"
+                android:gravity="center"
                 android:text="Save Time, Save Money, Eat Better"
                 android:textColor="@color/light_green"
                 android:textSize="@dimen/_15sdp" />
@@ -69,7 +70,7 @@
                             android:text="You’ve got a gift from"
                             android:textAlignment="center"
                             android:textColor="#1F1E1E"
-                            android:textSize="@dimen/_12sdp" />
+                            android:textSize="@dimen/_13sdp" />
 
                         <TextView
                             android:id="@+id/tvTextNames"
@@ -77,10 +78,10 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:fontFamily="@font/inter_bold"
-                            android:text="kai"
+                            android:text="Kai"
                             android:textAlignment="center"
                             android:textColor="#1F1E1E"
-                            android:textSize="@dimen/_12sdp" />
+                            android:textSize="@dimen/_13sdp" />
                     </LinearLayout>
 
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -99,7 +100,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_20sdp"
-                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_15sdp"
                         android:layout_below="@+id/imageProfile">
                         <TextView
                             android:id="@+id/tvTrialName"
@@ -117,9 +118,9 @@
                         android:id="@+id/relLifeTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_15sdp"
                         android:layout_below="@+id/relFreeTrials"
-                        android:layout_marginTop="@dimen/_5sdp">
+                        android:layout_marginTop="@dimen/_10sdp">
                         <TextView
                             android:id="@+id/tvLifeTimeOff"
                             android:layout_width="match_parent"
@@ -137,8 +138,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/relLifeTime"
-                        android:layout_marginStart="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_5sdp">
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_10sdp">
 
                         <TextView
                             android:id="@+id/tvSecretCookBook"
@@ -217,13 +219,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true">
-                            <ImageView
+                            <TextView
                                 android:id="@+id/imagePrevious"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:src="@drawable/weekly_icon"
-                                app:tint="#FFFFFFCC" />
+                                android:fontFamily="@font/inter_semibold"
+                                android:text="$3.99/ Weekly"
+                                android:layout_alignParentEnd="true"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_8sdp" />
                             <TextView
                                 android:id="@+id/tvNewDollar"
                                 android:layout_width="wrap_content"
@@ -231,6 +235,7 @@
                                 android:layout_below="@+id/imagePrevious"
                                 android:fontFamily="@font/inter_semibold"
                                 android:text="$1.99/ Weekly"
+                                android:layout_alignParentEnd="true"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/_11sdp" />
                         </RelativeLayout>
@@ -293,12 +298,15 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true">
 
-                            <ImageView
+                            <TextView
                                 android:id="@+id/imagePreviousMonthly"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:src="@drawable/monthly_icon" />
+                                android:fontFamily="@font/inter_semibold"
+                                android:text="$11.99/ Monthly"
+                                android:layout_alignParentEnd="true"
+                                android:textColor="#757575"
+                                android:textSize="@dimen/_8sdp" />
 
                             <TextView
                                 android:id="@+id/tvNewDollarMonthly"
@@ -307,6 +315,7 @@
                                 android:layout_below="@+id/imagePreviousMonthly"
                                 android:fontFamily="@font/inter_semibold"
                                 android:text="$5.99/ Monthly"
+                                android:layout_alignParentEnd="true"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/_11sdp" />
 
@@ -334,13 +343,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/popular_click_bg"
+                            android:background="@drawable/best_value_icon"
                             android:fontFamily="@font/inter_semibold"
                             android:includeFontPadding="false"
                             android:padding="@dimen/_2sdp"
                             android:text="Best value"
                             android:gravity="center"
-                            android:textColor="@color/white"
+                            android:textColor="#000000"
                             android:textSize="@dimen/_11sdp" />
 
                         <ImageView
@@ -373,17 +382,21 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true">
 
-                            <ImageView
+                            <TextView
                                 android:id="@+id/imagePreviousyearly"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:src="@drawable/yearly_icon" />
+                                android:fontFamily="@font/inter_semibold"
+                                android:text="$99.99/ Yearly"
+                                android:layout_alignParentEnd="true"
+                                android:textColor="#757575"
+                                android:textSize="@dimen/_8sdp" />
 
                             <TextView
                                 android:id="@+id/tvNewDollaryearly"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
                                 android:layout_below="@+id/imagePreviousyearly"
                                 android:fontFamily="@font/inter_semibold"
                                 android:text="$49.99/ Yearly"
