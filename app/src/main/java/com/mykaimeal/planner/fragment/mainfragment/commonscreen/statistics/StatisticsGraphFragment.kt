@@ -23,6 +23,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.deeplink.DeepLinkResult
+import com.appsflyer.share.LinkGenerator
+import com.appsflyer.share.ShareInviteHelper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.github.mikephil.charting.components.XAxis
@@ -134,7 +136,6 @@ class StatisticsGraphFragment : Fragment() {
         }
 
 
-
         binding.textInviteFriends.setOnClickListener {
 
             shareImageWithText(
@@ -149,7 +150,9 @@ class StatisticsGraphFragment : Fragment() {
             findNavController().navigate(R.id.statisticsWeekYearFragment)
         }
 
-        copyShareInviteLink()
+//        copyShareInviteLink()
+
+        generateDeepLink()
 
         if (BaseApplication.isOnline(requireContext())) {
             getGraphList()
@@ -306,11 +309,13 @@ class StatisticsGraphFragment : Fragment() {
         }
 
         if (response.total_spent != null) {
-            binding.textSpent.text = "Total spent $" + response.total_spent.toString().trim()
+            val formattedSpent = String.format("%.2f", response.total_spent)
+            binding.textSpent.text = "Total spent $${formattedSpent.trim()}"
         }
 
         if (response.saving != null) {
-            binding.textSpent.text = "Your savings are $" + response.saving.toString().trim()
+            val formattedSaving = String.format("%.2f", response.saving)
+            binding.textSpent.text = "Your savings are $${formattedSaving.trim()}"
         }
     }
 
@@ -380,6 +385,7 @@ class StatisticsGraphFragment : Fragment() {
             })
     }
 
+/*
     @SuppressLint("RestrictedApi")
     private fun copyShareInviteLink() {
 
@@ -400,37 +406,53 @@ class StatisticsGraphFragment : Fragment() {
 
         referLink = fullUrl
         Log.d("AF_TEST", "Custom Raw Link: $referLink")
+    }
+*/
 
+    private fun generateDeepLink() {
 
-        /*    val currentCampaign = "user_invite"
-            val currentChannel = "mobile_share"
+        val afUserId = sessionManagement.getId()?.toString().orEmpty()
+        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
+        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
+        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
 
-            val afUserId = sessionManagement.getId()?.toString().orEmpty()
-            val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
-            val providerName = sessionManagement.getUserName()?.toString().orEmpty()
-            val providerImage = sessionManagement.getImage()?.toString().orEmpty()
+        // Your OneLink base URL and campaign details
+        val currentCampaign = "property_share"
+        val oneLinkId = "mPqu" // Replace with your OneLink ID
+        val brandDomain = "mykaimealplanner.onelink.me" // Your OneLink domain
 
-            val linkGenerator = ShareInviteHelper.generateInviteUrl(requireActivity())
-                .setBaseDeeplink("https://mykaimealplanner.onelink.me/mPqu")
-                .setCampaign(currentCampaign)
-                .setChannel(currentChannel)
-                .addParameter("af_user_id", afUserId)
-                .addParameter("referrer", referrerCode)
-                .addParameter("providerName", providerName)
-                .addParameter("providerImage", providerImage)
+        // Prepare the deep link values
+        val deepLink = "mykai://property?af_user_id=$afUserId&Referrer=$referrerCode&providerName=$providerName&providerImage=$providerImage"
 
-            Log.d("AF_TEST", "Params: ${linkGenerator.userParams}")
+        //  val deepLink = "https://property?propertyId=$propertyId&propertyType=$propertyType&city=$city"
 
-            linkGenerator.generateLink(requireActivity(), object : LinkGenerator.ResponseListener {
-                override fun onResponse(s: String) {
-                    referLink = s
-                    Log.d("AF_TEST", "Generated Link: $s")
-                }
+        val webLink = "https://https://admin.getmykai.com/" // Web fallback link
 
-                override fun onResponseError(s: String) {
-                    Log.e("AF_TEST", "Error Generating Link: $s")
-                }
-            })*/
+        // Create the link generator
+        val linkGenerator = ShareInviteHelper.generateInviteUrl(requireActivity())
+            .setBaseDeeplink("https://$brandDomain/$oneLinkId")
+            .setCampaign(currentCampaign)
+            .addParameter("af_dp", deepLink) // App deep link
+            .addParameter("Referrer", referrerCode)
+            .addParameter("providerName", providerName)
+            .addParameter("providerImage", providerImage)
+            .addParameter("af_web_dp", webLink) // Web fallback URL
 
+        // Generate the link
+        linkGenerator.generateLink(requireActivity(), object : LinkGenerator.ResponseListener {
+            override fun onResponse(s: String) {
+                // Successfully generated the link
+                Log.d("TAG", s)
+                // Example share message with the generated link
+                val message = "Check out this property: $s"
+                referLink = s
+                Log.d("***********", s)
+            }
+
+            override fun onResponseError(s: String) {
+                // Handle error if link generation fails
+                Log.e("***********", "Error Generating Link: $s")
+            }
+        })
     }
 }

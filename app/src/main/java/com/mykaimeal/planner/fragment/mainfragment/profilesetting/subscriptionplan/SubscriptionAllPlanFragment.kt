@@ -90,6 +90,22 @@ class SubscriptionAllPlanFragment : Fragment() {
 
         sessionManagement = SessionManagement(requireContext())
 
+
+        if (!sessionManagement.getProviderName().equals("",true)){
+            if (!sessionManagement.getProviderName().equals("null",true)){
+                binding.tvTextNames.text = sessionManagement.getProviderName()
+            }
+        }
+
+        if (!sessionManagement.getProviderImage().equals("",true)){
+             Glide.with(requireContext())
+                 .load(sessionManagement.getProviderImage())
+                 .placeholder(R.drawable.mask_group_icon)
+                 .error(R.drawable.mask_group_icon)
+                 .into(binding.imageProfile)
+        }
+
+
         backButton()
 
         initialize()

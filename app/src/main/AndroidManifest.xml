@@ -65,24 +65,7 @@
             android:name=".activity.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            tools:ignore="AppLinkUrlError">
-
-            <intent-filter
-                android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!--<data android:scheme="https" android:host="mykaimealplanner.onelink.me" />-->
-                <data android:scheme="mykai" android:host="property" />
-         <!--       <data android:scheme="mykai" android:host="property" />-->
-               <!-- <data
-                    android:scheme="https"
-                    android:host="mykaimealplanner.onelink.me"
-                    android:pathPrefix="/mPqu" />-->
-            </intent-filter>
-
-        </activity>
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name=".activity.AuthActivity"
@@ -123,11 +106,27 @@
             android:name=".activity.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="AppLinkUrlError">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+
+            <intent-filter
+                android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!--<data android:scheme="https" android:host="mykaimealplanner.onelink.me" />-->
+                <data android:scheme="mykai" android:host="property" />
+                <!--       <data android:scheme="mykai" android:host="property" />-->
+                <!-- <data
+                     android:scheme="https"
+                     android:host="mykaimealplanner.onelink.me"
+                     android:pathPrefix="/mPqu" />-->
             </intent-filter>
         </activity>
 

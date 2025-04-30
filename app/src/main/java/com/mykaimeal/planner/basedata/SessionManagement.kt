@@ -132,10 +132,35 @@ class SessionManagement(var context: Context) {
         editor!!.commit()
     }
 
+    fun getProviderName(): String? {
+        return pref?.getString(AppConstant.ProviderName, "")
+    }
+
+
+    fun setProviderName(name: String) {
+        editor!!.putString(AppConstant.ProviderName, name)
+        editor!!.commit()
+    }
+
+    fun getProviderImage(): String? {
+        return pref?.getString(AppConstant.ProviderName, "")
+    }
+
+
+    fun setProviderImage(name: String) {
+        editor!!.putString(AppConstant.ProviderImage, name)
+        editor!!.commit()
+    }
+
     fun setCookBookId(name: String) {
         editor!!.putString(AppConstant.CookBookId, name)
         editor!!.commit()
     }
+    fun setOpenCookBookUsingShare(name: String) {
+        editor!!.putString(AppConstant.CookBookUsingShare, name)
+        editor!!.commit()
+    }
+
 
     fun setCookBookImage(name: String) {
         editor!!.putString(AppConstant.CookBookImage, name)
@@ -149,6 +174,10 @@ class SessionManagement(var context: Context) {
 
     fun getCookBookName(): String? {
         return pref?.getString(AppConstant.CookBookName, "")
+    }
+
+    fun getCookBookShare():String?{
+        return  pref?.getString(AppConstant.CookBookUsingShare,"")
     }
 
     fun getCookBookId(): String? {

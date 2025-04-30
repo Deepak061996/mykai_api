@@ -17,8 +17,8 @@ data class StatisticsGraphModel(
 data class StatisticsGraphModelData(
     val graph_data: GraphData,
     val month: String,
-    val saving: Int,
-    val total_spent: Int
+    val saving: Double,
+    val total_spent: Double
 )
 
 data class GraphData(

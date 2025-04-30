@@ -61,8 +61,6 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
 
         initialize()
 
-//        orderHistoryModel()
-
         return binding.root
     }
 

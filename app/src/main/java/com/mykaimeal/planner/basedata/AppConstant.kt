@@ -31,7 +31,10 @@ class AppConstant {
 
         val userId: String ="UserId"
         val CookBookName: String ="CookBookName"
+        val ProviderName: String ="ProviderName"
+        val ProviderImage: String ="ProviderImage"
         val CookBookId: String ="CookBookId"
+        val CookBookUsingShare: String ="CookBookUsingShare"
         val CookBookImage: String ="CookBookImage"
         val CookBookType: String ="CookBookType"
         const val Gender: String ="Gender"
