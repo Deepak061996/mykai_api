@@ -42,6 +42,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.appsflyer.AppsFlyerConversionListener
+import com.appsflyer.AppsFlyerLib
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -61,6 +63,7 @@ import com.mykaimeal.planner.adapter.IndicatorAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.basedata.SessionManagement
+import com.mykaimeal.planner.commonworkutils.AppsFlyerConstants
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.ActivityMainBinding
 import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.GetUserPreference
@@ -137,6 +140,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     private var adapterUrlIngredients: AdapterUrlIngredientItem? = null
     private var loadDataStatus: Boolean = false
     private var uri: String = ""
+    private var openScreen: String = "Home"
     var Subscription_status: Int?=1
     var addmeal: Int?=0
     var favorite: Int?=0
@@ -162,6 +166,8 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.frameContainerMain) as NavHostFragment
         navController = navHostFragment.navController
         sessionManagement = SessionManagement(this)
+
+
 
         getFcmToken()
 
@@ -200,9 +206,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
         startTimer(this@MainActivity)
 
-
     }
-
 
      fun toggleFlashlight() {
         isFlashlightOn = !isFlashlightOn
@@ -223,9 +227,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             }
         }
     }
-
-
-
 
     private fun searchBottomDialog(submittedResult: String?) {
         bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
@@ -289,7 +290,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     }
 
-
     private fun recipeLikeAndUnlikeDataUrl(submittedResult: String, likeType: String, cookbooktype: String, dialogAddRecipe: Dialog?) {
         BaseApplication.showMe(this)
         lifecycleScope.launch {
@@ -299,7 +299,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             }, submittedResult, likeType, cookbooktype)
         }
     }
-
 
     private fun searchMealUrlApi(submittedResult: String?) {
         if (BaseApplication.isOnline(this)) {
@@ -338,7 +337,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             showAlert(e.message, false)
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun showURlData(data: SearchMealUrlModelData?) {
@@ -403,7 +401,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         }
     }
 
-
     private fun setEvent(){
         binding.llHome.setOnClickListener(this)
         binding.llSearch.setOnClickListener(this)
@@ -424,25 +421,6 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         }
 
     }
-
-    /*private fun handlingDeepLink() {
-        // Get the intent that started this activity
-        val intent = intent
-        // Check if the intent contains a URI (deep link)
-        if (intent?.action == Intent.ACTION_VIEW) {
-            val data: Uri? = intent.data
-            if (data != null && data.scheme == "zyvoo" && data.host == "property") {
-                val propertyId = data.getQueryParameter("propertyId")
-                // Now you can use the propertyId in your activity
-                Log.d(ErrorDialog.TAG, "Property ID: $propertyId")
-                // Fetch property details using the propertyId
-                val intent = Intent(this, RestaurantDetailActivity::class.java)
-                intent.putExtra("propertyId",propertyId)
-                intent.putExtra("propertyMile","")
-                startActivity(intent)
-            }
-        }
-    }*/
 
     @SuppressLint("SuspiciousIndentation")
     private fun handleDeepLink() {
@@ -476,28 +454,15 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         }
     }
 
-
-   /* private fun handleDeepLink(intent: Intent?) {
-        intent?.data?.let { uri ->
-            val deepLinkValue = uri.getQueryParameter("deep_link_value")
-            val deepLinkSub1 = uri.getQueryParameter("deep_link_sub1")
-            Log.d("DeepLink", "Deep link value: $deepLinkValue, Sub1: $deepLinkSub1")
-
-            // Navigate to the appropriate screen based on the deep link
-            when (deepLinkValue) {
-                "profile_screen" -> {
-                    // Navigate to Profile screen
-                    startActivity(Intent(this, AuthActivity::class.java))
-                }
-                else -> {
-                    // Handle other cases or show a default screen
-                }
-            }
-        }
-    }*/
-
     private fun startDestination() {
-        handleDeepLink()
+        val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
+        navGraph.setStartDestination(R.id.homeFragment)
+        navController.graph = navGraph
+        if (sessionManagement.getCookBookShare().toString().equals("CookBooksType",true)){
+            val bundle= Bundle()
+            bundle.putString("Screen","share")
+            navController.navigate(R.id.christmasCollectionFragment,bundle)
+        }
     }
 
     fun changeBottom(status: String) {

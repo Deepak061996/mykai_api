@@ -6,12 +6,14 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
 import com.appsflyer.deeplink.DeepLinkResult
 import com.google.gson.Gson
+import com.mykaimeal.planner.R
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.BaseApplication.alertError
 import com.mykaimeal.planner.basedata.NetworkResult
@@ -45,20 +47,7 @@ class SplashActivity : AppCompatActivity() {
         // Initialize screen actions
         viewModel = ViewModelProvider(this)[SubscriptionPlanViewModel::class.java]
 
-//        // Subscribe to deep link
-//        AppsFlyerLib.getInstance().subscribeForDeepLink { result ->
-//            Log.d("AF_DEEP_LINK", "Data: ${result.deepLink?.clickEvent}")
-//
-//            val deepLinkData = result.deepLink?.clickEvent
-//
-//            // You can pass the data to MainActivity
-//            val intent = Intent(this@SplashActivity, MainActivity::class.java)
-//            intent.putExtra("deep_link_data", deepLinkData.toString()) // safely handle nulls if needed
-//            startActivity(intent)
-//            finish()
-//        }
-
-//        handlingDeepLink()
+        Log.d("dfdfdfgd","fssss--444")
 
         if (sessionManagement.getSubscriptionId().toString().equals("",true)){
             initialize()
@@ -75,8 +64,9 @@ class SplashActivity : AppCompatActivity() {
                 }, sessionManagement.getPlanType(),sessionManagement.getPurchaseToken(),sessionManagement.getSubscriptionId())
             }
         }
-
     }
+
+
 
     private fun handleApiResponse(result: NetworkResult<String>) {
         when (result) {
@@ -85,7 +75,6 @@ class SplashActivity : AppCompatActivity() {
             else -> showAlert(result.message, false)
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun handleSuccessResponse(data: String) {
@@ -104,73 +93,41 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showAlert(message: String?, status: Boolean) {
         alertError(this, message, status)
     }
 
-    private fun handlingDeepLink() {
-        // Get the intent that started this activity
-        val intent = intent
-        // Check if the intent contains a URI (deep link)
-        if (intent?.action == Intent.ACTION_VIEW) {
-            val data: Uri? = intent.data
-            if (data != null && data.scheme == "https" && data.host == "mykaimealplanner.onelink.me") {
-
-                Log.d("AppsFlyer22", "profile")
-            /*    val propertyId = data.getQueryParameter("Referrer")
-                // Now you can use the propertyId in your activity
-                // Fetch property details using the propertyId
-                val intent = Intent(this, AuthActivity::class.java)
-             *//*   intent.putExtra("propertyId",propertyId)
-                intent.putExtra("propertyMile","")*//*
-                startActivity(intent)*/
-            }
-        }
+    private fun initialize() {
+        handleDeepLink()
     }
 
-    private fun initialize() {
-        val afDevKey: String = AppsFlyerConstants.afDevKey
-        // Initialize AppsFlyer
-        AppsFlyerLib.getInstance().init(afDevKey, object : AppsFlyerConversionListener {
-            override fun onConversionDataSuccess(data: Map<String, Any>) {
-                Log.d("AppsFlyer", "Conversion Data: $data")
-            }
 
-            override fun onConversionDataFail(error: String) {
-                Log.e("AppsFlyer", "Conversion Data Error: $error")
-            }
-
-            override fun onAppOpenAttribution(data: Map<String, String>) {
-                Log.d("AppsFlyer", "App Open Attribution: $data")
-            }
-
-            override fun onAttributionFailure(error: String) {
-                Log.e("AppsFlyer", "Attribution Error: $error")
-            }
-        }, this)
-
-        // Enable debugging during development (disable in production)
-        AppsFlyerLib.getInstance().setDebugLog(true)
-
-        // Start AppsFlyer
-        AppsFlyerLib.getInstance().start(this)
-        AppsFlyerLib.getInstance().setAppInviteOneLink("mPqu")
-
-        // Listen for deep links
-        AppsFlyerLib.getInstance().subscribeForDeepLink { deepLinkResult ->
-            when (deepLinkResult.status) {
-                DeepLinkResult.Status.FOUND -> {
-                    val deepLink = deepLinkResult.deepLink
-                    Log.d("AppsFlyer", "Deep link: ${deepLink?.deepLinkValue}")
-                }
-
-                DeepLinkResult.Status.NOT_FOUND -> {
-                    Log.d("AppsFlyer", "Deep link not found.")
-                }
-
-                DeepLinkResult.Status.ERROR -> {
-                    Log.e("AppsFlyer", "Deep link error: ${deepLinkResult.error}")
+    @SuppressLint("SuspiciousIndentation")
+    private fun handleDeepLink() {
+        // 4. Handle deep link only now
+        val data: Uri? = intent?.data
+        Log.d("DeepLink", "Received URI: $data")
+        if (intent?.action == Intent.ACTION_VIEW && data != null) {
+            if (data.scheme == "mykai" && data.host == "property") {
+                val screenName = data.getQueryParameter("ScreenName")
+                val cookbooksId = data.getQueryParameter("CookbooksID")
+                val itemName = data.getQueryParameter("ItemName")
+                val referrer = data.getQueryParameter("Referrer")
+                val providerName = data.getQueryParameter("providerName")
+                val providerImage = data.getQueryParameter("providerImage")
+                Log.d("***********MY kai", "$screenName  & $cookbooksId")
+                if (screenName.equals("CookBooksType") && cookbooksId != null && referrer!=null) {
+                    sessionManagement.setOpenCookBookUsingShare("CookBooksType")
+                    sessionManagement.setCookBookId(cookbooksId.toString())
+                    sessionManagement.setCookBookName(itemName.toString())
+                    providerName?.let {
+                        sessionManagement.setProviderName(it)
+                    }
+                    providerImage?.let {
+                        sessionManagement.setProviderImage(it)
+                    }
+                    Log.d("***********MY kai", "******:----$referrer----$providerName-------$providerImage")
+                    sessionManagement.setReferralCode(referrer.toString())
                 }
             }
         }
@@ -179,42 +136,25 @@ class SplashActivity : AppCompatActivity() {
 
     }
 
+
     private fun navigateNext() {
         lifecycleScope.launch {
             delay(SPLASH_DELAY)
             // Check login session and navigate accordingly
             if (sessionManagement.getFirstTime()){
+
                 val intent = Intent(this@SplashActivity, IntroPageActivity::class.java)
                 startActivity(intent)
                 finish()
             }else{
-                val targetActivity = if (sessionManagement.getLoginSession()) {
-                    MainActivity::class.java
+                val targetActivity = if (sessionManagement.getLoginSession()) { MainActivity::class.java
                 } else {
                     LetsStartOptionActivity::class.java
                 }
                 val intent = Intent(this@SplashActivity, targetActivity)
+                intent.putExtra("openScreen",screen)
                 startActivity(intent)
                 finish()
-            }
-
-        }
-    }
-
-
-    private fun handleDeepLink(deepLinkValue: String?) {
-        when (deepLinkValue) {
-            "profile_screen" -> {
-                // Navigate to Profile Screen
-                val intent = Intent(this, MainActivity::class.java).apply {
-                    putExtra("navigate_to", "profile_screen")
-                }
-                startActivity(intent)
-                finish()
-            }
-            else -> {
-                // Handle other deep link values or fallback
-                navigateNext()
             }
         }
     }

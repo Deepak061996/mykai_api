@@ -46,7 +46,6 @@ import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
 import com.mykaimeal.planner.databinding.FragmentChristmasCollectionBinding
 import com.mykaimeal.planner.fragment.commonfragmentscreen.commonModel.UpdatePreferenceSuccessfully
-import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.LinkGenerateModel
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.CookBookViewModel
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.UserCookBokModel
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.cookbookviewmodel.apiresponse.CookBookDataModel
@@ -59,10 +58,6 @@ import com.mykaimeal.planner.model.DateModel
 import com.skydoves.powerspinner.PowerSpinnerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -215,6 +210,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
                     sessionManagement.setCookBookName("")
                     sessionManagement.setCookBookImage("")
                     sessionManagement.setCookBookType("")
+                    sessionManagement.setOpenCookBookUsingShare("")
                     findNavController().navigateUp()
                 }
             })
@@ -335,6 +331,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
             sessionManagement.setCookBookName("")
             sessionManagement.setCookBookImage("")
             sessionManagement.setCookBookType("")
+            sessionManagement.setOpenCookBookUsingShare("")
             findNavController().navigateUp()
         }
 
@@ -428,8 +425,7 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
         val brandDomain = "mykaimealplanner.onelink.me" // Your OneLink domain
 
         // Prepare the deep link values
-        val deepLink =
-            "mykai://property?af_user_id=$afUserId&ScreenName=CookBooksType&CookbooksID=$id&ItemName=$name"
+        val deepLink = "mykai://property?af_user_id=$afUserId&ScreenName=CookBooksType&CookbooksID=$id&ItemName=$name"
 
         //  val deepLink = "https://property?propertyId=$propertyId&propertyType=$propertyType&city=$city"
 
@@ -440,12 +436,12 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
             .setBaseDeeplink("https://$brandDomain/$oneLinkId")
             .setCampaign(currentCampaign)
             .addParameter("af_dp", deepLink) // App deep link
-            /*.addParameter("Referrer", referrerCode)
+            .addParameter("Referrer", referrerCode)
             .addParameter("CookbooksID", id)
             .addParameter("ItemName", name)
             .addParameter("ScreenName", "CookBooksType")
             .addParameter("providerName", providerName)
-            .addParameter("providerImage", providerImage)*/
+            .addParameter("providerImage", providerImage)
             .addParameter("af_web_dp", webLink) // Web fallback URL
 
         // Generate the link
@@ -465,6 +461,59 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
             }
         })
     }
+
+
+/*    private fun generateDeepLink() {
+
+        val afUserId = sessionManagement.getId()?.toString().orEmpty()
+        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
+        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
+        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
+
+
+        // Your OneLink base URL and campaign details
+        val currentCampaign = "property_share"
+        val oneLinkId = "mPqu" // Replace with your OneLink ID
+        val brandDomain = "mykaimealplanner.onelink.me" // Your OneLink domain
+
+        // Prepare the deep link values
+        val deepLink =
+            "mykai://property?af_user_id=$afUserId&ScreenName=CookBooksType&CookbooksID=$id&ItemName=$name"
+
+        //  val deepLink = "https://property?propertyId=$propertyId&propertyType=$propertyType&city=$city"
+
+        val webLink = "https://https://admin.getmykai.com/" // Web fallback link
+
+        // Create the link generator
+        val linkGenerator = ShareInviteHelper.generateInviteUrl(requireActivity())
+            .setBaseDeeplink("https://$brandDomain/$oneLinkId")
+            .setCampaign(currentCampaign)
+            .addParameter("af_dp", deepLink) // App deep link
+            *//*.addParameter("Referrer", referrerCode)
+            .addParameter("CookbooksID", id)
+            .addParameter("ItemName", name)
+            .addParameter("ScreenName", "CookBooksType")
+            .addParameter("providerName", providerName)
+            .addParameter("providerImage", providerImage)*//*
+            .addParameter("af_web_dp", webLink) // Web fallback URL
+
+        // Generate the link
+        linkGenerator.generateLink(requireActivity(), object : LinkGenerator.ResponseListener {
+            override fun onResponse(s: String) {
+                // Successfully generated the link
+                Log.d("TAG", s)
+                // Example share message with the generated link
+                val message = "Check out this property: $s"
+                referLink = s
+                Log.d("***********", s)
+            }
+
+            override fun onResponseError(s: String) {
+                // Handle error if link generation fails
+                Log.e("***********", "Error Generating Link: $s")
+            }
+        })
+    }*/
 
 
     private fun shareImageWithText(description: String, link: String) {

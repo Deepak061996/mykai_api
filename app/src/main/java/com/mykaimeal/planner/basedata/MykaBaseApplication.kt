@@ -38,28 +38,67 @@ class MykaBaseApplication : Application() {
         val dexOutputDir: File = codeCacheDir
         dexOutputDir.setReadOnly()
 
-        val afDevKey: String = AppsFlyerConstants.afDevKey
+        AppsFlyerConstants.afDevKey
+
+        val afDevKey = "M57zyjkFgb7nSQwHWN6isW"
 
         val conversionListener = object : AppsFlyerConversionListener {
-            override fun onConversionDataSuccess(data: Map<String, Any>) {
-                Log.d("AF_CONVERSION", "Conversion data: $data")
+            override fun onConversionDataSuccess(data: MutableMap<String, Any>?) {
+                Log.d("AppsFlyerssssssss", "Conversion success: $data")
+                // Store in a singleton or SharedPreferences for later use
             }
 
-            override fun onConversionDataFail(error: String) {
-                Log.e("AF_CONVERSION", "Error: $error")
+            override fun onConversionDataFail(error: String?) {
+                Log.e("AppsFlyerssssssss", "Conversion error: $error")
             }
 
-            override fun onAppOpenAttribution(data: Map<String, String>) {
-                Log.d("AF_ATTRIBUTION", "App Open Attribution: $data")
-                // Handle direct deep link click data if needed
-            }
-
-            override fun onAttributionFailure(error: String) {
-                Log.e("AF_ATTRIBUTION", "Attribution failure: $error")
-            }
+            override fun onAppOpenAttribution(data: MutableMap<String, String>?) {}
+            override fun onAttributionFailure(error: String?) {}
         }
 
         AppsFlyerLib.getInstance().init(afDevKey, conversionListener, applicationContext)
-        AppsFlyerLib.getInstance().start(this)
+        AppsFlyerLib.getInstance().start(applicationContext)
+
+
+
+/*        val afDevKey: String = AppsFlyerConstants.afDevKey
+        Log.d("AppsFlyerSDKVerMYKAI", "Referral:")
+
+        val appsFlyerConversionListener = object : AppsFlyerConversionListener {
+            override fun onConversionDataSuccess(data: MutableMap<String, Any>?) {
+                if (data != null) {
+                    val referrer = data["Referrer"]?.toString()
+                    val screenName = data["ScreenName"]?.toString()
+                    val cookbooksId = data["CookbooksID"]?.toString()
+                    val itemName = data["ItemName"]?.toString()
+                    val providerName = data["providerName"]?.toString()
+                    val providerImage = data["providerImage"]?.toString()
+
+                    Log.d("AppsFlyerSDKVerMYKAI", "Referral: $referrer, Screen: $screenName")
+
+                    if (!referrer.isNullOrEmpty()) {
+      *//*                  sessionManagement.setReferralCode(referrer)
+                        sessionManagement.setCookBookId(cookbooksId ?: "")
+                        sessionManagement.setCookBookName(itemName ?: "")
+                        sessionManagement.setProviderName(providerName ?: "")
+                        sessionManagement.setProviderImage(providerImage ?: "")*//*
+
+                        Log.d("AppsFlyerSDKVerMYKAI","******:----"+referrer+"----"+providerName+"----"+"---"+providerImage)
+
+                        // You can navigate or show something here if needed
+                    }
+                }
+            }
+
+            override fun onConversionDataFail(error: String?) {
+                Log.e("AppsFlyer", "Error getting conversion data: $error")
+            }
+
+            override fun onAppOpenAttribution(data: MutableMap<String, String>?) {}
+            override fun onAttributionFailure(error: String?) {}
+        }
+
+        AppsFlyerLib.getInstance().init(afDevKey, appsFlyerConversionListener, this)
+        AppsFlyerLib.getInstance().start(this)*/
     }
 }

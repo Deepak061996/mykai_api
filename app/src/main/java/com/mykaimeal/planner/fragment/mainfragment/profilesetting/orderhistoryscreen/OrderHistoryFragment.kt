@@ -61,8 +61,6 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
 
         initialize()
 
-//        orderHistoryModel()
-
         return binding.root
     }
 
@@ -96,11 +94,18 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
             binding.rcyOrderHistory.visibility = View.VISIBLE
         }
 
-        if (BaseApplication.isOnline(requireActivity())) {
+        if (orderHistoryViewModel.dataOrderHistory!=null){
+            showDataInUI(orderHistoryViewModel.dataOrderHistory!!)
+        }else{
+            orderHistoryApi()
+        }
+
+
+      /*  if (BaseApplication.isOnline(requireActivity())) {
             orderHistoryApi()
         } else {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-        }
+        }*/
     }
 
     private fun orderHistoryApi() {
@@ -147,6 +152,8 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
 
         data.let {
             orderHistoryModel.addAll(it!!)
+
+            orderHistoryViewModel.setOrderHistoryData(orderHistoryModel)
         }
 
         if (orderHistoryModel.size > 0) {

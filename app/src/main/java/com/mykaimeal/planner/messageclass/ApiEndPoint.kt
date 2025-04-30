@@ -64,8 +64,6 @@ object ApiEndPoint {
     const val addMealUrl="add-meal"
     const val addMealTypeUrl="add-meal-type"
     const val createMealUrl="create-meal"
-
-
     
     const val getCookBookUrl="get-cook-book"
     const val cookBookTypeListUrl="cook-book-type-list"
@@ -111,21 +109,16 @@ object ApiEndPoint {
     const val getAllIngredientsUrl="ingredients"
 
     const val recipeSwapUrl="swap"
-
     const val basketYourRecipeIncDescUrl="add-to-basket"
     const val basketIngIncDescUrl="change-cart"
 
     const val addToBasketAllUrl="add-to-basket-all"
     const val userDietSuggestionUrl="user-diet-suggetion"
-
     const val generateLinkUrl="generate-link"
     const val selectStoreProductUrl="select-store-product"
 
-
     const val getMissingIngBasketUrl="get-missing-ingredient-screen"
-
     const val graph="graph"
-
     const val orderHistoryUrl="order-history"
 
 

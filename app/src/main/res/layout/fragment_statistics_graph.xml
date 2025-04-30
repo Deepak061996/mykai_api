@@ -131,25 +131,15 @@
                 android:layout_below="@id/tvSavings"
                 android:textSize="@dimen/_13sdp"/>
 
-            <com.mykaimeal.planner.customview.SpendingChartView
-                android:id="@+id/spendingChart"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/_10sdp"
-                android:layout_below="@id/textSpent"
-                android:layout_marginHorizontal="@dimen/_16sdp"
-                android:padding="0dp"
-                android:clipToPadding="false"
-                android:layout_height="400dp" />
-
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/barChart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_below="@+id/spendingChart"
+                android:layout_below="@+id/textSpent"
                 android:layout_marginHorizontal="@dimen/_16sdp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp" />
 

@@ -48,7 +48,6 @@ import com.google.android.gms.location.LocationSettingsResult
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.gson.Gson
 import com.mykaimeal.planner.OnItemClickListener
-
 import com.mykaimeal.planner.OnItemSelectListener
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
@@ -90,10 +89,15 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
     private var storeName: String = ""
     private var cookstatus = false
     private var tAG: String = "Location"
-    private var superMarketData: MutableList<SuperMarketModelsData>?=null
-    private var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> = mutableListOf()
+    private var superMarketData: MutableList<SuperMarketModelsData>? = null
+    private var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> =
+        mutableListOf()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -102,35 +106,44 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        locationManager = requireActivity().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
+        locationManager =
+            requireActivity().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
 
-        val main= (activity as MainActivity?)
+        val main = (activity as MainActivity?)
         if (main != null) {
-            main.alertStatus=false
+            main.alertStatus = false
             main.changeBottom("home")
             main.binding.apply {
                 llIndicator.visibility = View.VISIBLE
                 llBottomNavigation.visibility = View.VISIBLE
             }
-            if (main.Subscription_status==1){
-                binding.imgFreeTrial.visibility=View.VISIBLE
-            }else{
-                binding.imgFreeTrial.visibility=View.GONE
+            if (main.Subscription_status == 1) {
+                binding.imgFreeTrial.visibility = View.VISIBLE
+            } else {
+                binding.imgFreeTrial.visibility = View.GONE
             }
-
         }
 
         cookbookList.clear()
-        val data = com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data("", "", 0, "", "Favorites", 0, "", 0)
+        val data =
+            com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data(
+                "",
+                "",
+                0,
+                "",
+                "Favorites",
+                0,
+                "",
+                0
+            )
         cookbookList.add(0, data)
 
         backButton()
         initialize()
 
-
-        if (viewModel.data!=null){
+        if (viewModel.data != null) {
             showData(viewModel.data)
-        }else{
+        } else {
             // When screen load then api call
             fetchDataOnLoad()
         }
@@ -139,7 +152,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         return binding.root
     }
 
-    private fun backButton(){
+    private fun backButton() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -152,8 +165,12 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             })
     }
 
-    private fun getLatLong(){
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+    private fun getLatLong() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             getCurrentLocation()
         } else {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100)
@@ -166,12 +183,12 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             lifecycleScope.launch {
                 viewModel.homeDetailsRequest {
                     BaseApplication.dismissMe()
-                    binding.pullToRefresh.isRefreshing=false
-                    handleApiResponse(it,"HomeData")
+                    binding.pullToRefresh.isRefreshing = false
+                    handleApiResponse(it, "HomeData")
                 }
             }
         } else {
-            binding.pullToRefresh.isRefreshing=false
+            binding.pullToRefresh.isRefreshing = false
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
     }
@@ -192,13 +209,14 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         }
     }
 
-    private fun handleApiResponse(result: NetworkResult<String>,type:String) {
+    private fun handleApiResponse(result: NetworkResult<String>, type: String) {
         when (result) {
-            is NetworkResult.Success -> handleSuccessResponse(result.data.toString(),type)
-            is NetworkResult.Error ->{
+            is NetworkResult.Success -> handleSuccessResponse(result.data.toString(), type)
+            is NetworkResult.Error -> {
                 subscriptionImage()
                 showAlert(result.message, false)
             }
+
             else -> {
                 subscriptionImage()
                 showAlert(result.message, false)
@@ -222,7 +240,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             if (apiModel.code == 200 && apiModel.success == true) {
                 showUIData(apiModel.data)
             } else {
-                handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code, apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -232,11 +250,14 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
     private fun showUIData(data: MutableList<SuperMarketModelsData>?) {
         try {
             if (data != null) {
-                superMarketData=data
+                superMarketData = data
                 val dialogAddItem: Dialog = context?.let { Dialog(it) }!!
                 dialogAddItem.setContentView(R.layout.alert_dialog_super_market)
                 dialogAddItem.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                dialogAddItem.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+                dialogAddItem.window!!.setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT
+                )
                 recySuperMarket = dialogAddItem.findViewById(R.id.recySuperMarket)
                 val rlDoneBtn = dialogAddItem.findViewById<RelativeLayout>(R.id.rlDoneBtn)
                 dialogAddItem.setCancelable(false)
@@ -246,18 +267,22 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 recySuperMarket!!.adapter = adapterSuperMarket
 
                 rlDoneBtn.setOnClickListener {
-                    if (!storeUuid.equals("",true)){
+                    if (!storeUuid.equals("", true)) {
                         if (BaseApplication.isOnline(requireActivity())) {
                             BaseApplication.showMe(requireContext())
                             lifecycleScope.launch {
-                                viewModel.superMarketSaveRequest( {
+                                viewModel.superMarketSaveRequest({
                                     BaseApplication.dismissMe()
                                     dialogAddItem.dismiss()
-                                    handleApiResponse(it,"storeData")
-                                },storeUuid,storeName)
+                                    handleApiResponse(it, "storeData")
+                                }, storeUuid, storeName)
                             }
                         } else {
-                            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+                            BaseApplication.alertError(
+                                requireContext(),
+                                ErrorMessage.networkError,
+                                false
+                            )
                         }
                     }
                 }
@@ -276,15 +301,15 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             Log.d("@@@ Recipe Details ", "message :- $data")
             subscriptionImage()
             if (apiModel.code == 200 && apiModel.success) {
-                if (type.equals("HomeData",true)){
+                if (type.equals("HomeData", true)) {
                     showData(apiModel.data)
-                }else{
-                    userDataLocal.is_supermarket=0
+                } else {
+                    userDataLocal.is_supermarket = 0
                     viewModel.setData(userDataLocal)
-                    Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code, apiModel.message)
             }
 
         } catch (e: Exception) {
@@ -293,11 +318,11 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         }
     }
 
-    private fun subscriptionImage(){
-        if ((activity as MainActivity?)?.Subscription_status==1){
-            binding.imgFreeTrial.visibility=View.VISIBLE
-        }else{
-            binding.imgFreeTrial.visibility=View.GONE
+    private fun subscriptionImage() {
+        if ((activity as MainActivity?)?.Subscription_status == 1) {
+            binding.imgFreeTrial.visibility = View.VISIBLE
+        } else {
+            binding.imgFreeTrial.visibility = View.GONE
         }
     }
 
@@ -318,7 +343,8 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             if (userDataLocal.userData != null && userDataLocal.userData!!.size > 0) {
                 binding.relPlanMeal.visibility = View.GONE
                 binding.llRecipesCooked.visibility = View.VISIBLE
-                recipeCookedAdapter = RecipeCookedAdapter(userDataLocal.userData, requireActivity(), this)
+                recipeCookedAdapter =
+                    RecipeCookedAdapter(userDataLocal.userData, requireActivity(), this)
                 binding.rcyRecipesCooked.adapter = recipeCookedAdapter
             } else {
                 binding.relPlanMeal.visibility = View.VISIBLE
@@ -326,12 +352,20 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             }
 
             if (userDataLocal.graph_value == 0) {
-                binding.relMonthlySavingsss.visibility = View.VISIBLE
-                binding.relCheckSavingsss.visibility = View.GONE
-            } else {
                 binding.relMonthlySavingsss.visibility = View.GONE
                 binding.relCheckSavingsss.visibility = View.VISIBLE
+            } else {
+                binding.relMonthlySavingsss.visibility = View.VISIBLE
+                binding.relCheckSavingsss.visibility = View.GONE
             }
+
+            /*    if (userDataLocal.graph_value == 0) {
+                    binding.relMonthlySavingsss.visibility = View.VISIBLE
+                    binding.relCheckSavingsss.visibility = View.GONE
+                } else {
+                    binding.relMonthlySavingsss.visibility = View.GONE
+                    binding.relCheckSavingsss.visibility = View.VISIBLE
+                }*/
 
             if (userDataLocal.date != null && !userDataLocal.date.equals("", true)) {
                 val name = BaseApplication.getColoredSpanned(
@@ -424,7 +458,8 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
 
             userDataLocal.monthly_savings?.let {
                 if (sessionManagement.getUserName() != null) {
-                    binding.tvMonthlySavingsDesc.text="Good job ${sessionManagement.getUserName()}, you are on track to save ${it} this month"
+                    binding.tvMonthlySavingsDesc.text =
+                        "Good job ${sessionManagement.getUserName()}, you are on track to save ${it} this month"
                 }
             }
 
