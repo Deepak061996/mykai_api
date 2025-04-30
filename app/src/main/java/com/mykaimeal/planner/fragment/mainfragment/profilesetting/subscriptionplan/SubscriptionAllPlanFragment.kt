@@ -90,7 +90,6 @@ class SubscriptionAllPlanFragment : Fragment() {
 
         sessionManagement = SessionManagement(requireContext())
 
-
         if (!sessionManagement.getProviderName().equals("",true)){
             if (!sessionManagement.getProviderName().equals("null",true)){
                 binding.tvTextNames.text = sessionManagement.getProviderName()

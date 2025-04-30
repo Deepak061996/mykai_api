@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.location.Address
 import android.location.Geocoder
@@ -135,7 +136,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
     private var hasShownPopup = false
     private var tAG: String = "Location"
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -172,7 +172,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         }else{
             binding.btnLock.visibility=View.GONE
         }
-
 
         if (!hasShownPopup) {
             addressDialog()
@@ -475,6 +474,8 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         val llSetWork = dialogAddress?.findViewById<LinearLayout>(R.id.llSetWork)
         val llSetHome = dialogAddress?.findViewById<LinearLayout>(R.id.llSetHome)
         val relTrialBtn = dialogAddress?.findViewById<RelativeLayout>(R.id.relTrialBtn)
+        val imageHome = dialogMiles?.findViewById<ImageView>(R.id.imageHome)
+        val imageWork = dialogMiles?.findViewById<ImageView>(R.id.imageWork)
         tvAddress = dialogAddress?.findViewById(R.id.tvAddress)
         rcySavedAddress = dialogAddress?.findViewById(R.id.rcySavedAddress)
 
@@ -493,12 +494,18 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
             statusTypes = "Home"
             llSetHome.setBackgroundResource(R.drawable.outline_address_green_border_bg)
             llSetWork?.setBackgroundResource(R.drawable.height_type_bg)
+
+            imageHome?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
+            imageWork?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_grays), PorterDuff.Mode.SRC_IN)
         }
 
         llSetWork?.setOnClickListener {
             statusTypes = "Work"
             llSetHome?.setBackgroundResource(R.drawable.height_type_bg)
             llSetWork.setBackgroundResource(R.drawable.outline_address_green_border_bg)
+
+            imageHome?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_grays), PorterDuff.Mode.SRC_IN)
+            imageWork?.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
         }
 
         relTrialBtn?.setOnClickListener {

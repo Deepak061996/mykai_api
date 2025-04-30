@@ -827,6 +827,11 @@ interface ApiInterface {
     suspend fun orderHistoryUrl(): Response<JsonObject>
 
 
+    @FormUrlEncoded
+    @POST(ApiEndPoint.graphWeekUrl)
+    suspend fun orderWeekUrl(@Field("week") week:String?): Response<JsonObject>
+
+
     @Multipart
     @POST(ApiEndPoint.generateLinkUrl)
     suspend fun generateLinkUrl(

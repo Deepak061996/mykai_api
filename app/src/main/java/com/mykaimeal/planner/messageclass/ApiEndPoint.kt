@@ -120,6 +120,6 @@ object ApiEndPoint {
     const val getMissingIngBasketUrl="get-missing-ingredient-screen"
     const val graph="graph"
     const val orderHistoryUrl="order-history"
-
+    const val graphWeekUrl="graph-week"
 
 }

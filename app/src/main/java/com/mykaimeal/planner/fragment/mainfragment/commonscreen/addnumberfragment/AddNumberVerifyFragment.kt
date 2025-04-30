@@ -159,7 +159,9 @@ class AddNumberVerifyFragment : Fragment() {
 
         binding.rlVerificationVerify.setOnClickListener {
             if (BaseApplication.isOnline(requireActivity())) {
-                addNumberUrl()
+                if (binding.otpView.otp?.length!=0){
+                    addNumberUrl()
+                }
             } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }

@@ -18,9 +18,11 @@ import com.bumptech.glide.request.target.Target
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.AdapterOrderHistoryDetailsItem
+import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.databinding.FragmentOrderDetailsScreenBinding
 import com.mykaimeal.planner.fragment.mainfragment.profilesetting.orderhistoryscreen.model.OrderHistoryModelData
 import dagger.hilt.android.AndroidEntryPoint
+import org.bouncycastle.jcajce.provider.symmetric.ARC4.Base
 
 @AndroidEntryPoint
 class OrderDetailsScreenFragment : Fragment() {
@@ -71,6 +73,11 @@ class OrderDetailsScreenFragment : Fragment() {
             binding.tvOrderId.text = "Order #" + orderHistoryModelData.order?.order_id.toString()
         }
 
+        if (orderHistoryModelData.date!=null){
+            binding.tvDate.text=BaseApplication.formatFullDateTime(orderHistoryModelData.date.toString())
+            binding.tvPaymentTime.text=BaseApplication.formatFullDateTimePayment(orderHistoryModelData.date.toString())
+        }
+
         if (orderHistoryModelData.order?.final_quote?.items!!.size > 0) {
             adapterOrderHistoryDetailsItem?.update(orderHistoryModelData.order?.final_quote?.items!!)
         }
@@ -109,6 +116,7 @@ class OrderDetailsScreenFragment : Fragment() {
 
         binding.textSubTotalPrices.text = "$"+quote?.subtotal.formatCents()
         binding.textServiceFees.text = "$"+quote?.service_fee_cents.formatCents()
+        binding.textSalesTax.text = "$"+quote?.sales_tax_cents.formatCents()
 
         val deliveryFee = orderHistoryModelData.order?.final_quote?.quote?.delivery_fee_cents ?: 0
         val tip = orderHistoryModelData.order?.final_quote?.tip ?: 0
