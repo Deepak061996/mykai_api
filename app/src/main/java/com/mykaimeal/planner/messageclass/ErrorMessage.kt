@@ -10,6 +10,8 @@ object ErrorMessage {
      const val ingredientError:String="Selected at least one ingredient."
      const val mealTypetError:String="Selected at least one meal Type."
      const val apiError:String="Something went wrong"
+     const val otpError:String="Otp can't be empty."
+     const val otpValidError:String="Please enter valid otp."
      const val deviceType:String="Android"
      const val emailPatter:String="[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]"
      const val navigationError:String="Navigation Host Fragment not found"
