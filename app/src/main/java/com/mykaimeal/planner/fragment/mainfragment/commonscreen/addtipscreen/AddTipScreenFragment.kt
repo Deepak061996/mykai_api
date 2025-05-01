@@ -41,7 +41,7 @@ class AddTipScreenFragment : Fragment() {
     private var totalPrices = ""
     private var cardId = ""
     private var status = ""
-    private var selectedTipPercent: String="0"
+    private var selectedTipPercent: String=""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -70,16 +70,23 @@ class AddTipScreenFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initialize() {
+
+        binding.rlProceedAndPay.isClickable=false
+
         binding.tvDescriptions.text = "100% of your tip goes to your courier. Tips are based on your order total of $$totalPrices before any discounts or promotions."
         binding.relBack.setOnClickListener {
             findNavController().navigateUp()
         }
         getTipUrl()
         setupListeners()
+
+
         binding.rlProceedAndPay.setOnClickListener {
             if (binding.rlProceedAndPay.isClickable) {
                 if (BaseApplication.isOnline(requireContext())) {
-                    paymentCreditDebitApi()
+                    if (!selectedTipPercent.equals("",true)){
+                        paymentCreditDebitApi()
+                    }
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
@@ -169,7 +176,7 @@ class AddTipScreenFragment : Fragment() {
                     allViews.forEach { it.setBackgroundResource(R.drawable.edittext_bg) }
                 } else {
                     selectedTipPercent=""
-                    binding.rlProceedAndPay.isClickable=true
+                    binding.rlProceedAndPay.isClickable=false
                     binding.rlProceedAndPay.setBackgroundResource(R.drawable.gray_btn_unselect_background)
                 }
             }
