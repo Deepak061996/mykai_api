@@ -684,6 +684,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/relPaymentMethods"
+                        android:layout_marginBottom="@dimen/_8sdp"
                         android:layout_marginTop="@dimen/_15sdp">
 
                         <TextView
@@ -723,6 +724,7 @@
                             android:id="@+id/rcyCardDetails"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             android:orientation="vertical"/>
 

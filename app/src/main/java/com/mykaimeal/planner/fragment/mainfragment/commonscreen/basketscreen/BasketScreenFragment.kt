@@ -475,8 +475,8 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         val llSetWork = dialogAddress?.findViewById<LinearLayout>(R.id.llSetWork)
         val llSetHome = dialogAddress?.findViewById<LinearLayout>(R.id.llSetHome)
         val relTrialBtn = dialogAddress?.findViewById<RelativeLayout>(R.id.relTrialBtn)
-        val imageHome = dialogMiles?.findViewById<ImageView>(R.id.imageHome)
-        val imageWork = dialogMiles?.findViewById<ImageView>(R.id.imageWork)
+        val imageHome = dialogAddress?.findViewById<ImageView>(R.id.imageHome)
+        val imageWork = dialogAddress?.findViewById<ImageView>(R.id.imageWork)
         tvAddress = dialogAddress?.findViewById(R.id.tvAddress)
         rcySavedAddress = dialogAddress?.findViewById(R.id.rcySavedAddress)
 
