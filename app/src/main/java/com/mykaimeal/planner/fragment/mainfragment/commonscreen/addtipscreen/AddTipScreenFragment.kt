@@ -84,8 +84,9 @@ class AddTipScreenFragment : Fragment() {
         binding.rlProceedAndPay.setOnClickListener {
             if (binding.rlProceedAndPay.isClickable) {
                 if (BaseApplication.isOnline(requireContext())) {
-                    if (!selectedTipPercent.equals("",true))
-                    paymentCreditDebitApi()
+                    if (!selectedTipPercent.equals("",true)){
+                        paymentCreditDebitApi()
+                    }
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
                 }
