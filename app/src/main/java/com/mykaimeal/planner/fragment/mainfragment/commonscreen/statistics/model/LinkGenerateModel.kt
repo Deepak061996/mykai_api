@@ -22,10 +22,10 @@ data class StatisticsGraphModelData(
 )
 
 data class GraphData(
-    val week_1: Int,
-    val week_2: Int,
-    val week_3: Int,
-    val week_4: Int
+    val week_1: Float,
+    val week_2: Float,
+    val week_3: Float,
+    val week_4: Float
 )
 
 data class SpendingChartItem(

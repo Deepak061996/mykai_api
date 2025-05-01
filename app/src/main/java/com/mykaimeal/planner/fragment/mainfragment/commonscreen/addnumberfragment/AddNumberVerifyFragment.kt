@@ -35,13 +35,16 @@ import java.util.Locale
 class AddNumberVerifyFragment : Fragment() {
 
     private lateinit var binding: FragmentAddNumberVerifyBinding
+    //    private lateinit var addNumberVerifyViewModel: AddNumberVerifyViewModel
     private lateinit var addNumberVerifyViewModel: CheckoutScreenViewModel
     private var lastNumber: String = ""
+    private var userNumber: String = ""
     private var countryCode: String = "+1"
     private lateinit var commonWorkUtils: CommonWorkUtils
     private val START_TIME_IN_MILLIS: Long = 120000
     private var mTimeLeftInMillis = START_TIME_IN_MILLIS
-    private var countDownTimer: CountDownTimer? = null
+    private var status: String = ""
+    private var lastFourDigits: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -195,11 +198,10 @@ class AddNumberVerifyFragment : Fragment() {
                 prevLength = s?.length ?: 0
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            @SuppressLint("SetTextI18n")
+            @SuppressLint("ResourceAsColor")
             override fun afterTextChanged(s: Editable?) {
-                if (isFormatting) return
+                if (isFormatting || s == null) return
+
                 isFormatting = true
                 val digits = s.toString().filter { it.isDigit() }
                 val formatted = formatPhone(digits)
@@ -378,14 +380,16 @@ class AddNumberVerifyFragment : Fragment() {
         when (result) {
             is NetworkResult.Success -> handleSuccessOtpResponse(result.data.toString(),type)
             is NetworkResult.Error -> {
+                binding.otpView.setOTP("")
+                binding.tvVerify.isClickable = true
+                binding.tvVerify.isEnabled = true
+                binding.tvVerify.setTextColor(Color.parseColor("#06C169")) // Green color for active state
                 showAlert(result.message, false)
             }
+
             else -> showAlert(result.message, false)
         }
     }
-
-
-
 
     private fun handleApiVerifyResponse(result: NetworkResult<String>) {
         when (result) {
@@ -413,25 +417,28 @@ class AddNumberVerifyFragment : Fragment() {
 
         try {
             val apiModel = Gson().fromJson(data, OtpSendModel::class.java)
+            binding.otpView.setOTP("")
+            binding.tvVerificationError.visibility = View.GONE
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 binding.relPhoneValidation.visibility = View.VISIBLE
                 lastNumber = binding.etRegPhone.text.toString().trim()
-                if (type.equals("verify",true)){
-                    countDownTimer?.cancel()
-                    mTimeLeftInMillis = 120000
-                    binding.tvVerify.isEnabled = false
-                    binding.tvVerify.setTextColor(Color.parseColor("#999999"))
-                    binding.textResend.isEnabled = true
-                    binding.textResend.setTextColor(Color.parseColor("#828282"))
-                }else{
+                binding.tvVerify.isClickable = false
+                binding.tvVerify.isEnabled = false
+                binding.tvVerify.setTextColor(R.color.grey5)
+                binding.relPhoneValidation.visibility = View.VISIBLE
+                binding.tvCodeSent.text= "we have sent the code to *******$lastFourDigits"
+                if (status.equals("resend",true)) {
+                    binding.otpView.setOTP("")
                     binding.relResendVerificationTimer.visibility = View.VISIBLE
-                    binding.textResend.setTextColor(Color.parseColor("#06C169"))
                     binding.textResend.isEnabled = false
                     startTime()
                 }
             } else {
-                handleError(apiModel.code,apiModel.message,true)
+                binding.tvVerify.isClickable = true
+                binding.tvVerify.isEnabled = true
+                binding.tvVerify.setTextColor(Color.parseColor("#06C169")) // Green color for active state
+                handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
@@ -440,7 +447,7 @@ class AddNumberVerifyFragment : Fragment() {
 
     /// start timer for counting 2 minutes
     private fun startTime() {
-        countDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+        object : CountDownTimer(mTimeLeftInMillis, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 mTimeLeftInMillis = millisUntilFinished
                 binding.textResend.setTextColor(Color.parseColor("#828282"))
@@ -450,7 +457,7 @@ class AddNumberVerifyFragment : Fragment() {
             override fun onFinish() {
                 mTimeLeftInMillis = 120000
                 binding.textResend.setTextColor(Color.parseColor("#06C169"))
-                binding.relResendVerificationTimer.visibility = View.GONE
+                binding.relResendVerificationTimer.visibility = View.INVISIBLE
                 binding.textResend.isEnabled = true
             }
         }.start()
@@ -473,6 +480,7 @@ class AddNumberVerifyFragment : Fragment() {
             val apiModel = Gson().fromJson(data, OtpSendModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
+
                 binding.tvVerificationError.visibility = View.GONE
                 addNumberVerifyViewModel.dataCheckOut?.let {
                     it.phone=binding.etRegPhone.text.toString().trim()
@@ -490,7 +498,7 @@ class AddNumberVerifyFragment : Fragment() {
 
 
 
-    private fun handleError(code: Int, message: String,status: Boolean) {
+    private fun handleError(code: Int, message: String) {
         if (code == ErrorMessage.code) {
             showAlert(message, true)
         } else {

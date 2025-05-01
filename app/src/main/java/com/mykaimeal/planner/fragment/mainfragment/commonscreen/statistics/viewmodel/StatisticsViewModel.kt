@@ -29,4 +29,8 @@ class StatisticsViewModel @Inject constructor(private val repository: MainReposi
         repository.getGraphScreenUrl({ successCallback(it) }, month)
     }
 
+    suspend fun orderWeekUrl(successCallback: (response: NetworkResult<String>) -> Unit, week: String?) {
+        repository.orderWeekUrl({ successCallback(it) }, week)
+    }
+
 }

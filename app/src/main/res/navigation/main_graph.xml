@@ -280,7 +280,7 @@
         tools:layout="@layout/fragment_statistics_graph" />
     <fragment
         android:id="@+id/statisticsWeekYearFragment"
-        android:name="com.mykaimeal.planner.fragment.mainfragment.commonscreen.StatisticsWeekYearFragment"
+        android:name="com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.StatisticsWeekYearFragment"
         android:label="fragment_statistics_week_year"
         tools:layout="@layout/fragment_statistics_week_year" />
     <fragment

@@ -66,6 +66,7 @@
                         app:civ_border_width="@dimen/_2sdp" />
 
                     <TextView
+                        android:id="@+id/tvStatsNames"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_toEndOf="@+id/imageProfile"
@@ -115,6 +116,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:layout_marginHorizontal="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:textColor="@color/light_black"
                 android:layout_below="@id/relWeekDate"
                 android:textSize="@dimen/_15sdp"/>

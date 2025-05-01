@@ -1,9 +1,11 @@
 package com.mykaimeal.planner.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.mykaimeal.planner.OnItemLongClickListener
@@ -30,6 +32,16 @@ class AdapterGetAddressItem(private var addressList: MutableList<GetAddressListM
 
         if (itemList?.type!=null){
             holder.binding.tvSetName.text=itemList.type.toString()
+        }
+
+        if (itemList?.type.equals("Home",true)){
+            holder.binding.imageHome.setImageResource(R.drawable.home_icon)
+            holder.binding.imageHome.setColorFilter(ContextCompat.getColor(requireActivity, R.color.light_orange), PorterDuff.Mode.SRC_IN)
+
+        }else{
+            holder.binding.imageHome.setImageResource(R.drawable.work_icon)
+            holder.binding.imageHome.setColorFilter(ContextCompat.getColor(requireActivity, R.color.light_grays), PorterDuff.Mode.SRC_IN)
+
         }
 
         if (itemList?.primary!=null){

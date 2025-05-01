@@ -15,8 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_15sdp"
-            android:layout_marginBottom="@dimen/_20sdp"
-            android:layout_marginTop="@dimen/_25sdp">
+            android:layout_marginTop="@dimen/_25sdp"
+            android:layout_marginBottom="@dimen/_20sdp">
 
             <RelativeLayout
                 android:id="@+id/rlToolbar"
@@ -39,7 +39,7 @@
                     android:layout_centerVertical="true"
                     android:fontFamily="@font/montserrat_semibold"
                     android:text="Order #24609"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textSize="@dimen/_13sdp" />
 
             </RelativeLayout>
 
@@ -100,11 +100,11 @@
                         android:layout_marginStart="@dimen/_5sdp"
                         android:layout_toEndOf="@+id/tvOrderCompleted"
                         android:fontFamily="@font/montserrat_semibold"
-                        android:text="11 jan"
+                        android:text="11 january 2025 at 11:47 am"
                         android:textColor="@color/light_grays"
                         android:textSize="@dimen/_11sdp" />
 
-                    <TextView
+                   <!-- <TextView
                         android:id="@+id/tvPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                         android:fontFamily="@font/montserrat_semibold"
                         android:text="6 items"
                         android:textColor="@color/light_grays"
-                        android:textSize="@dimen/_11sdp" />
+                        android:textSize="@dimen/_11sdp" />-->
 
                 </RelativeLayout>
 
@@ -247,12 +247,39 @@
 
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/relSalesTax"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relDeliveryTip"
+                    android:layout_marginTop="@dimen/_5sdp">
+
+                    <TextView
+                        android:id="@+id/textSales"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:text="Sales Tax"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/textSalesTax"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/montserrat_semibold"
+                        android:paddingHorizontal="@dimen/_20sdp"
+                        android:text="$00"
+                        android:textColor="@color/light_green" />
+
+                </RelativeLayout>
+
 
                 <RelativeLayout
                     android:id="@+id/relTotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/relDeliveryTip"
+                    android:layout_below="@+id/relSalesTax"
                     android:layout_marginTop="@dimen/_5sdp">
 
                     <TextView
@@ -315,7 +342,7 @@
                         android:id="@+id/idVisaImages"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/visa_rounded_image"/>
+                        android:src="@drawable/visa_rounded_image" />
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
@@ -330,20 +357,18 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/montserrat_bold"
                             android:text="Visa card .....2027"
-                            android:textSize="@dimen/_13sdp"
-                            android:textColor="@color/black"/>
-
-
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/_13sdp" />
 
                         <TextView
-                            android:id="@+id/tvCardNumber"
+                            android:id="@+id/tvPaymentTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="01/11/2025 10:40 am"
-                            android:fontFamily="@font/montserrat_medium"
-                            android:textSize="@dimen/_11sdp"
                             android:layout_below="@+id/tvVisaName"
-                            android:textColor="@color/grey"/>
+                            android:fontFamily="@font/montserrat_medium"
+                            android:text="01/11/2025 10:40 am"
+                            android:textColor="@color/grey"
+                            android:textSize="@dimen/_11sdp" />
 
                     </RelativeLayout>
 
@@ -352,16 +377,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
                         android:fontFamily="@font/montserrat_semibold"
                         android:paddingHorizontal="@dimen/_20sdp"
-                        android:layout_centerVertical="true"
                         android:text="$48.47"
                         android:textColor="@color/light_green"
                         android:textSize="@dimen/_12sdp" />
 
-
                 </RelativeLayout>
-
 
             </RelativeLayout>
 

@@ -27,6 +27,7 @@ import com.appsflyer.share.LinkGenerator
 import com.appsflyer.share.ShareInviteHelper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -94,10 +95,17 @@ class StatisticsGraphFragment : Fragment() {
 
     private fun initialize() {
 
+        if (sessionManagement.getUserName()!=null){
+            binding.tvStatsNames.text="Good job "+sessionManagement.getUserName()+" you're on track to big savings! Stick with your plan and watch the results add up."
+        }
+
         // Set currentMonth from today's date
         val calendar = Calendar.getInstance()
         currentMonth = (calendar.get(Calendar.MONTH) + 1).toString()
 
+        // Format for tvMonthYear: "June 2024"
+        val monthYearFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+        binding.tvDateCalendar.text = monthYearFormat.format(calendar.time)
 
         AppsFlyerLib.getInstance().subscribeForDeepLink { deepLinkResult ->
             when (deepLinkResult.status) {
@@ -204,7 +212,6 @@ class StatisticsGraphFragment : Fragment() {
         dialog.show()
     }
 
-
     private fun getGraphList() {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
@@ -255,39 +262,69 @@ class StatisticsGraphFragment : Fragment() {
         val graphData = response.graph_data
 
         val weekValues = mutableListOf<Float>()
-        weekValues.add((graphData.week_1 ?: 0).toFloat())
-        weekValues.add((graphData.week_2 ?: 0).toFloat())
-        weekValues.add((graphData.week_3 ?: 0).toFloat())
-        weekValues.add((graphData.week_4 ?: 0).toFloat())
+        weekValues.add((graphData.week_1 ?: 0f))
+        weekValues.add((graphData.week_2 ?: 0f))
+        weekValues.add((graphData.week_3 ?: 0f))
+        weekValues.add((graphData.week_4 ?: 0f))
 
         val entries = mutableListOf<BarEntry>()
         for (i in weekValues.indices) {
             entries.add(BarEntry(i.toFloat(), weekValues[i]))
         }
 
-        val weekLabels = mutableListOf("01 $month", "08 $month", "15 $month", "22 $month")
+        val weekLabels = mutableListOf("01 \n$month", "08 \n$month", "15 \n$month", "22 \n$month")
 
-        val barDataSet = BarDataSet(entries, "Spending ($)").apply {
+        val barDataSet = BarDataSet(entries, "Spending($)").apply {
             valueTextColor = Color.BLACK
-            valueTextSize = 12f
+            valueTextSize = 14f
             setDrawValues(true)
-            colors = listOf(Color.RED, Color.LTGRAY, Color.GREEN, Color.MAGENTA)
+            colors = listOf(
+                Color.parseColor("#FE9F45"), // Orange
+                Color.parseColor("#06C169"), // Green
+                Color.parseColor("#F21B1B"), // Red
+                Color.parseColor("#FE9F45")  // Orange again
+            )
+            // Dollar formatting on top of bars
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return "$${value.toInt()}"
+                }
+            }
         }
 
-        // BarData setup
         val barData = BarData(barDataSet).apply {
-            barWidth = 1f
+            barWidth = 1f // tighter spacing
         }
 
-        // Chart setup
         with(binding.barChart) {
             renderer = RoundedBarChartRenderer(this, animator, viewPortHandler, 30f)
             data = barData
             setFitBars(false)
             animateY(800)
 
+            description.isEnabled = false // Hide description
+
             axisRight.isEnabled = false
-            axisLeft.textColor = Color.BLACK
+            axisLeft.apply {
+                textColor = Color.DKGRAY
+                textSize = 12f
+                setDrawGridLines(true)
+                gridColor = Color.LTGRAY
+                axisMinimum = 0f
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return "$${value.toInt()}"
+                    }
+                }
+            }
+
+            legend.apply {
+                isEnabled = true
+                textColor = Color.BLACK
+                textSize = 12f
+                form = Legend.LegendForm.SQUARE
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            }
 
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
@@ -309,14 +346,23 @@ class StatisticsGraphFragment : Fragment() {
         }
 
         if (response.total_spent != null) {
-            val formattedSpent = String.format("%.2f", response.total_spent)
-            binding.textSpent.text = "Total spent $${formattedSpent.trim()}"
+            val formattedSpent = if (response.total_spent % 1 == 0.0)
+                response.total_spent.toInt().toString()
+            else
+                String.format("%.2f", response.total_spent)
+
+            binding.textSpent.text = "Total spent $$formattedSpent"
         }
 
         if (response.saving != null) {
-            val formattedSaving = String.format("%.2f", response.saving)
-            binding.textSpent.text = "Your savings are $${formattedSaving.trim()}"
+            val formattedSaving = if (response.saving % 1 == 0.0)
+                response.saving.toInt().toString()
+            else
+                String.format("%.2f", response.saving)
+
+            binding.tvSavings.text = "Your savings are $$formattedSaving"
         }
+
     }
 
 

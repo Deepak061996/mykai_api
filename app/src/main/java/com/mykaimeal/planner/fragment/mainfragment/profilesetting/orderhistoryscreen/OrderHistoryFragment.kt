@@ -66,13 +66,13 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
 
     private fun setupBackNavigation() {
 
-        if (screen.equals("yes", true)) {
+      /*  if (screen.equals("yes", true)) {
             binding.relNoOrders.visibility = View.GONE
             binding.rcyOrderHistory.visibility = View.VISIBLE
         } else {
             binding.relNoOrders.visibility = View.VISIBLE
             binding.rcyOrderHistory.visibility = View.GONE
-        }
+        }*/
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
@@ -94,18 +94,17 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
             binding.rcyOrderHistory.visibility = View.VISIBLE
         }
 
-        if (orderHistoryViewModel.dataOrderHistory!=null){
+     /*   if (orderHistoryViewModel.dataOrderHistory!=null){
             showDataInUI(orderHistoryViewModel.dataOrderHistory!!)
         }else{
             orderHistoryApi()
-        }
+        }*/
 
-
-      /*  if (BaseApplication.isOnline(requireActivity())) {
+        if (BaseApplication.isOnline(requireActivity())) {
             orderHistoryApi()
         } else {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-        }*/
+        }
     }
 
     private fun orderHistoryApi() {

@@ -154,6 +154,33 @@ object BaseApplication {
         }
     }
 
+    fun formatFullDateTime(dateTime: String): String {
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("dd MMMM yyyy 'at' h:mm a", Locale.getDefault())
+
+            val parsedDate = inputFormat.parse(dateTime)
+            outputFormat.format(parsedDate!!).lowercase()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+    fun formatFullDateTimePayment(dateTime: String): String {
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+            val outputFormat = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.US)
+
+            val parsedDate = inputFormat.parse(dateTime)
+            outputFormat.format(parsedDate!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+
     fun formatonlyMonthYear(date: Date): String {
         val dateFormat = SimpleDateFormat("MMMM, yyyy", Locale.getDefault())
         return dateFormat.format(date)
