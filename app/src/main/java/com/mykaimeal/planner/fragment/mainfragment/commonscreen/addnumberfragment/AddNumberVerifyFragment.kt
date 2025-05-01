@@ -70,6 +70,9 @@ class AddNumberVerifyFragment : Fragment() {
 
     private fun initialize() {
 
+
+        binding.rlVerificationVerify.isEnabled=false
+
         binding.relBacks.setOnClickListener {
             findNavController().navigateUp()
         }
