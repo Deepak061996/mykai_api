@@ -831,6 +831,8 @@ interface ApiInterface {
     @POST(ApiEndPoint.graphWeekUrl)
     suspend fun orderWeekUrl(@Field("week") week:String?): Response<JsonObject>
 
+    @POST(ApiEndPoint.referralUrl)
+    suspend fun referralUrl(): Response<JsonObject>
 
     @Multipart
     @POST(ApiEndPoint.generateLinkUrl)

@@ -82,6 +82,7 @@
     <string name="your_macronutrient_targets"><font color="#000000">Your Macronutrient</font><font color="#06C169"> Targets</font></string>
     <string name="daily_macro_targets"><font color="#000000">Daily macro</font><font color="#06C169"> target</font></string>
 
+    <string name="invitefriends"><font color="#000000">Invite your friends  to minimize\n meal expenses by using</font><font color="#06C169"><b> My Kai</b></font></string>
 
     <string name="terms_and_conditions">
         <![CDATA[
@@ -118,7 +119,7 @@
     <string name="added_ingredients"><font color="#3C4541">Added</font><font color="#06C169"> Ingredients</font></string>
 
     <string name="select_the_ingredients_that_are_missing_at_tesco"><font color="#3C4541">Select the ingredients that are\nmissing at</font> <font color="#06C169">Tesco</font></string>
-    <string name="you_have_invited_12_friends_to_use_myka">You have invited 12 friends to use<b> MYKA</b></string>
+    <string name="you_have_invited_12_friends_to_use_myka">You have invited 12 friends to use<b> MYKAI</b></string>
     <string name="choose_a_file">Choose a file</string>
     <string name="upload">Upload</string>
     <string name="enable_all_notification">Enable all notification</string>

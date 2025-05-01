@@ -333,7 +333,7 @@
                                 android:maxLength="2"
                                 android:paddingHorizontal="@dimen/_10sdp"
                                 android:paddingVertical="@dimen/_9sdp"
-                                android:text="Month"
+                                android:text="MM"
                                 android:textColor="#8B8B8B"
                                 android:textColorHint="#8B8B8B"
                                 android:textSize="@dimen/_10ssp"

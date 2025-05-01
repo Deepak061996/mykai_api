@@ -7,8 +7,8 @@
 
     <RelativeLayout
         android:id="@+id/relImages"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_80sdp">
+        android:layout_width="@dimen/_75sdp"
+        android:layout_height="@dimen/_75sdp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageData"
@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_welmart_super_market"
+            android:src="@drawable/no_image"
             app:shapeAppearanceOverlay="@style/CornerCut" />
 
         <include
@@ -24,8 +24,7 @@
             layout="@layout/progess_loader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 

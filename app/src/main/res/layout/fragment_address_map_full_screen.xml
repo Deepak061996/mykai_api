@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -62,7 +63,8 @@
                     android:id="@+id/imageHome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/home_icon" />
+                    android:src="@drawable/home_icon"
+                    app:tint="@color/light_orange" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -88,9 +90,10 @@
 
                 <ImageView
                     android:id="@+id/imageWork"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/work_icon" />
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
+                    android:src="@drawable/work_icon"
+                    app:tint="@color/light_grays" />
 
                 <TextView
                     android:layout_width="wrap_content"

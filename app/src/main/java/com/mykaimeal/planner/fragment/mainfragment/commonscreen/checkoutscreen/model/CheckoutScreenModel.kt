@@ -11,6 +11,7 @@ data class CheckoutScreenModel(
 
 data class CheckoutScreenModelData(
     val Store: String?,
+    val estimated_time: String?,
     val address: Addres?,
     val card:MutableList<GetCardMealMeModelData>?,
     var country_code: String?,

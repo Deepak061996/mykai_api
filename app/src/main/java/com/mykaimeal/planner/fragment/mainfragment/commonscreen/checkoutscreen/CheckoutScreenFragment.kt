@@ -68,15 +68,12 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.gson.Gson
-import com.google.i18n.phonenumbers.NumberParseException
-import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.mykaimeal.planner.OnItemLongClickListener
 import com.mykaimeal.planner.OnItemSelectListener
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.adapter.AdapterCardPreferredItem
 import com.mykaimeal.planner.adapter.AdapterCheckoutIngredientsItem
 import com.mykaimeal.planner.adapter.AdapterGetAddressItem
-import com.mykaimeal.planner.adapter.IngredientsShoppingAdapter
 import com.mykaimeal.planner.adapter.PlacesAutoCompleteAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
@@ -87,7 +84,6 @@ import com.mykaimeal.planner.fragment.mainfragment.commonscreen.addressmapfullsc
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.AddressPrimaryResponse
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.GetAddressListModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.GetAddressListModelData
-import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.model.Ingredient
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModelData
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
@@ -351,11 +347,28 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                         val lng = longitude?.toDoubleOrNull() ?: 0.0
                         updateMarker(lat, lng)
                     }
+
+                    if (it.address.type.equals("Work",true)){
+                        binding.tvSetType.text= "Set "+it.address.type.toString()
+                        binding.imageHome.setImageResource(R.drawable.work_icon)
+                        binding.imageHome.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
+
+                    }else{
+                        binding.tvSetType.text= "Set "+it.address.type.toString()
+                        binding.imageHome.setImageResource(R.drawable.home_icon)
+                        binding.imageHome.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
+                    }
                 }
             }
             if (it.Store != null) {
                 binding.tvSuperMarketName.text = it.Store.toString()
             }
+
+            if (it.estimated_time!=null){
+                binding.tvEstimateTime.text=it.estimated_time.toString()
+                binding.tvStandardTime.text=it.estimated_time.toString()
+            }
+
             if (it.note != null) {
                 it.note.pickup?.let {
                     binding.tvSetDoorStep.text = it
@@ -482,6 +495,12 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         ) // Change with your drawable
         mMap?.addMarker(MarkerOptions().position(newYork).icon(customMarker))
 
+        // 🔴 Disable indoor maps to hide level picker
+        mMap?.isIndoorEnabled = false
+
+        // Ensure indoor level picker UI is hidden
+        mMap?.setOnIndoorStateChangeListener(null)  // Optional: reset any previous listeners
+
         // 🔹 Disable map movement
         mMap?.uiSettings?.apply {
             isScrollGesturesEnabled = false
@@ -490,7 +509,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             isRotateGesturesEnabled = false
         }
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(newYork, 20f))
-
 
     }
 
@@ -949,12 +967,12 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         val status = cardMealMe.any { it.status == 1 }
         // Check if email/phone is empty
         if (binding.tvAddNumber.text.toString().equals("Add number",true)) {
-            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPhone, false)
+            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.addPhoneNumber, false)
             return false
         } else if (binding.tvSetDoorStep.text.toString().equals("",true)) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPickUp, false)
             return false
-        }else if (status==false) {
+        }else if (!status) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardError, false)
             return false
         }
@@ -1031,7 +1049,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }
     }
 
-
     override fun onMapReady(gmap: GoogleMap) {
 
         Log.d("Location latitude", "********$latitude")
@@ -1041,6 +1058,10 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         val lat = latitude?.toDoubleOrNull() ?: 0.0  // Convert String to Double, default to 0.0 if null
         val lng = longitude?.toDoubleOrNull() ?: 0.0
         val newYork = LatLng(lat, lng)
+
+        // 🔴 Disable indoor maps to hide level picker
+        mMap?.isIndoorEnabled = false
+
         val customMarker = bitmapDescriptorFromVector(
             R.drawable.map_marker_icon,
             50,
@@ -1062,6 +1083,9 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }
 
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(newYork, 20f))
+
+/*        // Ensure indoor level picker UI is hidden
+        mMap?.setOnIndoorStateChangeListener(null)  // Optional: reset any previous listeners*/
     }
 
     private fun bitmapDescriptorFromVector(
