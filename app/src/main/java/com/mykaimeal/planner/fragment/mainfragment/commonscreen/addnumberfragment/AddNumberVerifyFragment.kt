@@ -352,6 +352,7 @@ class AddNumberVerifyFragment : Fragment() {
                     it.phone=binding.etRegPhone.text.toString().trim()
                     it.country_code=countryCode
                 }
+
                 findNavController().navigateUp()
             } else {
                 binding.tvVerificationError.visibility = View.VISIBLE

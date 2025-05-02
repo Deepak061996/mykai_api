@@ -124,6 +124,8 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
 
     private fun initialize() {
 
+        binding.textCheckoutTesco.isClickable=false
+
         binding.imageBackIcon.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -381,20 +383,13 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
                 Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
                 binding.textCheckoutTesco.isClickable=false
                 binding.textCheckoutTesco.setBackgroundResource(R.drawable.gray_btn_unselect_background)
-                (activity as MainActivity?)?.upBasket()
-                lunchApi()
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+                handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
         }
-
-        getShoppingList()
+        lunchApi()
     }
 
     private fun getShoppingList() {
@@ -425,7 +420,8 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
             val apiModel = Gson().fromJson(data, ShoppingListModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                if (apiModel.data != null) {
+
+                apiModel.data?.let {
                     showDataShoppingUI(apiModel.data)
                 }
             } else {
@@ -468,6 +464,7 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
         if (ingredientList.size > 0) {
             adapterShoppingAdapter.updateList(ingredientList)
         }
+        buttonColor()
     }
 
     override fun itemClick(position: Int?, status: String?, type: String?) {
