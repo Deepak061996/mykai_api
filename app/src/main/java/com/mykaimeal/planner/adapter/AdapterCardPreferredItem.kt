@@ -36,7 +36,6 @@ class AdapterCardPreferredItem(var context: Context, private var datalist: Mutab
             datalist!![position].card_num?.let {
                 holder.binding.tvCardNumber.text= "*** *** **** $it"
                 val name = BaseApplication.detectCardType(it.toString())
-
                 holder.binding.tvVisaName.text=name
                 val icon: Int = CardBrand.valueOf(name).icon
                 Glide.with(context)

@@ -5,7 +5,7 @@ import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.mod
 
 data class ShoppingListModel(
     val code: Int,
-    val `data`: ShoppingListModelData,
+    val `data`: ShoppingListModelData?,
     val message: String,
     val success: Boolean
 )
