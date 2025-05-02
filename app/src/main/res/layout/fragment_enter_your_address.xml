@@ -84,9 +84,11 @@
                     android:padding="@dimen/_10sdp">
 
                     <ImageView
+                        android:id="@+id/imageHome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/home_icon" />
+                        android:src="@drawable/home_icon"
+                        app:tint="@color/light_orange" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -111,9 +113,11 @@
                     android:padding="@dimen/_10sdp">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/work_icon" />
+                        android:id="@+id/imageWork"
+                        android:layout_width="@dimen/_22sdp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:src="@drawable/work_icon"
+                        app:tint="@color/light_grays" />
 
                     <TextView
                         android:layout_width="wrap_content"

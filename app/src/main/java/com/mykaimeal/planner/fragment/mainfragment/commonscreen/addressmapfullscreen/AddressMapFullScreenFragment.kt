@@ -138,6 +138,7 @@ class AddressMapFullScreenFragment : Fragment(), OnMapReadyCallback {
             setStatus = "Home"
             binding!!.llSetHome.setBackgroundResource(R.drawable.outline_green_border_bg)
             binding!!.llSetWork.setBackgroundResource(R.drawable.height_type_bg)
+
             binding!!.imageHome.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_orange), PorterDuff.Mode.SRC_IN)
             binding!!.imageWork.setColorFilter(ContextCompat.getColor(requireContext(), R.color.light_grays), PorterDuff.Mode.SRC_IN)
 
@@ -355,6 +356,10 @@ class AddressMapFullScreenFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
         // 🔹 Clear all markers (if any exist)
         mMap.clear()
+
+        // 🔴 Disable indoor maps to hide level picker
+        mMap.isIndoorEnabled = false
+
         val initialPosition = LatLng(lat, lng) // Example: Sydney
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(initialPosition, 12f))
 

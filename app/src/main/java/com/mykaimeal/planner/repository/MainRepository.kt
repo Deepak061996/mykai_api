@@ -282,5 +282,6 @@ interface MainRepository {
     suspend fun getGraphScreenUrl(successCallback: (response: NetworkResult<String>) -> Unit, month:String?)
     suspend fun orderWeekUrl(successCallback: (response: NetworkResult<String>) -> Unit, week:String?)
     suspend fun orderHistoryUrl(successCallback: (response: NetworkResult<String>) -> Unit)
+    suspend fun referralUrl(successCallback: (response: NetworkResult<String>) -> Unit)
 
 }

@@ -142,7 +142,7 @@
                             android:layout_marginTop="@dimen/_15sdp"
                             android:background="@null"
                             android:fontFamily="@font/poppins"
-                            android:hint="Apart number"
+                            android:hint="Apartment number"
                             android:paddingHorizontal="@dimen/_15sdp"
                             android:singleLine="true"
                             android:textColor="@color/black"
@@ -262,7 +262,7 @@
                         android:layout_below="@+id/relAddress"
                         android:layout_marginTop="@dimen/_15sdp"
                         android:fontFamily="@font/poppins"
-                        android:text="Postal code"
+                        android:text="Zip code"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_15sdp" />
 
@@ -282,7 +282,7 @@
                             android:layout_marginTop="@dimen/_15sdp"
                             android:background="@null"
                             android:fontFamily="@font/poppins"
-                            android:hint="Postal Code"
+                            android:hint="Zip Code"
                             android:inputType="number"
                             android:paddingHorizontal="@dimen/_15sdp"
                             android:singleLine="true"

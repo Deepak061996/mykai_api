@@ -98,8 +98,8 @@
 
                 <ImageView
                     android:id="@+id/imageHome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/_22sdp"
+                    android:layout_height="@dimen/_22sdp"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/_12sdp"
                     android:src="@drawable/home_icon"
@@ -284,12 +284,13 @@
                     android:textSize="@dimen/_13sdp" />
 
                 <TextView
+                    android:id="@+id/tvEstimateTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="@dimen/_15sdp"
                     android:fontFamily="@font/montserrat"
-                    android:text="15-35 min"
+                    android:text=""
                     android:textColor="@color/light_black"
                     android:textSize="@dimen/_11sdp" />
 
@@ -324,12 +325,13 @@
                     android:src="@drawable/image_standard" />
 
                 <TextView
+                    android:id="@+id/tvStandardTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvStandard"
                     android:layout_marginStart="@dimen/_7sdp"
                     android:fontFamily="@font/montserrat"
-                    android:text="15-35 min"
+                    android:text=""
                     android:textColor="@color/light_black"
                     android:textSize="@dimen/_11sdp" />
 

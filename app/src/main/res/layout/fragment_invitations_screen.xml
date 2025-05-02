@@ -60,12 +60,13 @@
                 android:background="@drawable/invitations_line_bg">
 
                 <TextView
+                    android:id="@+id/tvFriendsCountNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
                     android:padding="@dimen/_10sdp"
                     android:textAlignment="center"
-                    android:text="@string/you_have_invited_12_friends_to_use_myka"/>
+                    android:text=""/>
 
             </RelativeLayout>
 
@@ -83,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold"
                     android:layout_centerVertical="true"
-                    android:text="Friends using Myka App"
+                    android:text="Friends using My kai App"
                     android:textSize="@dimen/_13sdp" />
 
                 <RelativeLayout
@@ -95,6 +96,7 @@
                     android:background="@drawable/orange_shape_bg">
 
                     <TextView
+                        android:id="@+id/tvFilterName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/_5sdp"
@@ -102,7 +104,7 @@
                         android:text="Filter"
                         android:fontFamily="@font/poppins_semibold"
                         android:textSize="@dimen/_13sdp"
-                        android:drawableEnd="@drawable/drop_down_icon" />
+                        app:drawableEndCompat="@drawable/drop_down_icon" />
 
                 </RelativeLayout>
             </RelativeLayout>

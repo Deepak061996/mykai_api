@@ -32,7 +32,7 @@ class AdapterCheckoutIngredientsItem(private var ingredientsData: MutableList<In
                 if (data.pro_price!="Not available"){
                     holder.binding.tvFoodPrice.text=data.pro_price.toString()
                 }else{
-                    holder.binding.tvFoodPrice.text="$00"
+                    holder.binding.tvFoodPrice.text="$0"
                 }
             }
 

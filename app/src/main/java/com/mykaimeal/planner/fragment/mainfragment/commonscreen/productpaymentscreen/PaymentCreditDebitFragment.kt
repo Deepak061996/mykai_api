@@ -57,7 +57,6 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
         adapterPaymentCreditDebitItem = AdapterPaymentCreditDebitItem(requireContext(), cardList, this)
         binding.rcvCardNumber.adapter = adapterPaymentCreditDebitItem
 
-
         setupBackNavigation()
 
         initialize()
@@ -168,7 +167,6 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
         data?.let {
             cardList.addAll(it)
         }
-
         hideShow()
     }
 

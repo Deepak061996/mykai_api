@@ -30,8 +30,11 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:padding="@dimen/_4sdp"
+                        android:layout_centerVertical="true"
                         android:src="@drawable/back_icon" />
+
                 </RelativeLayout>
 
                 <TextView
@@ -40,6 +43,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginStart="@dimen/_5sdp"
                     android:text="Add number"
+                    android:fontFamily="@font/montserrat_semibold"
                     android:textColor="#000000"
                     android:textSize="@dimen/_15sdp" />
             </RelativeLayout>
@@ -49,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layTitle"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Phone number"
                 android:textColor="@color/black"
@@ -236,9 +240,11 @@
                         android:id="@+id/textResend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_2sdp"
                         android:layout_toEndOf="@+id/textDidNotCode"
                         android:fontFamily="@font/poppins_bold"
-                        android:text="@string/resend"
+                        android:text="Resend"
+                        android:textColor="@color/light_green"
                         android:textSize="@dimen/_13sdp" />
                 </RelativeLayout>
 

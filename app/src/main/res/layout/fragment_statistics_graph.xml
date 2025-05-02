@@ -149,12 +149,43 @@
                 android:id="@+id/relInvite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/invite_friends_bg"
                 android:layout_below="@id/barChart">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_150sdp"
-                    android:src="@drawable/invite_friends"/>
+                <TextView
+                    android:id="@+id/textInviteMykai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/invitefriends"
+                    android:fontFamily="@font/montserrat"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:textColor="@color/black"
+                    android:layout_marginHorizontal="@dimen/_16sdp"
+                    android:textSize="@dimen/_11sdp"/>
+
+                <TextView
+                    android:id="@+id/textShareFriends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save your friends money and\nearn $5"
+                    android:fontFamily="@font/montserrat"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:textColor="@color/black"
+                    android:layout_below="@+id/textInviteMykai"
+                    android:layout_marginHorizontal="@dimen/_16sdp"
+                    android:textSize="@dimen/_11sdp"/>
+
+                <TextView
+                    android:id="@+id/textSeeDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="See Details"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:textColor="@color/light_green"
+                    android:layout_below="@+id/textShareFriends"
+                    android:layout_marginHorizontal="@dimen/_16sdp"
+                    android:textSize="@dimen/_11sdp"/>
 
             </RelativeLayout>
 

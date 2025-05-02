@@ -1,25 +1,36 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.text.HtmlCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
 import com.mykaimeal.planner.adapter.AdapterInviteItem
+import com.mykaimeal.planner.basedata.BaseApplication
+import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.databinding.FragmentInvitationsScreenBinding
-import com.mykaimeal.planner.model.DataModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.ReferralInvitationModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.ReferralInvitationModelData
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.viewmodel.StatisticsViewModel
+import com.mykaimeal.planner.messageclass.ErrorMessage
 import dagger.hilt.android.AndroidEntryPoint
-
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class InvitationsScreenFragment : Fragment() {
 
     private lateinit var binding: FragmentInvitationsScreenBinding
-    private var dataList: MutableList<DataModel> = mutableListOf()
     private var adapterInviteItem: AdapterInviteItem? = null
+    private lateinit var statisticsViewModel: StatisticsViewModel
+    private var referralList: MutableList<ReferralInvitationModelData> =mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,26 +39,35 @@ class InvitationsScreenFragment : Fragment() {
         // Inflate the layout for this fragment
         binding=FragmentInvitationsScreenBinding.inflate(layoutInflater, container, false)
 
+        statisticsViewModel = ViewModelProvider(this)[StatisticsViewModel::class.java]
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 findNavController().navigateUp()
             }
         })
 
-        inviteModel()
+        adapterInviteItem = AdapterInviteItem(referralList, requireActivity())
+        binding.rcyFriendsInvite.adapter = adapterInviteItem
+
         initialize()
 
         return binding.root
     }
 
-
-
     private fun initialize() {
+
         binding.imgBackInvite.setOnClickListener {
             findNavController().navigateUp()
         }
 
-        binding.textInviteFriends.setOnClickListener {
+        if (BaseApplication.isOnline(requireContext())) {
+            getInvitationList()
+        } else {
+            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+        }
+
+      /*  binding.textInviteFriends.setOnClickListener {
             val appPackageName: String = requireActivity().packageName
             val myIntent = Intent(Intent.ACTION_SEND)
             myIntent.type = "text/plain"
@@ -57,45 +77,83 @@ class InvitationsScreenFragment : Fragment() {
             myIntent.putExtra(Intent.EXTRA_SUBJECT, sub)
             myIntent.putExtra(Intent.EXTRA_TEXT, body)
             startActivity(Intent.createChooser(myIntent, "Share Using"))
-        }
+        }*/
 
     }
 
-    private fun inviteModel() {
-        val data1 = DataModel()
-        val data2 = DataModel()
-        val data3 = DataModel()
-        val data4 = DataModel()
-        val data5 = DataModel()
+    private fun getInvitationList() {
+        BaseApplication.showMe(requireContext())
+        lifecycleScope.launch {
+            statisticsViewModel.referralUrl {
+                BaseApplication.dismissMe()
+                handleApiReferralResponse(it)
+            }
+        }
+    }
 
-        data1.title = "Danny"
-        data1.isOpen = false
-        data1.type = "Trial"
 
-        data2.title = "Dora"
-        data2.isOpen = false
-        data2.type = "Trial Over"
+    private fun handleApiReferralResponse(result: NetworkResult<String>) {
+        when (result) {
+            is NetworkResult.Success -> handleSuccessReferralResponse(result.data.toString())
+            is NetworkResult.Error -> showAlert(result.message, false)
+            else -> showAlert(result.message, false)
+        }
+    }
 
-        data3.title = "Lizel"
-        data3.isOpen = false
-        data3.type = "Redeemed"
+    private fun showAlert(message: String?, status: Boolean) {
+        BaseApplication.alertError(requireContext(), message, status)
+    }
 
-        data4.title = "Kiara"
-        data4.isOpen = false
-        data4.type = "Trial"
+    @SuppressLint("SetTextI18n")
+    private fun handleSuccessReferralResponse(data: String) {
+        try {
+            val apiModel = Gson().fromJson(data, ReferralInvitationModel::class.java)
+            Log.d("@@@ addMea List ", "message :- $data")
+            if (apiModel.code == 200 && apiModel.success == true) {
+                if (apiModel.data != null && apiModel.data.size>0) {
+                    showInvitationList(apiModel.data)
+                }else{
+                    invitedValue()
+                }
+            } else {
+                invitedValue()
+                if (apiModel.code == ErrorMessage.code) {
+                    showAlert(apiModel.message, true)
+                } else {
+                    showAlert(apiModel.message, false)
+                }
 
-        data5.title = "Jimy"
-        data5.isOpen = false
-        data5.type = "Trial"
+            }
+        } catch (e: Exception) {
+            invitedValue()
+            showAlert(e.message, false)
+        }
+    }
 
-        dataList.add(data1)
-        dataList.add(data2)
-        dataList.add(data3)
-        dataList.add(data4)
-        dataList.add(data5)
+    private fun invitedValue(){
+        val htmlText = "You have invited 0 friends to use<b> My Kai</b>"
+        val formattedText = HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.tvFriendsCountNumber.text = formattedText
+    }
 
-        adapterInviteItem = AdapterInviteItem(dataList, requireActivity())
-        binding.rcyFriendsInvite.adapter = adapterInviteItem
+    private fun showInvitationList(data: MutableList<ReferralInvitationModelData>) {
+
+        referralList.clear()
+        data.let {
+            referralList.addAll(it)
+            if (referralList.size > 0) {
+                val invitedCount = referralList.size.toString()
+                val htmlText = "You have invited $invitedCount friends to use<b> My Kai</b>"
+                val formattedText = HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                binding.tvFriendsCountNumber.text = formattedText
+                binding.rcyFriendsInvite.visibility = View.VISIBLE
+                adapterInviteItem?.updateList(referralList)
+            } else {
+                invitedValue()
+                binding.rcyFriendsInvite.visibility = View.GONE
+            }
+        }
+
     }
 
 }
