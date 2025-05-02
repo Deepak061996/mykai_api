@@ -347,7 +347,6 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
             if (apiModel.code == 200 && apiModel.success) {
                 dialogAddress?.dismiss()
                 dialogMiles?.dismiss()
-                launchApi()
             } else {
                 handleError(apiModel.code,apiModel.message)
             }

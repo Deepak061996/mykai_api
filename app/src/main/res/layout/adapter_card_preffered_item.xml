@@ -15,8 +15,7 @@
             android:layout_width="@dimen/_30sdp"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
-            android:layout_height="@dimen/_20sdp"
-            android:src="@drawable/visa_rounded_image"/>
+            android:layout_height="@dimen/_20sdp" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -29,7 +28,7 @@
                 android:id="@+id/tvVisaName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="visa"
+                android:text="Unknown"
                 android:textSize="@dimen/_13sdp"
                 android:textColor="@color/black"/>
 
@@ -47,7 +46,7 @@
                 android:id="@+id/tvCardNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="**** **** **** 4242"
+                android:text="**** **** ****     "
                 android:textSize="@dimen/_13sdp"
                 android:layout_below="@+id/tvVisaName"
                 android:textColor="@color/black"/>

@@ -750,7 +750,8 @@ interface ApiInterface {
         @Field("exp_month") exp_month: String?,
         @Field("exp_year") exp_year: String?,
         @Field("cvv") cvv: String?,
-        @Field("status") status:String?
+        @Field("status") status:String?,
+        @Field("type") type:String?
     ): Response<JsonObject>
 
 

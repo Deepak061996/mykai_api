@@ -87,6 +87,7 @@ import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.mod
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModelData
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpaymentscreen.model.AddCardMealMeModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpaymentscreen.model.GetCardMealMeModelData
 import com.mykaimeal.planner.listener.OnPlacesDetailsListener
 import com.mykaimeal.planner.messageclass.ErrorMessage
@@ -430,6 +431,11 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 cardMealMe.addAll(it.card)
             }
             if (cardMealMe.size > 0) {
+                val count = cardMealMe.count  { it.status == 1 }
+                if (count!=0){
+                    val filteredItems = cardMealMe.find { it.status == 1 }
+                    cardId=filteredItems?.id.toString()
+                }
                 binding.relCardDetails.visibility = View.VISIBLE
                 adapterCardPreferred.updateList(cardMealMe)
             } else {
@@ -968,8 +974,11 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         } else if (binding.tvSetDoorStep.text.toString().equals("",true)) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPickUp, false)
             return false
-        }else if (!status) {
+        }else if (cardMealMe.isEmpty()) {
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardError, false)
+            return false
+        }else if (!status) {
+            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardSelectError, false)
             return false
         }
         return true
@@ -1173,7 +1182,61 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     }
 
     override fun itemSelect(position: Int?, status: String?, type: String?) {
-        cardId=cardMealMe[position!!].id.toString()
+//        cardId=cardMealMe[position!!].id.toString()
+        if (BaseApplication.isOnline(requireActivity())) {
+            val id=cardMealMe[position!!].id.toString()
+            preferredApi(id)
+        }else{
+            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+        }
+
+
     }
+
+    private fun preferredApi(status: String?) {
+        BaseApplication.showMe(requireContext())
+        lifecycleScope.launch {
+            checkoutScreenViewModel.setPreferredCardMealMeUrl({
+                BaseApplication.dismissMe()
+                handleApiPreferredCardResponse(it,status)
+            }, status)
+        }
+    }
+
+    private fun handleApiPreferredCardResponse(result: NetworkResult<String>,cardId:String?) {
+        when (result) {
+            is NetworkResult.Success -> handleUpdatePreferredResponse(result.data.toString(),cardId)
+            is NetworkResult.Error -> showAlert(result.message, false)
+            else -> showAlert(result.message, false)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun handleUpdatePreferredResponse(data: String,Id: String?) {
+        try {
+            val apiModel = Gson().fromJson(data, AddCardMealMeModel::class.java)
+            Log.d("@@@ Add Card", "message :- $data")
+            if (apiModel.code == 200 && apiModel.success) {
+                cardId=Id
+                cardMealMe.forEachIndexed { index, card ->
+                    card.status=if (card.id == Id?.toInt()) 1 else 0
+                    cardMealMe[index] = card
+                }
+                if (cardMealMe.size > 0) {
+                    binding.relCardDetails.visibility = View.VISIBLE
+                    adapterCardPreferred.updateList(cardMealMe)
+                } else {
+                    binding.relCardDetails.visibility = View.GONE
+                }
+                Toast.makeText(requireContext(), apiModel.message, Toast.LENGTH_LONG).show()
+            } else {
+                handleError(apiModel.code,apiModel.message)
+            }
+        } catch (e: Exception) {
+            showAlert(e.message, false)
+        }
+
+    }
+
 
 }

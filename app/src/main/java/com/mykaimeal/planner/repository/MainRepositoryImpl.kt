@@ -2268,10 +2268,10 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
 
 
     override suspend fun addCardMealMeUrl(
-        successCallback: (response: NetworkResult<String>) -> Unit,cardNumber:String?,expMonth:String?,expYear:String?,cvv:String?,status:String?
+        successCallback: (response: NetworkResult<String>) -> Unit,cardNumber:String?,expMonth:String?,expYear:String?,cvv:String?,status:String?,type:String?
     ) {
         try {
-            api.addCardMealMeUrl(cardNumber,expMonth,expYear,cvv,status).apply {
+            api.addCardMealMeUrl(cardNumber,expMonth,expYear,cvv,status,type).apply {
                 if (isSuccessful) {
                     body()?.let {
                         successCallback(NetworkResult.Success(it.toString()))

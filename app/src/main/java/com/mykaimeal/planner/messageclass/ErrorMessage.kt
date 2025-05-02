@@ -75,6 +75,7 @@ object ErrorMessage {
      const val phoneError="phone can't be empty."
      const val validPickUp:String="Please enter pickup instructions"
      const val cardError:String="Please add card"
+     const val cardSelectError:String="Please select at least one card."
      const val validEmailPhone:String="Please Enter Valid Email or Phone Number"
      const val validPhone:String="Please Enter Valid Phone Number"
      const val validTotalTime:String="Please add total time in minutes"
