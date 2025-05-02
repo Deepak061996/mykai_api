@@ -726,7 +726,6 @@
                             android:id="@+id/rcyCardDetails"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             android:orientation="vertical"/>
 
@@ -854,7 +853,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/rcyDebitCreditCard"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_marginTop="@dimen/_15sdp">
 
                         <TextView
@@ -873,7 +872,7 @@
                         android:id="@+id/relGooglePay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_below="@+id/relPayWallet"
                         android:layout_marginVertical="@dimen/_15sdp">
 
@@ -884,6 +883,7 @@
                             android:src="@drawable/logos_google_pay_icon" />
 
                         <ImageView
+                            android:id="@+id/imageGoogle"
                             android:layout_width="@dimen/_18sdp"
                             android:layout_height="@dimen/_18sdp"
                             android:layout_alignParentEnd="true"

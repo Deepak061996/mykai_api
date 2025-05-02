@@ -31,6 +31,7 @@ import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.databinding.FragmentStatisticsWeekYearBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsGraphModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsWeekYearModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.viewmodel.StatisticsViewModel
 import com.mykaimeal.planner.messageclass.ErrorMessage
 import com.mykaimeal.planner.model.CalendarDataModel
@@ -125,9 +126,9 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
     @SuppressLint("SetTextI18n")
     private fun handleSuccessGraphWeekResponse(data: String) {
         try {
-            val apiModel = Gson().fromJson(data, StatisticsGraphModel::class.java)
+            val apiModel = Gson().fromJson(data, StatisticsWeekYearModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
-            if (apiModel.code == 200 && apiModel.success) {
+            if (apiModel.code == 200 && apiModel.success == true) {
                 if (apiModel.data != null) {
 //                    showSpendingChart(apiModel.data)
                 }
