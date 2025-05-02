@@ -70,7 +70,6 @@ class AddNumberVerifyFragment : Fragment() {
 
     private fun initialize() {
 
-
         binding.rlVerificationVerify.isEnabled=false
 
         binding.relBacks.setOnClickListener {
@@ -104,7 +103,7 @@ class AddNumberVerifyFragment : Fragment() {
                     if (lastNumber.equals(formatted,true)){
                         val digitsOnly = binding.etRegPhone.text.toString().filter { it.isDigit() }
                         val lastFour = digitsOnly.takeLast(3)
-                        binding.tvCodeSent.text= "we have sent the code to ******$lastFour"
+                        binding.tvCodeSent.text= "we have sent the code to *******$lastFour"
                         binding.tvVerify.isEnabled = false
                         binding.rlVerificationVerify.isEnabled = true
                         binding.tvVerificationError.visibility = View.GONE
@@ -281,8 +280,8 @@ class AddNumberVerifyFragment : Fragment() {
         binding.rlVerificationVerify.isEnabled = true
         binding.rlVerificationVerify.setBackgroundResource(R.drawable.green_btn_background)
         val digitsOnly = binding.etRegPhone.text.toString().filter { it.isDigit() }
-        val lastFour = digitsOnly.takeLast(4)
-        binding.tvCodeSent.text= "we have sent the code to ******$lastFour"
+        val lastFour = digitsOnly.takeLast(3)
+        binding.tvCodeSent.text= "we have sent the code to *******$lastFour"
         binding.tvTimer.text="01:59 sec"
         try {
             val apiModel = Gson().fromJson(data, OtpSendModel::class.java)
@@ -296,10 +295,10 @@ class AddNumberVerifyFragment : Fragment() {
                     binding.tvVerify.isEnabled = false
                     binding.tvVerify.setTextColor(Color.parseColor("#999999"))
                     binding.textResend.isEnabled = true
-                    binding.textResend.setTextColor(Color.parseColor("#828282"))
+                    binding.textResend.setTextColor(Color.parseColor("#06C169"))
                 }else{
                     binding.relResendVerificationTimer.visibility = View.VISIBLE
-                    binding.textResend.setTextColor(Color.parseColor("#06C169"))
+                    binding.textResend.setTextColor(Color.parseColor("#828282"))
                     binding.textResend.isEnabled = false
                     startTime()
                 }
@@ -353,6 +352,7 @@ class AddNumberVerifyFragment : Fragment() {
                     it.phone=binding.etRegPhone.text.toString().trim()
                     it.country_code=countryCode
                 }
+                
                 findNavController().navigateUp()
             } else {
                 binding.tvVerificationError.visibility = View.VISIBLE
@@ -362,8 +362,6 @@ class AddNumberVerifyFragment : Fragment() {
             showAlert(e.message, false)
         }
     }
-
-
 
     private fun handleError(code: Int, message: String,type: Boolean) {
         if (code == ErrorMessage.code) {
