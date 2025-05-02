@@ -221,7 +221,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 }
                 findNavController().navigate(R.id.addTipScreenFragment, bundle)
             }
-
         }
 
         binding.relSetMeetAtDoor.setOnClickListener {
