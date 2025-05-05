@@ -1,32 +1,26 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen.supermarktesnearbyscreen
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.location.LocationManager
 import android.os.Bundle
-import android.os.Looper
-import android.transition.Transition
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,13 +30,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
-import com.mykaimeal.planner.OnItemClickListener
-import com.mykaimeal.planner.OnItemSelectListener
 import com.mykaimeal.planner.OnItemSelectUnSelectListener
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.AdapterSuperMarket
+import com.mykaimeal.planner.apiInterface.BaseUrl
 import com.mykaimeal.planner.basedata.BaseApplication
+import com.mykaimeal.planner.basedata.BaseApplication.isOnline
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.databinding.FragmentSuperMarketsNearByBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketdetailssupermarket.viewmodel.BasketDetailsSuperMarketViewModel
@@ -67,10 +61,11 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
     private var mMap: GoogleMap? = null
     private var storeUid: String? = ""
     private var storeName: String? = ""
-
+    private var currentPage:Int=1
+    var isUserScrolling = false
+    var isLoading = false
+    private var hasMoreData = true
     private var stores: MutableList<Store> = mutableListOf()
-
-    private val storeLocations = mutableListOf<LatLng>() // List to store locations
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,6 +86,9 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
                     findNavController().navigateUp()
                 }
             })
+
+        adapter = AdapterSuperMarket(stores, requireActivity(), this)
+
 
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
@@ -116,14 +114,35 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
         }
 
 
-        loadSuperMarket()
 
+        // Scroll listener for pagination
+        binding.recySuperMarket.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    isUserScrolling = true
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!isUserScrolling || isLoading || !hasMoreData) return
+                if (!recyclerView.canScrollVertically(1)) {
+                    isUserScrolling = false
+                    isLoading = true
+                    currentPage++
+                    loadSuperMarket()
+                }
+            }
+        })
+        loadSuperMarket()
 
     }
 
     private fun loadSuperMarket(){
-        if (BaseApplication.isOnline(requireActivity())) {
-            getSuperMarketsList()
+        if (isOnline(requireActivity())) {
+            getSuperMarketsList(currentPage)
         } else {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
@@ -137,13 +156,13 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
         (unselected as TextView).setTextColor(Color.BLACK)
     }
 
-    private fun getSuperMarketsList() {
+    private fun getSuperMarketsList(currentPage : Int) {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
-            basketDetailsSuperMarketViewModel.getSuperMarket({
+            basketDetailsSuperMarketViewModel.getSuperMarketWithPage({
                 BaseApplication.dismissMe()
                 handleMarketApiResponse(it)
-            }, latitude, longitude)
+            }, latitude, longitude,currentPage.toString())
         }
     }
 
@@ -155,10 +174,6 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
         }
     }
 
-    private fun showAlert(message: String?, status: Boolean) {
-        BaseApplication.alertError(requireContext(), message, status)
-    }
-
 
     @SuppressLint("SetTextI18n")
     private fun handleMarketSuccessResponse(data: String) {
@@ -166,17 +181,21 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
             val apiModel = Gson().fromJson(data, SuperMarketModel::class.java)
             Log.d("@@@ Recipe Detailsssss", "message :- $data")
             if (apiModel.code == 200 && apiModel.success == true) {
-                showUIData(apiModel.data)
-            } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
+                apiModel.data?.let {
+                    showUIData(apiModel.data)
+                }?:run {
+                    pageReset()
                 }
+
+            } else {
+                pageReset()
+                handleApiError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
+            pageReset()
             showAlert(e.message, false)
         }
+
     }
 
     private fun showUIData(data: MutableList<Store>?) {
@@ -184,17 +203,44 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
             data?.let {
                 stores.addAll(it)
             }
-
             if (stores.size>0){
                 // Set adapter
-                adapter = AdapterSuperMarket(stores, requireActivity(), this)
+                adapter?.updateList(stores)
                 binding.recySuperMarket.adapter = adapter
                 mMap?.let { updateMap(it) }
             }
+            hasMoreData=true
         } catch (e: Exception) {
-            showAlert(e.message ?: "An error occurred", false)
+            showAlert(e.message, false)
+        }finally {
+            isLoading = false
         }
     }
+
+    private fun showAlert(message: String?, status: Boolean) {
+        BaseApplication.alertError(requireContext(), message, status)
+    }
+
+
+    private fun pageReset(){
+        if (currentPage!=1){
+            currentPage--
+        }
+        isLoading = false
+        hasMoreData = true
+        isUserScrolling = true
+
+    }
+
+    private fun handleApiError(code: Int?, message: String?) {
+        if (code == ErrorMessage.code) {
+            showAlert(message, true)
+        } else {
+            showAlert(message, false)
+        }
+    }
+
+
 
     // Add markers to map
     private fun updateMap(map: GoogleMap) {
@@ -275,7 +321,7 @@ class SuperMarketsNearByFragment : Fragment(), OnItemSelectUnSelectListener, OnM
         if (type == "SuperMarket") {
             storeUid = position?.let { stores?.get(it)?.store_uuid.toString() }
             storeName = position?.let { stores?.get(it)?.store_name.toString() }
-            if (BaseApplication.isOnline(requireActivity())) {
+            if (isOnline(requireActivity())) {
                 selectSuperMarketApi()
             } else {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)

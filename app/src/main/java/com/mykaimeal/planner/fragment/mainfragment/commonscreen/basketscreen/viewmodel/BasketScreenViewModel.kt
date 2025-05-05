@@ -75,6 +75,12 @@ class BasketScreenViewModel @Inject constructor(private val repository: MainRepo
         repository.getSuperMarket({ successCallback(it) },latitude,longitude)
     }
 
+    suspend fun getSuperMarketWithPage(successCallback: (response: NetworkResult<String>) -> Unit,
+                                       latitude: String?,longitude: String?,pageCount: String?){
+        repository.getSuperMarketWithPage({ successCallback(it) },latitude,longitude,pageCount)
+    }
+
+
     // set Data in view model
 
     private var _dataBasket: BasketScreenModelData? = null

@@ -238,6 +238,8 @@ interface MainRepository {
 
     suspend fun getSuperMarket(successCallback: (response: NetworkResult<String>) -> Unit, latitude: String?, longitude:String?)
 
+    suspend fun getSuperMarketWithPage(successCallback: (response: NetworkResult<String>) -> Unit, latitude: String?, longitude:String?, pageCount:String?)
+
 
     suspend fun subscriptionGoogle(successCallback: (response: NetworkResult<String>) -> Unit, type: String?, purchaseToken: String?, subscriptionId:String?)
 

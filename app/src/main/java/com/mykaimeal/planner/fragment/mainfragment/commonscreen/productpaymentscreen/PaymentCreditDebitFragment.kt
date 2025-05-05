@@ -57,19 +57,13 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         binding = FragmentPaymentCreditDebitBinding.inflate(layoutInflater, container, false)
-
         commonWorkUtils = CommonWorkUtils(requireActivity())
         paymentCreditDebitViewModel = ViewModelProvider(requireActivity())[CheckoutScreenViewModel::class.java]
-
         adapterPaymentCreditDebitItem = AdapterPaymentCreditDebitItem(requireContext(), cardList, this)
         binding.rcvCardNumber.adapter = adapterPaymentCreditDebitItem
-
         setupBackNavigation()
-
         initialize()
-
         return binding.root
-
     }
 
     private fun setupBackNavigation() {

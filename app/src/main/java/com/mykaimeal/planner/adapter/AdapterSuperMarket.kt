@@ -116,6 +116,11 @@ class AdapterSuperMarket(
         notifyDataSetChanged()
     }
 
+    fun updateList(list: MutableList<Store>){
+        storesData = list
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int {
         return storesData!!.size
     }

@@ -1,8 +1,11 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketdetailssupermarket
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.LocationManager
 import android.os.Bundle
@@ -12,6 +15,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.RelativeLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -63,7 +68,7 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
 
     private lateinit var binding: FragmentBasketDetailSuperMarketBinding
     private lateinit var itemSectionAdapter: CategoryProductAdapter
-    private var bottomSheetDialog: BottomSheetDialog? = null
+    private var bottomSheetDialog: Dialog? = null
     private var adapter: AdapterSuperMarket? = null
     private var rcvBottomDialog: RecyclerView? = null
     private lateinit var basketScreenViewModel: BasketScreenViewModel
@@ -75,8 +80,10 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
     private var storeImage: String? = ""
     private var ingredientList: MutableList<Ingredient> = mutableListOf()
     private var stores: MutableList<Store> = mutableListOf()
-
-
+    var isUserScrolling = false
+    var isLoading = false
+    private var hasMoreData = true
+    private var currentPage:Int=1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -138,6 +145,8 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
     private fun initialize() {
 
         binding.relTescoMarket.setOnClickListener{
+            currentPage=1
+            stores.clear()
             bottomSheetDialog()
         }
 
@@ -288,10 +297,10 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
     private fun getSuperMarketsList() {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
-            basketScreenViewModel.getSuperMarket({
+            basketScreenViewModel.getSuperMarketWithPage({
                 BaseApplication.dismissMe()
                 handleMarketApiResponse(it)
-            },latitude, longitude)
+            },latitude, longitude,currentPage.toString())
         }
     }
 
@@ -309,13 +318,35 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
             val apiModel = Gson().fromJson(data, SuperMarketModel::class.java)
             Log.d("@@@ Recipe Details ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success==true) {
-                showUIData(apiModel.data)
+                apiModel.data?.let {
+                    if (stores.isEmpty()){
+                        showUIData(it)
+                    }else{
+                        hasMoreData = true
+                        isUserScrolling = true
+                        stores.addAll(it)
+                        adapter?.updateList(stores)
+                    }
+                }?:run { pageReset() }
+
             } else {
+                pageReset()
                handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
+            pageReset()
             showAlert(e.message, false)
         }
+    }
+
+    private fun pageReset(){
+        if (currentPage!=1){
+            currentPage--
+        }
+        isLoading = false
+        hasMoreData = true
+        isUserScrolling = true
+
     }
 
     private fun showUIData(data: MutableList<Store>?) {
@@ -324,16 +355,53 @@ class BasketDetailSuperMarketFragment : Fragment(), OnItemClickListener,
                 stores.clear()
                 stores.addAll(it)
             }
-            bottomSheetDialog = BottomSheetDialog(requireActivity(), R.style.BottomSheetDialog)
+
+            bottomSheetDialog = Dialog(requireContext())
             bottomSheetDialog?.setContentView(R.layout.bottom_sheet_select_super_market_near_me)
-            rcvBottomDialog = bottomSheetDialog!!.findViewById(R.id.rcvBottomDialog)
+            bottomSheetDialog?.setCancelable(true)
+            bottomSheetDialog?.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+            bottomSheetDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 🔍 transparent bg
+            rcvBottomDialog = bottomSheetDialog?.findViewById(R.id.rcvBottomDialog)
+            val layRoot = bottomSheetDialog?.findViewById<RelativeLayout>(R.id.layRoot)
+
+            layRoot?.setOnClickListener {
+                bottomSheetDialog?.dismiss()
+            }
+
             bottomSheetDialog?.show()
+
+
+            // Scroll listener for pagination
+            rcvBottomDialog?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        isUserScrolling = true
+                    }
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (!isUserScrolling || isLoading || !hasMoreData) return
+                    if (!recyclerView.canScrollVertically(1)) {
+                        isUserScrolling = false
+                        isLoading = true
+                        currentPage++
+                        bottomSheetDialog()
+                    }
+                }
+            })
+
             if (stores.size>0){
                 adapter = AdapterSuperMarket(data, requireActivity(), this)
                 rcvBottomDialog?.adapter = adapter
             }
+            hasMoreData=true
         }catch (e:Exception){
             showAlert(e.message, false)
+        }finally {
+            isLoading = false
         }
     }
 

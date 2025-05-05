@@ -18,6 +18,11 @@ class BasketDetailsSuperMarketViewModel @Inject constructor(private val reposito
         repository.getSuperMarket({ successCallback(it) },latitude,longitude)
     }
 
+    suspend fun getSuperMarketWithPage(successCallback: (response: NetworkResult<String>) -> Unit,
+                               latitude: String?,longitude: String?,pageCount: String?){
+        repository.getSuperMarketWithPage({ successCallback(it) },latitude,longitude,pageCount)
+    }
+
     suspend fun basketIngIncDescUrl(successCallback: (response: NetworkResult<String>) -> Unit,
                                     foodId: String?,quantity:String?){
         repository.basketIngIncDescUrl({ successCallback(it) },foodId, quantity)

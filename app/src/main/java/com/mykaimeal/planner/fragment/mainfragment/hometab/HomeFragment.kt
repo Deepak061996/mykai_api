@@ -89,9 +89,14 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
     private var storeName: String = ""
     private var cookstatus = false
     private var tAG: String = "Location"
-    private var superMarketData: MutableList<SuperMarketModelsData>? = null
+    private var superMarketData: MutableList<SuperMarketModelsData> = mutableListOf()
     private var cookbookList: MutableList<com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsecookbooklist.Data> =
         mutableListOf()
+    private var currentPage:Int=1
+    var isUserScrolling = false
+    var isLoading = false
+    private var hasMoreData = true
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -199,19 +204,21 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
         }
     }
 
-    private fun supermarketOnLoad() {
+    private fun supermarketOnLoad(type:String) {
         if (BaseApplication.isOnline(requireActivity())) {
-            superMarketDetailsData()
+            superMarketDetailsData(type)
         } else {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
     }
 
-    private fun superMarketDetailsData() {
+    private fun superMarketDetailsData(type:String) {
+        BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
-            viewModel.getSuperMarket({
+            viewModel.getSuperMarketWithPage({
+                BaseApplication.dismissMe()
                 handleMarketApiResponse(it)
-            }, latitude, longitude)
+            }, latitude, longitude,currentPage.toString())
         }
     }
 
@@ -244,19 +251,44 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             val apiModel = Gson().fromJson(data, SuperMarketModels::class.java)
             Log.d("@@@ Recipe Details ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success == true) {
-                showUIData(apiModel.data)
+                if (context!=null){
+                    apiModel.data?.let {
+                        if (superMarketData.isEmpty()){
+                            showUIData(apiModel.data)
+                        }else{
+                            hasMoreData = true
+                            isUserScrolling = true
+                            adapterSuperMarket?.updateList(superMarketData)
+                        }
+                    }?:run {
+                        pageReset()
+                    }
+                }
             } else {
+                pageReset()
                 handleError(apiModel.code, apiModel.message)
             }
         } catch (e: Exception) {
+            pageReset()
             showAlert(e.message, false)
         }
+    }
+
+    private fun pageReset(){
+        if (currentPage!=1){
+            currentPage--
+        }
+        isLoading = false
+        hasMoreData = true
+        isUserScrolling = true
+
     }
 
     private fun showUIData(data: MutableList<SuperMarketModelsData>?) {
         try {
             if (data != null) {
-                superMarketData = data
+
+                superMarketData.addAll(data)
                 val dialogAddItem: Dialog = context?.let { Dialog(it) }!!
                 dialogAddItem.setContentView(R.layout.alert_dialog_super_market)
                 dialogAddItem.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -266,11 +298,34 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 )
                 recySuperMarket = dialogAddItem.findViewById(R.id.recySuperMarket)
                 val rlDoneBtn = dialogAddItem.findViewById<RelativeLayout>(R.id.rlDoneBtn)
-                dialogAddItem.setCancelable(false)
+                dialogAddItem.setCancelable(true)
                 dialogAddItem.show()
                 dialogAddItem.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-                adapterSuperMarket = HomeSuperMarketList(data, requireActivity(), this, 0)
-                recySuperMarket!!.adapter = adapterSuperMarket
+                adapterSuperMarket = HomeSuperMarketList(superMarketData, requireActivity(), this, 0)
+                recySuperMarket?.adapter = adapterSuperMarket
+
+
+                // Scroll listener for pagination
+                recySuperMarket?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        super.onScrollStateChanged(recyclerView, newState)
+                        if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                            isUserScrolling = true
+                        }
+                    }
+
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        if (!isUserScrolling || isLoading || !hasMoreData) return
+                        if (!recyclerView.canScrollVertically(1)) {
+                            isUserScrolling = false
+                            isLoading = true
+                            currentPage++
+                            supermarketOnLoad("2")
+                        }
+                    }
+                })
 
                 rlDoneBtn.setOnClickListener {
                     if (!storeUuid.equals("", true)) {
@@ -293,10 +348,15 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                     }
                 }
 
+
+                hasMoreData=true
+
             }
 
         } catch (e: Exception) {
             showAlert(e.message, false)
+        }finally {
+            isLoading = false
         }
     }
 
@@ -464,11 +524,15 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 }
             }
 
+
+
             userDataLocal.address?.let {
                 if (it==1){
                     userDataLocal.is_supermarket?.let {
                         if (it==1){
-                            supermarketOnLoad()
+                            currentPage=1
+                            superMarketData.clear()
+                            supermarketOnLoad("1")
 //                    getLatLong()
                         }
                     }
@@ -481,7 +545,10 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
     }
 
     private fun showAlert(message: String?, status: Boolean) {
-        BaseApplication.alertError(requireContext(), message, status)
+        if (context!=null){
+            BaseApplication.alertError(requireContext(), message, status)
+        }
+
     }
     
     @SuppressLint("SetTextI18n")
@@ -555,7 +622,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 if (location != null) {
                     latitude = location.latitude.toString()
                     longitude = location.longitude.toString()
-                    supermarketOnLoad()
+                    supermarketOnLoad("1")
                 } else {
                     // When location result is null
                     val locationRequest =
@@ -571,7 +638,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                             val location1 = locationResult.lastLocation
                             latitude = location1!!.latitude.toString()
                             longitude = location1.longitude.toString()
-                            supermarketOnLoad()
+                            supermarketOnLoad("1")
                         }
                     }
                     // Request location updates

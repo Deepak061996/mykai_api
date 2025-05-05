@@ -174,17 +174,26 @@ class SubscriptionPlanOverViewFragment : Fragment() {
                 BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED -> Toast.makeText(
                     requireActivity(), "FEATURE_NOT_SUPPORTED", Toast.LENGTH_LONG).show()
 
-                BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> Toast.makeText(
-                    requireActivity(), "BILLING_UNAVAILABLE", Toast.LENGTH_LONG).show()
+                BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
+//                    Toast.makeText(
+//                        requireActivity(), "BILLING_UNAVAILABLE", Toast.LENGTH_LONG
+//                    ).show()
+                }
 
-                BillingClient.BillingResponseCode.USER_CANCELED -> Toast.makeText(
-                    requireActivity(), "USER_CANCELLED", Toast.LENGTH_LONG).show()
+                BillingClient.BillingResponseCode.USER_CANCELED -> {
+//                    Toast.makeText(
+//                        requireActivity(), "USER_CANCELLED", Toast.LENGTH_LONG
+//                    ).show()
+                }
 
                 BillingClient.BillingResponseCode.DEVELOPER_ERROR -> Toast.makeText(
                     requireActivity(), "DEVELOPER_ERROR", Toast.LENGTH_LONG).show()
 
-                BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> Toast.makeText(
-                    requireActivity(), "ITEM_UNAVAILABLE", Toast.LENGTH_LONG).show()
+                BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> {
+//                    Toast.makeText(
+//                        requireActivity(), "ITEM_UNAVAILABLE", Toast.LENGTH_LONG
+//                    ).show()
+                }
 
                 BillingClient.BillingResponseCode.NETWORK_ERROR -> Toast.makeText(
                     requireActivity(), "NETWORK_ERROR", Toast.LENGTH_LONG).show()

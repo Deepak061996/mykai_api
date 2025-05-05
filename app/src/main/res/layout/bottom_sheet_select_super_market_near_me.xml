@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/layRoot"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="@dimen/_25sdp"
-    android:background="@drawable/bottom_white_layout">
-
-    <TextView
-        android:id="@+id/textTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="@font/montserrat_medium"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="@dimen/_14sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:text="@string/select_supermarkets_to_compare"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcvBottomDialog"
+    android:layout_height="match_parent"
+    android:background="#34000000"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:layout_marginVertical="@dimen/_15sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="3"
-        android:orientation="vertical"
-        android:layout_below="@+id/textTitle"/>
-
+        android:layout_height="@dimen/_250sdp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bottom_white_layout">
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/montserrat_medium"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/_14sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/select_supermarkets_to_compare"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvBottomDialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_margin="@dimen/_10sdp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
+            android:orientation="vertical"
+            android:layout_below="@+id/textTitle"/>
+    </RelativeLayout>
 </RelativeLayout>

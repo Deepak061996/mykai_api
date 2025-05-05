@@ -646,6 +646,14 @@ interface ApiInterface {
         @Field("longitude") longitude: String?
     ): Response<JsonObject>
 
+    @FormUrlEncoded
+    @POST(ApiEndPoint.superMarketsPageUrl)
+    suspend fun getSuperMarketWithPage(
+        @Field("latitude") latitude: String?,
+        @Field("longitude") longitude: String?,
+        @Field("page") pageCount: String?
+    ): Response<JsonObject>
+
 
     @FormUrlEncoded
     @POST(ApiEndPoint.subscriptionGoogleUrl)

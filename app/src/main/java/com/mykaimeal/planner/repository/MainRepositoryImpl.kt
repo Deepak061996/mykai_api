@@ -1996,6 +1996,26 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
         }
     }
 
+
+    override suspend fun getSuperMarketWithPage(
+        successCallback: (response: NetworkResult<String>) -> Unit,
+        latitude: String?, longitude: String?,pageCount:String?
+    ) {
+        try {
+            api.getSuperMarketWithPage(latitude, longitude,pageCount).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                        successCallback(NetworkResult.Success(it.toString()))
+                    } ?: successCallback(NetworkResult.Error(ErrorMessage.apiError))
+                } else {
+                    successCallback(NetworkResult.Error(errorBody().toString()))
+                }
+            }
+        } catch (e: Exception) {
+            successCallback(NetworkResult.Error(e.message.toString()))
+        }
+    }
+
     override suspend fun subscriptionGoogle(successCallback: (response: NetworkResult<String>) -> Unit,
                                             type: String?, purchaseToken: String?, subscriptionId: String?) {
         try {

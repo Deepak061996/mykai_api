@@ -36,6 +36,12 @@ class HomeViewModel @Inject constructor(private val repository: MainRepository) 
         repository.getSuperMarket({ successCallback(it) },latitude,longitude)
     }
 
+
+    suspend fun getSuperMarketWithPage(successCallback: (response: NetworkResult<String>) -> Unit,
+                                       latitude: String?,longitude: String?,pageCount: String?){
+        repository.getSuperMarketWithPage({ successCallback(it) },latitude,longitude,pageCount)
+    }
+
     // set Home Data
     fun setData(dataItem:DataModel?) {
         _data = dataItem
