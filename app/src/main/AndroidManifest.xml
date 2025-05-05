@@ -148,6 +148,10 @@
             android:exported="false"/>-->
 
         <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true"/>
+
+        <meta-data
             android:name="com.appsflyer.devkey"
             android:value="M57zyjkFgb7nSQwHWN6isW" />
         <meta-data
