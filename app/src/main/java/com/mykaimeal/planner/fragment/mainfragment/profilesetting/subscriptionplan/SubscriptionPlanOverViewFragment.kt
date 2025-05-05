@@ -155,102 +155,89 @@ class SubscriptionPlanOverViewFragment : Fragment() {
 
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult: BillingResult, purchases: List<Purchase>? ->
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            for (purchase in purchases) {
-                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-                    Log.d("Testing", "Hello")
-                    val orderId = purchase.orderId
-                    val purchaseToken1 = purchase.purchaseToken
-                    Log.d("TESTING_SPARK", "$orderId orderId")
-                    Log.d("TESTING_Spark", "$purchaseToken1 purchase token1")
-                    handlePurchase(purchase)
+        try {
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                for (purchase in purchases) {
+                    if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                        Log.d("Testing", "Hello")
+                        val orderId = purchase.orderId
+                        val purchaseToken1 = purchase.purchaseToken
+                        Log.d("TESTING_SPARK", "$orderId orderId")
+                        Log.d("TESTING_Spark", "$purchaseToken1 purchase token1")
+
+                        try {
+                            handlePurchase(purchase)
+                        } catch (e: Exception) {
+                            Log.e("BillingError", "Error in handlePurchase", e)
+                        }
+                    }
+                }
+            } else {
+                requireActivity().runOnUiThread {
+                    val message = when (billingResult.responseCode) {
+                        BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> "Already Subscribed"
+                        BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED -> "FEATURE_NOT_SUPPORTED"
+                        BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> "BILLING_UNAVAILABLE"
+                        BillingClient.BillingResponseCode.USER_CANCELED -> "USER_CANCELLED"
+                        BillingClient.BillingResponseCode.DEVELOPER_ERROR -> "DEVELOPER_ERROR"
+                        BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> "ITEM_UNAVAILABLE"
+                        BillingClient.BillingResponseCode.NETWORK_ERROR -> "NETWORK_ERROR"
+                        BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> "SERVICE_DISCONNECTED"
+                        else -> "Error: ${billingResult.debugMessage}"
+                    }
+                    Toast.makeText(requireActivity(), message, Toast.LENGTH_LONG).show()
                 }
             }
-        } else {
-            when (billingResult.responseCode) {
-                BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> Toast.makeText(
-                    requireActivity(), "Already Subscribed", Toast.LENGTH_LONG).show()
-
-                BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED -> Toast.makeText(
-                    requireActivity(), "FEATURE_NOT_SUPPORTED", Toast.LENGTH_LONG).show()
-
-                BillingClient.BillingResponseCode.BILLING_UNAVAILABLE -> {
-//                    Toast.makeText(
-//                        requireActivity(), "BILLING_UNAVAILABLE", Toast.LENGTH_LONG
-//                    ).show()
-                }
-
-                BillingClient.BillingResponseCode.USER_CANCELED -> {
-//                    Toast.makeText(
-//                        requireActivity(), "USER_CANCELLED", Toast.LENGTH_LONG
-//                    ).show()
-                }
-
-                BillingClient.BillingResponseCode.DEVELOPER_ERROR -> Toast.makeText(
-                    requireActivity(), "DEVELOPER_ERROR", Toast.LENGTH_LONG).show()
-
-                BillingClient.BillingResponseCode.ITEM_UNAVAILABLE -> {
-//                    Toast.makeText(
-//                        requireActivity(), "ITEM_UNAVAILABLE", Toast.LENGTH_LONG
-//                    ).show()
-                }
-
-                BillingClient.BillingResponseCode.NETWORK_ERROR -> Toast.makeText(
-                    requireActivity(), "NETWORK_ERROR", Toast.LENGTH_LONG).show()
-
-                BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> Toast.makeText(
-                    requireActivity(), "SERVICE_DISCONNECTED", Toast.LENGTH_LONG).show()
-
-                else -> Toast.makeText(
-                    requireActivity(), "Error " + billingResult.debugMessage, Toast.LENGTH_LONG).show()
-            }
+        } catch (e: Exception) {
+            Log.e("BillingError", "Exception in purchasesUpdatedListener", e)
         }
+
     }
 
+
     private fun handlePurchase(purchase: Purchase) {
-        val consumeParams = ConsumeParams.newBuilder()
-            .setPurchaseToken(purchase.purchaseToken)
-            .build()
-        val listener = ConsumeResponseListener {  billingResult, purchaseToken ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                // Handle the success of the consume operation.
-            }
-        }
-        billingClient!!.consumeAsync(consumeParams, listener)
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
                     .setPurchaseToken(purchase.purchaseToken)
                     .build()
-                billingClient!!.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
+
+                billingClient?.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        sessionManagement.setSubscriptionId(purchase.orderId.toString())
+                        sessionManagement.setSubscriptionId(purchase.orderId ?: "")
                         sessionManagement.setPurchaseToken(purchase.purchaseToken)
+
                         when (lastPlan) {
                             AppConstant.Premium_Monthly -> sessionManagement.setPlanType("Popular")
                             AppConstant.Premium_Annual -> sessionManagement.setPlanType("Best")
                             AppConstant.Premium_Weekly -> sessionManagement.setPlanType("Starter")
                         }
+
                         Log.d("****", "subscription_id ${purchase.orderId}")
-                        Log.d("**** ", "subscription_PurchaseToken ${purchase.purchaseToken}")
+                        Log.d("****", "subscription_PurchaseToken ${purchase.purchaseToken}")
                         Log.d("****", "planType $lastPlan")
 
-                        requireActivity().runOnUiThread(Runnable {
+                        activity?.runOnUiThread {
                             callingPurchaseSubscriptionApi(purchase.orderId, purchase.purchaseToken)
-                        })
+                        }
                     }
                 }
             } else {
-                Toast.makeText(requireActivity(), "Already Subscribed", Toast.LENGTH_LONG).show()
+                activity?.let {
+                    Toast.makeText(it, "Already Subscribed", Toast.LENGTH_LONG).show()
+                }
             }
         } else if (purchase.purchaseState == Purchase.PurchaseState.PENDING) {
-
-            Toast.makeText(requireActivity(), "Subscription Pending", Toast.LENGTH_LONG).show()
+            activity?.let {
+                Toast.makeText(it, "Subscription Pending", Toast.LENGTH_LONG).show()
+            }
         } else if (purchase.purchaseState == Purchase.PurchaseState.UNSPECIFIED_STATE) {
-
-            Toast.makeText(requireActivity(), "UNSPECIFIED_STATE", Toast.LENGTH_LONG).show()
+            activity?.let {
+                Toast.makeText(it, "UNSPECIFIED_STATE", Toast.LENGTH_LONG).show()
+            }
         }
     }
+
 
 
     private fun callingPurchaseSubscriptionApi(orderId: String?, purchaseToken: String) {
