@@ -80,14 +80,47 @@
 
                 <TextView
                     android:id="@+id/tvName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_bold"
                     android:layout_centerVertical="true"
-                    android:text="Friends using My kai App"
+                    android:layout_toStartOf="@+id/relQuantity"
+                    android:text="Friends using MyKai App"
                     android:textSize="@dimen/_13sdp" />
 
                 <RelativeLayout
+                    android:id="@+id/relQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/orange_shape_bg"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="@dimen/_5sdp">
+
+                    <com.skydoves.powerspinner.PowerSpinnerView
+                        android:id="@+id/spinnerFilterType"
+                        android:layout_width="@dimen/_90sdp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:hint="Filter"
+                        android:padding="@dimen/_7sdp"
+                        android:singleLine="true"
+                        android:textColor="#3C4541"
+                        android:textColorHint="#3C4541"
+                        android:textSize="@dimen/_10sdp"
+                        app:spinner_arrow_gravity="end"
+                        app:spinner_arrow_padding="8dp"
+                        app:spinner_arrow_show="true"
+                        app:spinner_arrow_tint="#000"
+                        app:spinner_divider_show="false"
+                        app:spinner_popup_background="@drawable/bg_cover"
+                        app:spinner_item_height="46dp"
+                        app:spinner_popup_max_height="@dimen/_200sdp"
+                        app:spinner_popup_animation="fade"
+                        app:spinner_popup_elevation="14dp" />
+                </RelativeLayout>
+
+          <!--      <RelativeLayout
                     android:id="@+id/relMonthYear"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -106,7 +139,8 @@
                         android:textSize="@dimen/_13sdp"
                         app:drawableEndCompat="@drawable/drop_down_icon" />
 
-                </RelativeLayout>
+                </RelativeLayout>-->
+
             </RelativeLayout>
 
             <androidx.cardview.widget.CardView

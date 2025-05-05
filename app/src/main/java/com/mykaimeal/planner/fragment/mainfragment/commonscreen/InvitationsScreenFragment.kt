@@ -61,6 +61,16 @@ class InvitationsScreenFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        binding.spinnerFilterType.setIsFocusable(true)
+
+        binding.spinnerFilterType.setItems(
+            listOf("All", "Trial", "Trial over", "Myka", "Redeemed")
+        )
+
+        binding.spinnerFilterType.setOnSpinnerItemSelectedListener<String> { oldIndex, oldItem, newIndex, newItem ->
+            filterData(newItem) // Call your filter function with the selected value
+        }
+
         if (BaseApplication.isOnline(requireContext())) {
             getInvitationList()
         } else {
@@ -79,6 +89,22 @@ class InvitationsScreenFragment : Fragment() {
             startActivity(Intent.createChooser(myIntent, "Share Using"))
         }*/
 
+    }
+
+    // Filter data using only `data` list
+    private fun filterData(filter: String) {
+        // Option 1: Reload original from server/local DB before filtering
+        // Assuming `setData()` is called again if needed
+
+        val filtered = if (filter.equals("All", ignoreCase = true)) {
+            referralList // just show current list
+        } else {
+            referralList.filter { it.status?.equals(filter, ignoreCase = true) == true }.toMutableList()
+        }
+
+        referralList.clear()
+        referralList.addAll(filtered)
+        adapterInviteItem?.notifyDataSetChanged()
     }
 
     private fun getInvitationList() {
@@ -131,7 +157,7 @@ class InvitationsScreenFragment : Fragment() {
     }
 
     private fun invitedValue(){
-        val htmlText = "You have invited 0 friends to use<b> My Kai</b>"
+        val htmlText = "You have invited 0 friends to use<b> MyKai</b>"
         val formattedText = HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.tvFriendsCountNumber.text = formattedText
     }
@@ -143,7 +169,7 @@ class InvitationsScreenFragment : Fragment() {
             referralList.addAll(it)
             if (referralList.size > 0) {
                 val invitedCount = referralList.size.toString()
-                val htmlText = "You have invited $invitedCount friends to use<b> My Kai</b>"
+                val htmlText = "You have invited $invitedCount friends to use<b> MyKai</b>"
                 val formattedText = HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 binding.tvFriendsCountNumber.text = formattedText
                 binding.rcyFriendsInvite.visibility = View.VISIBLE

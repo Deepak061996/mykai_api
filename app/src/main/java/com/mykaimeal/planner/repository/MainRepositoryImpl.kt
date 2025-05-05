@@ -2608,10 +2608,10 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
     }
 
     override suspend fun orderWeekUrl(
-        successCallback: (response: NetworkResult<String>) -> Unit,week:String?
+        successCallback: (response: NetworkResult<String>) -> Unit,week:String?,month:String?
     ) {
         try {
-            api.orderWeekUrl(week).apply {
+            api.orderWeekUrl(week,month).apply {
                 if (isSuccessful) {
                     body()?.let {
                         successCallback(NetworkResult.Success(it.toString()))

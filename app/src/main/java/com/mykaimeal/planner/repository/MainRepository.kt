@@ -280,7 +280,7 @@ interface MainRepository {
     suspend fun generateLinkUrl(successCallback: (response: NetworkResult<String>) -> Unit, link: RequestBody?, image: MultipartBody.Part?)
     suspend fun selectStoreProductUrl(successCallback: (response: NetworkResult<String>) -> Unit, storeName: String?, storeId: String?)
     suspend fun getGraphScreenUrl(successCallback: (response: NetworkResult<String>) -> Unit, month:String?)
-    suspend fun orderWeekUrl(successCallback: (response: NetworkResult<String>) -> Unit, week:String?)
+    suspend fun orderWeekUrl(successCallback: (response: NetworkResult<String>) -> Unit, week:String?,month:String?)
     suspend fun orderHistoryUrl(successCallback: (response: NetworkResult<String>) -> Unit)
     suspend fun referralUrl(successCallback: (response: NetworkResult<String>) -> Unit)
 
