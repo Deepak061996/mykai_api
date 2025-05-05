@@ -252,6 +252,21 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             }
         }
 
+        binding.relGooglePay.setOnClickListener {
+            if (cardMealMe.size > 0) {
+                cardMealMe.forEachIndexed { index, card ->
+                    card.status= 0
+                    cardMealMe[index] = card
+                }
+                binding.relCardDetails.visibility = View.VISIBLE
+                adapterCardPreferred.updateList(cardMealMe)
+            } else {
+                binding.relCardDetails.visibility = View.GONE
+            }
+            cardId="gpay"
+            binding.imageGoogle.setBackgroundResource(R.drawable.radio_green_icon)
+        }
+
         gpayImplement()
 
     }
@@ -300,6 +315,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 Toast.makeText(requireContext(), "Error checking GPay availability", Toast.LENGTH_LONG).show()
             }
         }
+
     }
     private fun loadApi(){
         if (BaseApplication.isOnline(requireContext())) {
@@ -1024,11 +1040,15 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.validPickUp, false)
             return false
         }else if (cardMealMe.isEmpty()) {
-            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardError, false)
-            return false
+            if (!cardId.equals("gpay",true)){
+                commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardError, false)
+                return false
+            }
         }else if (!status) {
-            commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardSelectError, false)
-            return false
+            if (!cardId.equals("gpay",true)){
+                commonWorkUtils.alertDialog(requireActivity(), ErrorMessage.cardSelectError, false)
+                return false
+            }
         }
         return true
     }
@@ -1265,6 +1285,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             Log.d("@@@ Add Card", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
                 cardId=Id
+                binding.imageGoogle.setBackgroundResource(R.drawable.radio_uncheck_gray_icon)
                 cardMealMe.forEachIndexed { index, card ->
                     card.status=if (card.id == Id?.toInt()) 1 else 0
                     cardMealMe[index] = card
