@@ -646,6 +646,14 @@ interface ApiInterface {
         @Field("longitude") longitude: String?
     ): Response<JsonObject>
 
+    @FormUrlEncoded
+    @POST(ApiEndPoint.superMarketsPageUrl)
+    suspend fun getSuperMarketWithPage(
+        @Field("latitude") latitude: String?,
+        @Field("longitude") longitude: String?,
+        @Field("page") pageCount: String?
+    ): Response<JsonObject>
+
 
     @FormUrlEncoded
     @POST(ApiEndPoint.subscriptionGoogleUrl)
@@ -750,7 +758,8 @@ interface ApiInterface {
         @Field("exp_month") exp_month: String?,
         @Field("exp_year") exp_year: String?,
         @Field("cvv") cvv: String?,
-        @Field("status") status:String?
+        @Field("status") status:String?,
+        @Field("type") type:String?
     ): Response<JsonObject>
 
 

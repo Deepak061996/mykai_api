@@ -2,22 +2,29 @@ package com.mykaimeal.planner.fragment.mainfragment.commonscreen.productpayments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.NumberPicker
+import android.widget.PopupWindow
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.AdapterPaymentCreditDebitItem
+import com.mykaimeal.planner.adapter.MonthYearsCardAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.commonworkutils.CommonWorkUtils
@@ -50,19 +57,13 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         binding = FragmentPaymentCreditDebitBinding.inflate(layoutInflater, container, false)
-
         commonWorkUtils = CommonWorkUtils(requireActivity())
         paymentCreditDebitViewModel = ViewModelProvider(requireActivity())[CheckoutScreenViewModel::class.java]
-
         adapterPaymentCreditDebitItem = AdapterPaymentCreditDebitItem(requireContext(), cardList, this)
         binding.rcvCardNumber.adapter = adapterPaymentCreditDebitItem
-
         setupBackNavigation()
-
         initialize()
-
         return binding.root
-
     }
 
     private fun setupBackNavigation() {
@@ -88,11 +89,11 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
         }
 
         binding.etMonth.setOnClickListener {
-            openMonthPickerBox()
+            showPopupMonth()
         }
 
         binding.etYear.setOnClickListener {
-            openYearPickerBox()
+            showPopupYears()
         }
 
         binding.imgCheckUncheck.setOnClickListener {
@@ -120,6 +121,44 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
             binding.cvDebitCard3.visibility = View.VISIBLE
             binding.textAddCardNumber.visibility = View.GONE
         }
+    }
+
+
+    @SuppressLint("MissingInflatedId")
+    private fun showPopupYears() {
+        val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+        val popupView: View? = inflater?.inflate(R.layout.item_month_years, null)
+        val popupWindow = PopupWindow(popupView, binding.etYear.width, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.showAsDropDown(binding.etYear, 0, 0, Gravity.CENTER)
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val yearList = (currentYear..currentYear + 29).map { it.toString() }
+        yearList as MutableList
+        // Access views inside the inflated layout using findViewById
+        val rcyData = popupView?.findViewById<RecyclerView>(R.id.rcyData)
+        val adapterMonth= MonthYearsCardAdapter(yearList ,requireContext()){
+                data->
+            binding.etYear.text=data
+            popupWindow.dismiss()
+        }
+        rcyData?.adapter=adapterMonth
+    }
+
+
+    @SuppressLint("MissingInflatedId")
+    private fun showPopupMonth() {
+        val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+        val popupView: View? = inflater?.inflate(R.layout.item_month_years, null)
+        val popupWindow = PopupWindow(popupView, binding.etMonth.width, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.showAsDropDown(binding.etMonth, 0, 0, Gravity.CENTER)
+        val monthList= mutableListOf("01","02","03","04","05","06","07","08","09","10","11","12")
+        // Access views inside the inflated layout using findViewById
+        val rcyData = popupView?.findViewById<RecyclerView>(R.id.rcyData)
+        val adapterMonth= MonthYearsCardAdapter(monthList,requireContext()){
+            data->
+            binding.etMonth.text=data
+            popupWindow.dismiss()
+        }
+        rcyData?.adapter=adapterMonth
     }
 
     private fun getCardMealMe() {
@@ -172,16 +211,20 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
 
     private fun cardSaveApi() {
         BaseApplication.showMe(requireContext())
-        lifecycleScope.launch {
-            paymentCreditDebitViewModel.addCardMealMeUrl(
-                {
+        try {
+            val type = BaseApplication.detectCardType(binding.etCardNumber.text.toString().trim())
+            lifecycleScope.launch {
+                paymentCreditDebitViewModel.addCardMealMeUrl({
                     BaseApplication.dismissMe()
                     handleApiAddCardResponse(it)
-                }, binding.etCardNumber.text.toString().trim(),
-                binding.etMonth.text.toString().trim(),
-                binding.etYear.text.toString().trim(),
-                binding.etCVVNumber.text.toString().trim(), checkStatus
-            )
+                },  binding.etCardNumber.text.toString().trim(),
+                    binding.etMonth.text.toString().trim(),
+                    binding.etYear.text.toString().trim(),
+                    binding.etCVVNumber.text.toString().trim(), checkStatus,type
+                )
+            }
+        }catch (e:Exception){
+            BaseApplication.dismissMe()
         }
     }
 
@@ -232,77 +275,6 @@ class PaymentCreditDebitFragment : Fragment(), CardBankListener {
     }
 
 
-    @SuppressLint("SetTextI18n", "MissingInflatedId")
-    private fun openMonthPickerBox() {
-        // Get the current calendar instance
-        val calendar = Calendar.getInstance()
-        val currentMonth = calendar.get(Calendar.MONTH)
-
-        // Array of month names
-        val monthNames = arrayOf(
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        )
-
-        // Create a dialog
-        val dialog = AlertDialog.Builder(requireContext())
-        val dialogView = layoutInflater.inflate(R.layout.dialog_month_picker, null)
-
-        // Get references to the NumberPicker
-        val monthPicker = dialogView.findViewById<NumberPicker>(R.id.Picker)
-
-        // Configure the month picker
-        monthPicker.minValue = 0
-        monthPicker.maxValue = 11
-        monthPicker.displayedValues = monthNames
-        monthPicker.value = currentMonth
-
-        // Set the custom view in the dialog
-        dialog.setView(dialogView)
-            .setPositiveButton("OK") { _, _ ->
-                val selectedMonth = monthPicker.value + 1 // Months are 0-based, so add 1
-                val formattedMonth = String.format("%02d", selectedMonth) // Format to two digits
-
-                // Update the TextView with the formatted month number
-                binding.etMonth.text = formattedMonth
-
-//                Toast.makeText(requireContext(), "Selected Month: $formattedMonth", Toast.LENGTH_LONG).show()
-            }
-            .setNegativeButton("Cancel", null)
-
-        // Show the dialog
-        dialog.create().show()
-    }
-
-
-    @SuppressLint("MissingInflatedId", "SetTextI18n")
-    private fun openYearPickerBox() {
-        // Get the current calendar instance
-        val calendar = Calendar.getInstance()
-        // Extract the current year and month
-        val currentYear = calendar.get(Calendar.YEAR)
-        // Create a dialog
-        val dialog = AlertDialog.Builder(requireContext())
-        val dialogView = layoutInflater.inflate(R.layout.dialog_month_picker, null)
-        // Get references to the NumberPickers in the custom dialog layout
-        val monthPicker = dialogView.findViewById<NumberPicker>(R.id.Picker)
-        // Configure the year picker
-        monthPicker.minValue = currentYear
-        monthPicker.maxValue = currentYear + 50 // Limit to 50 years ahead
-        monthPicker.value = currentYear
-        // Set the custom view in the dialog
-        dialog.setView(dialogView)
-            .setPositiveButton("OK") { _, _ ->
-                // Get selected month and year
-                val selectedMonth = monthPicker.value
-                year = monthPicker.value
-                // Update the TextView with the selected month name and year
-                binding.etYear.text = "" + selectedMonth
-            }
-            .setNegativeButton("Cancel", null)
-        // Show the dialog
-        dialog.create().show()
-    }
 
     private fun isValidationCard(): Boolean {
         if (binding.etCardName.text.toString().trim().isEmpty()) {

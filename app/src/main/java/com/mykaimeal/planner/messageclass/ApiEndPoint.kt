@@ -81,6 +81,7 @@ object ApiEndPoint {
     const val updateMealUrl="update-meal"
     const val filterSearchUrl="for-filter-search"
     const val superMarketsUrl="super-markets"
+    const val superMarketsPageUrl="super-markets2"
     const val subscriptionGoogleUrl="subscription/google"
     const val checkSubscriptionUrl="checkSubscription"
     const val getAddressUrl="get-address"

@@ -86,6 +86,7 @@ class HomeSuperMarketList(
             holder.binding.layProgess.root.visibility = View.GONE
         }
 
+
         // ✅ Click event for selection
         holder.binding.relativeLayoutMain.setOnClickListener {
             val previousPosition = selectedPosition
@@ -96,6 +97,11 @@ class HomeSuperMarketList(
         }
     }
 
+
+    fun updateList(list: MutableList<SuperMarketModelsData>){
+        storesData=list
+        notifyDataSetChanged()
+    }
     override fun getItemCount(): Int {
         return storesData?.size ?: 0
     }

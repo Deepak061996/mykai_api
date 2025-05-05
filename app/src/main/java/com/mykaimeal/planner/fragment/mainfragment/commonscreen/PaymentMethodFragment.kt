@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.NumberPicker
+import android.widget.PopupWindow
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -31,6 +33,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.gson.Gson
 import com.jaiselrahman.filepicker.activity.FilePickerActivity
@@ -44,6 +47,7 @@ import com.stripe.android.model.BankAccountTokenParams
 import com.stripe.android.model.CardParams
 import com.stripe.android.model.Token
 import com.mykaimeal.planner.activity.MainActivity
+import com.mykaimeal.planner.adapter.MonthYearsCardAdapter
 import com.mykaimeal.planner.adapter.MyWalletAdapter
 import com.mykaimeal.planner.adapter.MyWalletBankAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
@@ -569,14 +573,15 @@ class PaymentMethodFragment : Fragment(), CardBankListener {
         binding.textAddCardNumber.setOnClickListener {
             binding.llBankAccount.visibility = View.VISIBLE
             binding.llSavedBankAccountDetails4.visibility = View.GONE
+            toggleBankAndCardView(true)
         }
 
         binding.etMonth.setOnClickListener {
-            openMonthPickerBox()
+            showPopupMonth()
         }
 
         binding.etYear.setOnClickListener {
-            openYearPickerBox()
+            showPopupYears()
         }
 
         binding.textBankAccountToggle.setOnClickListener {
@@ -683,6 +688,45 @@ class PaymentMethodFragment : Fragment(), CardBankListener {
                 .build()
         )
         startActivityForResult(intent, REQUEST_Folder)
+    }
+
+
+    @SuppressLint("MissingInflatedId")
+    private fun showPopupMonth() {
+        val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+        val popupView: View? = inflater?.inflate(R.layout.item_month_years, null)
+        val popupWindow = PopupWindow(popupView, binding.etMonth.width, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.showAsDropDown(binding.etMonth, 0, 0, Gravity.CENTER)
+        val monthList= mutableListOf("01","02","03","04","05","06","07","08","09","10","11","12")
+        // Access views inside the inflated layout using findViewById
+        val rcyData = popupView?.findViewById<RecyclerView>(R.id.rcyData)
+        val adapterMonth= MonthYearsCardAdapter(monthList,requireContext()){
+                data->
+            month=data.toInt()
+            binding.etMonth.text=data
+            popupWindow.dismiss()
+        }
+        rcyData?.adapter=adapterMonth
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun showPopupYears() {
+        val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
+        val popupView: View? = inflater?.inflate(R.layout.item_month_years, null)
+        val popupWindow = PopupWindow(popupView, binding.etYear.width, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
+        popupWindow.showAsDropDown(binding.etYear, 0, 0, Gravity.CENTER)
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val yearList = (currentYear..currentYear + 29).map { it.toString() }
+        yearList as MutableList
+        // Access views inside the inflated layout using findViewById
+        val rcyData = popupView?.findViewById<RecyclerView>(R.id.rcyData)
+        val adapterMonth= MonthYearsCardAdapter(yearList ,requireContext()){
+                data->
+            year=data.toInt()
+            binding.etYear.text=data
+            popupWindow.dismiss()
+        }
+        rcyData?.adapter=adapterMonth
     }
 
 
@@ -896,10 +940,8 @@ class PaymentMethodFragment : Fragment(), CardBankListener {
 
     private fun paymentApi() {
         BaseApplication.showMe(requireContext())
-        val cardNumber: String =
-            Objects.requireNonNull(binding.etCardNumber.text.toString()).toString()
-        val cvvNumber: String =
-            Objects.requireNonNull(binding.etCVVNumber.text.toString()).toString()
+        val cardNumber: String = Objects.requireNonNull(binding.etCardNumber.text.toString()).toString()
+        val cvvNumber: String = Objects.requireNonNull(binding.etCVVNumber.text.toString()).toString()
         val name: String = binding.etName.text.toString()
         val card = CardParams(cardNumber, Integer.valueOf(month), Integer.valueOf(year), cvvNumber, name)
         stripe!!.createCardToken(card, null, null, object : ApiResultCallback<Token> {

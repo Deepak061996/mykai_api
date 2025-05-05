@@ -12,7 +12,8 @@ import com.mykaimeal.planner.databinding.CalendarItemDayBinding
 import com.mykaimeal.planner.model.DateModel
 
 
-class CalendarDayDateAdapter(var days: MutableList<DateModel>, private val onDaySelected: (Int) -> Unit) : RecyclerView.Adapter<CalendarDayDateAdapter.ViewHolder>() {
+class CalendarDayDateAdapter(var days: MutableList<DateModel>,
+                             private val onDaySelected: (Int) -> Unit) : RecyclerView.Adapter<CalendarDayDateAdapter.ViewHolder>() {
 
     private var selectedPosition = -1
 

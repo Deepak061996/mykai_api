@@ -43,8 +43,7 @@ class AdapterPaymentCreditDebitItem(
     private fun showPopup(position: Int, imageThreeDots: LinearLayout, status: Int?) {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater?
         val popupView: View? = inflater?.inflate(R.layout.item_card_delete_preferred_layout, null)
-        val popupWindow =
-            PopupWindow(popupView, 400, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
+        val popupWindow = PopupWindow(popupView, 400, RelativeLayout.LayoutParams.WRAP_CONTENT, true)
         popupWindow.showAsDropDown(imageThreeDots, 0, 0, Gravity.END)
 
         // Access views inside the inflated layout using findViewById

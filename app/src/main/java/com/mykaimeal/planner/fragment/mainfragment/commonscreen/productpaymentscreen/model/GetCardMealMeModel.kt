@@ -10,6 +10,7 @@ data class GetCardMealMeModel(
 data class GetCardMealMeModelData(
     val card_num: Int?,
     val created_at: String?,
+    val type: String?,
     val deleted_at: Any,
     val id: Int?,
     val payment_id: String?,

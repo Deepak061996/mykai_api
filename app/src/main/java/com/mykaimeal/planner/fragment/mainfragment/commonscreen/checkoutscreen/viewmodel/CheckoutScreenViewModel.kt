@@ -75,7 +75,8 @@ class CheckoutScreenViewModel @Inject constructor(private val repository: MainRe
         expMonth: String?,
         expYear: String?,
         cvv: String?,
-        status: String?
+        status: String?,
+        type: String?
     ) {
         repository.addCardMealMeUrl(
             { successCallback(it) },
@@ -83,7 +84,8 @@ class CheckoutScreenViewModel @Inject constructor(private val repository: MainRe
             expMonth,
             expYear,
             cvv,
-            status
+            status,
+            type
         )
     }
 

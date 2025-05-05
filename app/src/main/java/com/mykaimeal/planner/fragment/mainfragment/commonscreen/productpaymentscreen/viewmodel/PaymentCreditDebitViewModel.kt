@@ -35,7 +35,8 @@ class PaymentCreditDebitViewModel @Inject constructor(private val repository: Ma
         expMonth: String?,
         expYear: String?,
         cvv: String?,
-        status: String?
+        status: String?,
+        type: String?
     ) {
         repository.addCardMealMeUrl(
             { successCallback(it) },
@@ -43,7 +44,8 @@ class PaymentCreditDebitViewModel @Inject constructor(private val repository: Ma
             expMonth,
             expYear,
             cvv,
-            status
+            status,
+            type
         )
     }
 

@@ -324,16 +324,15 @@
 
                             <TextView
                                 android:id="@+id/etMonth"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="@dimen/_35sdp"
                                 android:layout_marginEnd="@dimen/_5sdp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edittext_bg"
                                 android:maxLines="1"
-                                android:maxLength="2"
                                 android:paddingHorizontal="@dimen/_10sdp"
                                 android:paddingVertical="@dimen/_9sdp"
-                                android:text="MM"
+                                android:text="Month"
                                 android:textColor="#8B8B8B"
                                 android:textColorHint="#8B8B8B"
                                 android:textSize="@dimen/_10ssp"
@@ -341,13 +340,12 @@
 
                             <TextView
                                 android:id="@+id/etYear"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="@dimen/_35sdp"
                                 android:layout_marginStart="@dimen/_5sdp"
                                 android:layout_weight="1"
                                 android:background="@drawable/edittext_bg"
                                 android:maxLines="1"
-                                android:maxLength="4"
                                 android:paddingHorizontal="@dimen/_10sdp"
                                 android:paddingVertical="@dimen/_9sdp"
                                 android:text="Year"
