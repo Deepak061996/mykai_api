@@ -1,7 +1,9 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen.addtipscreen
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,6 +18,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.wallet.AutoResolveHelper
+import com.google.android.gms.wallet.PaymentData
+import com.google.android.gms.wallet.PaymentsClient
+import com.google.android.gms.wallet.Wallet
+import com.google.android.gms.wallet.WalletConstants
 import com.google.gson.Gson
 import kotlin.math.roundToInt
 import com.mykaimeal.planner.R
@@ -31,6 +38,8 @@ import com.mykaimeal.planner.fragment.mainfragment.commonscreen.addtipscreen.vie
 import com.mykaimeal.planner.messageclass.ErrorMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 
 @AndroidEntryPoint
 class AddTipScreenFragment : Fragment() {
@@ -42,6 +51,9 @@ class AddTipScreenFragment : Fragment() {
     private var cardId = ""
     private var status = ""
     private var selectedTipPercent: String=""
+
+    private lateinit var paymentsClient: PaymentsClient
+    private val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
@@ -93,6 +105,51 @@ class AddTipScreenFragment : Fragment() {
             }
         }
 
+        gpayPaymentImplement()
+
+    }
+
+    private fun gpayPaymentImplement() {
+        // Initialize PaymentsClient
+        paymentsClient = Wallet.getPaymentsClient(
+            requireContext(),
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Use ENVIRONMENT_PRODUCTION for live
+                .build()
+        )
+    }
+
+    private fun createPaymentDataRequest(): JSONObject {
+        val tokenizationSpec = JSONObject()
+            .put("type", "PAYMENT_GATEWAY")
+            .put("parameters", JSONObject()
+                .put("gateway", "stripe")  // Replace with "stripe"
+                .put("stripe:version", "2020-08-27") // Adjust as needed
+                .put("stripe:publishableKey", "your_publishable_key_here") // Replace with real key
+            )
+
+        val cardPaymentMethod = JSONObject()
+            .put("type", "CARD")
+            .put("tokenizationSpecification", tokenizationSpec)
+            .put("parameters", JSONObject()
+                .put("allowedAuthMethods", JSONArray().put("PAN_ONLY").put("CRYPTOGRAM_3DS"))
+                .put("allowedCardNetworks", JSONArray().put("VISA").put("MASTERCARD"))
+                .put("billingAddressRequired", true)
+                .put("billingAddressParameters", JSONObject().put("format", "FULL"))
+            )
+
+        return JSONObject()
+            .put("apiVersion", 2)
+            .put("apiVersionMinor", 0)
+            .put("allowedPaymentMethods", JSONArray().put(cardPaymentMethod))
+            .put("transactionInfo", JSONObject()
+                .put("totalPrice", "10.00") // Adjust dynamically as needed
+                .put("totalPriceStatus", "FINAL")
+                .put("currencyCode", "USD") // Use USD for US payments
+            )
+            .put("merchantInfo", JSONObject()
+                .put("merchantName", "Your Company Name")
+            )
     }
 
     private fun getTipUrl() {
@@ -272,6 +329,46 @@ class AddTipScreenFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LOAD_PAYMENT_DATA_REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val paymentData = PaymentData.getFromIntent(data!!)
+                    val paymentInfo = paymentData?.toJson()?.let { JSONObject(it) }
+                    Log.d("GPay", "Payment Success: $paymentInfo")
+
+                    // Extract token and send to backend (Stripe or your server)
+                    val paymentMethodData = paymentInfo?.getJSONObject("paymentMethodData")
+                    val tokenData = paymentMethodData
+                        ?.getJSONObject("tokenizationData")
+                        ?.getString("token")
+
+                    Log.d("GPay", "Token: $tokenData")
+                    Toast.makeText(requireContext(), "Payment Success", Toast.LENGTH_SHORT).show()
+                }
+
+                Activity.RESULT_CANCELED -> {
+                    Toast.makeText(requireContext(), "Payment Cancelled", Toast.LENGTH_SHORT).show()
+                }
+
+                AutoResolveHelper.RESULT_ERROR -> {
+                    val status = AutoResolveHelper.getStatusFromIntent(data)
+                    Toast.makeText(
+                        requireContext(),
+                        "Payment Failed: ${status?.statusMessage}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.e("GPay", "Error: ${status?.statusMessage}")
+                }
+            }
+        }
     }
 
 }

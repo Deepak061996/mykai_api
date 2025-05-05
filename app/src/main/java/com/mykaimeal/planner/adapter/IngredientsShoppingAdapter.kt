@@ -40,6 +40,8 @@ class IngredientsShoppingAdapter(private var ingredientsData: MutableList<Ingred
 
         val data= ingredientsData?.get(position)
 
+        holder.binding.tvFoodPrice.visibility=View.GONE
+
         if (data != null) {
             if (data.sch_id!=null){
                 holder.binding.textCount.text=data.sch_id.toString()

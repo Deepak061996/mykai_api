@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:text="Friends"
+        android:text=""
         android:fontFamily="@font/poppins_medium"
         android:textSize="@dimen/_13sdp"
         android:textColor="@color/black"/>
@@ -25,7 +25,7 @@
             android:id="@+id/tvStatusBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trial"
+            android:text=""
             android:paddingHorizontal="@dimen/_25sdp"
             android:paddingVertical="@dimen/_6sdp"
             android:fontFamily="@font/poppins_medium"

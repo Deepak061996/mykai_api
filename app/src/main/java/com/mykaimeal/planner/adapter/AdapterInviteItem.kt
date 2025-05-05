@@ -35,7 +35,7 @@ class AdapterInviteItem(
                     holder.binding.tvStatusBtn.text=item.status
                     if (item.status.equals("Trial",true)){
                         holder.binding.relTrialBtn.setBackgroundResource(R.drawable.trial_btn_bg)
-                    }else if (item.status.equals("Trial Over",true)){
+                    }else if (item.status.equals("Trial over",true)){
                         holder.binding.relTrialBtn.setBackgroundResource(R.drawable.trial_over_bg)
                     }else{
                         holder.binding.relTrialBtn.setBackgroundResource(R.drawable.redeemed_btn_bg)

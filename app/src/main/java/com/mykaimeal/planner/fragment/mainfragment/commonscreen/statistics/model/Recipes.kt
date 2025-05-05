@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 data class Recipes(
     val Breakfast: MutableList<Breakfast>?,
     val Breakfast_price: Double?,
-    val Dinner: List<Breakfast>?,
+    val Dinner: MutableList<Breakfast>?,
     val Dinner_price: Double?,
-    val Lunch: List<Breakfast>?,
+    val Lunch: MutableList<Breakfast>?,
     val Lunch_price: Double?,
     @SerializedName("Snacks")
     val Snacks:MutableList<Breakfast>?,
@@ -36,7 +36,7 @@ data class Breakfast(
 
 
 data class Recipe(
-    val `0`: X0?,
+    val `xservices`: X0?,
     val price: Double?
 )
 

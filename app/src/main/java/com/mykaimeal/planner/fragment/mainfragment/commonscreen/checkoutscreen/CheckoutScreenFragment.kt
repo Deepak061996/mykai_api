@@ -47,6 +47,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.PendingResult
 import com.google.android.gms.common.api.Status
@@ -66,6 +67,10 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.wallet.IsReadyToPayRequest
+import com.google.android.gms.wallet.PaymentsClient
+import com.google.android.gms.wallet.Wallet
+import com.google.android.gms.wallet.WalletConstants
 import com.google.android.libraries.places.api.Places
 import com.google.gson.Gson
 import com.mykaimeal.planner.OnItemLongClickListener
@@ -96,6 +101,8 @@ import com.mykaimeal.planner.model.PlaceAPI
 import com.mykaimeal.planner.model.PlaceDetails
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -143,6 +150,7 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
     private var adapterGetAddressItem: AdapterGetAddressItem? = null
     private var addressList: MutableList<GetAddressListModelData> = mutableListOf()
 
+    private lateinit var paymentsClient: PaymentsClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -192,7 +200,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             loadApi()
         }
 
-//        loadApi()
 
         binding.imageBackIcon.setOnClickListener {
             findNavController().navigateUp()
@@ -244,9 +251,56 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
                 binding.relIngredients.visibility = View.VISIBLE
             }
         }
+
+        gpayImplement()
+
     }
 
+    private fun gpayImplement() {
+        // Set up PaymentsClient for Google Pay
+        paymentsClient = Wallet.getPaymentsClient(
+            requireContext(),
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Change to ENVIRONMENT_PRODUCTION for live
+                .build()
+        )
 
+        checkIfGooglePayAvailable()
+    }
+
+    private fun checkIfGooglePayAvailable() {
+        val isReadyToPayJson = JSONObject()
+            .put("apiVersion", 2)
+            .put("apiVersionMinor", 0)
+            .put("allowedPaymentMethods", JSONArray().put(
+                JSONObject().put("type", "CARD").put("parameters", JSONObject()
+                    .put("allowedAuthMethods", JSONArray().put("PAN_ONLY").put("CRYPTOGRAM_3DS"))
+                    .put("allowedCardNetworks", JSONArray().put("VISA").put("MASTERCARD"))
+                )
+            ))
+
+        val request = IsReadyToPayRequest.fromJson(isReadyToPayJson.toString())
+
+        paymentsClient.isReadyToPay(request).addOnCompleteListener { task ->
+            try {
+                if (task.getResult(ApiException::class.java) == true) {
+                    Log.d("GPay", "Google Pay is available")
+                    binding.relPayWallet.visibility = View.VISIBLE
+                    binding.relGooglePay.visibility = View.VISIBLE
+                } else {
+                    Log.d("GPay", "Google Pay is NOT available")
+                    binding.relPayWallet.visibility = View.GONE
+                    binding.relGooglePay.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Google Pay is not available on this device", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: ApiException) {
+                e.printStackTrace()
+                binding.relPayWallet.visibility = View.GONE
+                binding.relGooglePay.visibility = View.GONE
+                Toast.makeText(requireContext(), "Error checking GPay availability", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
     private fun loadApi(){
         if (BaseApplication.isOnline(requireContext())) {
             getCheckoutApi()
@@ -277,7 +331,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         BaseApplication.alertError(requireContext(), message, status)
     }
 
-
     @SuppressLint("SetTextI18n")
     private fun handleSuccessCheckoutResponse(data: String) {
         try {
@@ -294,7 +347,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             showAlert(e.message, false)
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun showDataInUI(data: CheckoutScreenModelData?) {
@@ -717,7 +769,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }
     }
 
-
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -947,7 +998,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
             else -> showAlert(result.message, false)
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun handleSuccessAddAddressResponse(data: String) {
@@ -1188,8 +1238,6 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }else{
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
-
-
     }
 
     private fun preferredApi(status: String?) {
@@ -1236,6 +1284,5 @@ class CheckoutScreenFragment : Fragment(), OnMapReadyCallback, OnItemLongClickLi
         }
 
     }
-
 
 }

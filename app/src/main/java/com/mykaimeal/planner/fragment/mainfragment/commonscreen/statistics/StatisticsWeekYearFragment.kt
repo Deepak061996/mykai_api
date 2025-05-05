@@ -24,15 +24,19 @@ import com.mykaimeal.planner.OnItemClickListener
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.AdapterCookedRecipeAmount
+import com.mykaimeal.planner.adapter.AdapterPlanBreakByDateFast
 import com.mykaimeal.planner.adapter.AdapterStatisticsWeekItem
 import com.mykaimeal.planner.adapter.CalendarDayAdapter
 import com.mykaimeal.planner.adapter.ChooseDayAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.databinding.FragmentStatisticsWeekYearBinding
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.Breakfast
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsGraphModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsWeekYearModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsWeekYearModelData
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.viewmodel.StatisticsViewModel
+import com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponsebydate.BreakfastModelPlanByDate
 import com.mykaimeal.planner.messageclass.ErrorMessage
 import com.mykaimeal.planner.model.CalendarDataModel
 import com.mykaimeal.planner.model.DataModel
@@ -47,13 +51,9 @@ import java.util.Locale
 class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
 
     private var binding: FragmentStatisticsWeekYearBinding?=null
-    private var dataList1: MutableList<DataModel> = mutableListOf()
-    private var dataList4: MutableList<DataModel> = mutableListOf()
-    private var dataList2: MutableList<DataModel> = mutableListOf()
-    private var dataList3: MutableList<DataModel> = mutableListOf()
+
     private var rcyChooseDaySch: RecyclerView? = null
     private var tvWeekRange: TextView? = null
-    private var adapterStatisticsWeekItem: AdapterStatisticsWeekItem? = null
     private var adapterCookedRecipeAmount: AdapterCookedRecipeAmount? = null
     private val calendar = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
@@ -84,11 +84,6 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
         statisticsViewModel = ViewModelProvider(this)[StatisticsViewModel::class.java]
 
 
-        recipeCookedModel()
-        statsBreakFastModel()
-        statsLunchModel()
-        statsDinnerModel()
-
         if (BaseApplication.isOnline(requireContext())) {
             getStatWeekList()
         } else {
@@ -106,7 +101,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
             statisticsViewModel.orderWeekUrl({
                 BaseApplication.dismissMe()
                 handleApiWeekGraphResponse(it)
-            }, "")
+            }, "4","4")
         }
     }
 
@@ -130,7 +125,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success == true) {
                 if (apiModel.data != null) {
-//                    showSpendingChart(apiModel.data)
+                    showSpendingWeekYear(apiModel.data)
                 }
             } else {
                 if (apiModel.code == ErrorMessage.code) {
@@ -142,6 +137,35 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
         } catch (e: Exception) {
             showAlert(e.message, false)
         }
+    }
+
+    private fun showSpendingWeekYear(data: StatisticsWeekYearModelData) {
+
+        if (data.recipes != null) {
+
+            fun setupMealAdapter(
+                mealRecipes: MutableList<Breakfast>?,
+                recyclerView: RecyclerView,
+                type: String,
+                container: View
+            ) {
+                if (!mealRecipes.isNullOrEmpty()) {
+                    val adapter = AdapterStatisticsWeekItem(mealRecipes, requireActivity(), this, type)
+                    recyclerView.adapter = adapter
+                    container.visibility = View.VISIBLE
+                } else {
+                    container.visibility = View.GONE
+                }
+            }
+
+            setupMealAdapter(data.recipes.Breakfast, binding!!.rcyBreakfast, ErrorMessage.Breakfast, binding!!.linearBreakfast)
+            setupMealAdapter(data.recipes.Lunch, binding!!.rcyLunch, ErrorMessage.Lunch, binding!!.linearLunch)
+            setupMealAdapter(data.recipes.Dinner, binding!!.rcyDinner, ErrorMessage.Dinner, binding!!.linearDinner)
+            setupMealAdapter(data.recipes.Snacks, binding!!.rcySnacks, ErrorMessage.Snacks, binding!!.linearSnacks)
+            setupMealAdapter(data.recipes.Brunch, binding!!.rcyBrunch, ErrorMessage.Brunch, binding!!.linearBrunch)
+            
+        }
+
     }
 
     private fun initialize() {
@@ -272,9 +296,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
 
         calendar.add(Calendar.DAY_OF_WEEK, -7) // Reset to start of week
         return days
-
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun updateWeekRange() {
@@ -363,129 +385,6 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
         }
     }
 
-
-    private fun statsBreakFastModel() {
-        val data1 = DataModel()
-        val data2 = DataModel()
-        val data3 = DataModel()
-
-        data1.title = "Bread"
-        data1.isOpen = false
-        data1.type = "RecipeCookedBreakFast"
-        data1.image = R.drawable.bread_breakfast_image
-
-        data2.title = "Juice"
-        data2.isOpen = false
-        data2.type = "RecipeCookedBreakFast"
-        data2.image = R.drawable.fresh_juice_glass_image
-
-        data3.title = "Bar-B-Q"
-        data3.isOpen = false
-        data3.type = "RecipeCookedBreakFast"
-        data3.image = R.drawable.bar_b_q_breakfast_image
-
-        dataList1.add(data1)
-        dataList1.add(data2)
-        dataList1.add(data3)
-
-        adapterStatisticsWeekItem = AdapterStatisticsWeekItem(dataList1, requireActivity(),this)
-        binding!!.rcyBreakFast.adapter = adapterStatisticsWeekItem
-    }
-
-    private fun recipeCookedModel() {
-        val data1 = DataModel()
-        val data2 = DataModel()
-        val data3 = DataModel()
-
-        data1.title = "Amount Spent on Breakfast"
-        data1.isOpen = false
-        data1.price="$289"
-        data1.type = "RecipeCooked"
-        data1.image = R.drawable.bread_breakfast_image
-
-        data2.title = "Amount Spent this week"
-        data2.isOpen = false
-        data2.price="$87"
-        data2.type = "RecipeCooked"
-        data2.image = R.drawable.fresh_juice_glass_image
-
-        data3.title = "Savings this week"
-        data3.isOpen = false
-        data3.price="$25"
-        data3.type = "RecipeCooked"
-        data3.image = R.drawable.bar_b_q_breakfast_image
-
-        data3.title = "Time Spend"
-        data3.isOpen = false
-        data3.price="2h 22m"
-        data3.type = "RecipeCooked"
-        data3.image = R.drawable.bar_b_q_breakfast_image
-
-        dataList4.add(data1)
-        dataList4.add(data2)
-        dataList4.add(data3)
-
-        adapterCookedRecipeAmount = AdapterCookedRecipeAmount(dataList4, requireActivity(),this)
-        binding!!.rcyWeekAmountType.adapter = adapterCookedRecipeAmount
-        binding!!.rcyWeekAmountType1.adapter = adapterCookedRecipeAmount
-        binding!!.rcyWeekAmountType2.adapter = adapterCookedRecipeAmount
-    }
-
-    private fun statsLunchModel() {
-        val data1 = DataModel()
-        val data2 = DataModel()
-        val data3 = DataModel()
-
-        data1.title = "Bread"
-        data1.isOpen = false
-        data1.type = "RecipeCookedLunch"
-        data1.image = R.drawable.bread_lunch_image
-
-        data2.title = "Juice"
-        data2.isOpen = false
-        data2.type = "RecipeCookedLunch"
-        data2.image = R.drawable.bar_b_q_breakfast_image
-
-        data3.title = "Bar-B-Q"
-        data3.isOpen = false
-        data3.type = "RecipeCookedLunch"
-        data3.image = R.drawable.bar_b_q_breakfast_image
-
-        dataList2.add(data1)
-        dataList2.add(data2)
-        dataList2.add(data3)
-
-        adapterStatisticsWeekItem = AdapterStatisticsWeekItem(dataList2, requireActivity(),this)
-        binding!!.rcyLunch.adapter = adapterStatisticsWeekItem
-    }
-
-    private fun statsDinnerModel() {
-        val data1 = DataModel()
-        val data2 = DataModel()
-        val data3 = DataModel()
-
-        data1.title = "Bread"
-        data1.isOpen = false
-        data1.type = "RecipeCookedDinner"
-        data1.image = R.drawable.bread_dinner_image
-
-        data2.title = "Juice"
-        data2.isOpen = false
-        data2.type = "RecipeCookedDinner"
-        data2.image = R.drawable.fresh_juice_glass_image
-
-        data3.title = "Bar-B-Q"
-        data3.isOpen = false
-        data3.type = "RecipeCookedDinner"
-        data3.image = R.drawable.bar_b_q_breakfast_image
-
-        dataList3.add(data1)
-        dataList3.add(data2)
-        dataList3.add(data3)
-
-        adapterStatisticsWeekItem = AdapterStatisticsWeekItem(dataList3, requireActivity(),this)
-        binding!!.rcyDinner.adapter = adapterStatisticsWeekItem
-    }
 
     override fun itemClick(position: Int?, status: String?, type: String?) {
         if (status=="1"){

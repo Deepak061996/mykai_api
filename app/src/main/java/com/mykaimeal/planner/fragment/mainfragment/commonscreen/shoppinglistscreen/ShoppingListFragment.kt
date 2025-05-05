@@ -420,7 +420,6 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
             val apiModel = Gson().fromJson(data, ShoppingListModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-
                 apiModel.data?.let {
                     showDataShoppingUI(apiModel.data)
                 }
@@ -441,7 +440,6 @@ class ShoppingListFragment : Fragment(), OnItemClickListener, OnItemSelectListen
     }
 
     private fun showDataShoppingUI(data: ShoppingListModelData) {
-
 
         recipe.clear()
         ingredientList.clear()

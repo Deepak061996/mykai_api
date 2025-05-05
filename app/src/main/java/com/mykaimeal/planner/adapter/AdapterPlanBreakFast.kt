@@ -22,7 +22,7 @@ class AdapterPlanBreakFast(var datalist: MutableList<BreakfastModel>?, private v
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding: AdapterMealTypeItemBinding = AdapterMealTypeItemBinding.inflate(inflater, parent,false);
+        val binding: AdapterMealTypeItemBinding = AdapterMealTypeItemBinding.inflate(inflater, parent,false)
         return ViewHolder(binding)
     }
 

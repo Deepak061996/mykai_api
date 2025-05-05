@@ -660,11 +660,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
 
                 // Breakfast
                 if (recipesDateModel?.Breakfast != null && recipesDateModel?.Breakfast?.size!! > 0) {
-                    adapterPlanBreakByDateFast = setupMealAdapter(
-                        recipesDateModel!!.Breakfast!!,
-                        binding.rcyBreakFast,
-                        ErrorMessage.Breakfast
-                    )
+                    adapterPlanBreakByDateFast = setupMealAdapter(recipesDateModel!!.Breakfast!!, binding.rcyBreakFast, ErrorMessage.Breakfast)
                     binding.linearBreakfast.visibility = View.VISIBLE
                     status = true
                 } else {
