@@ -30,6 +30,7 @@ import kotlinx.coroutines.tasks.await
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -139,6 +140,15 @@ object BaseApplication {
         val activeNetwork = connectivityManager.activeNetwork ?: return false
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
         return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    fun formatMonthYear(month: Int, year: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.MONTH, month - 1) // months are 0-based in Calendar
+        calendar.set(Calendar.YEAR, year)
+
+        val formatter = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
+        return formatter.format(calendar.time)
     }
 
     fun formatOnlyDate(date: String): String {

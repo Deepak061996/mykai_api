@@ -240,6 +240,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
                 // Update the current date selection
                 currentDateSelected = updatedDaysBetween[selectedPosition].date
                 viewModel.setData(null)
+                viewModel.setPlanDate(null)
                 // When screen load then api call
                 fetchDataOnLoad()
 //                // Fetch data for the selected date if online
@@ -1265,6 +1266,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
                                     Toast.LENGTH_LONG
                                 ).show()
                                 viewModel.setData(null)
+                                viewModel.setPlanDate(null)
                                 // When screen load then api call
                                 fetchDataOnLoad()
                             } else {

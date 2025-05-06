@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,6 +30,7 @@ class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, p
         return ViewHolder(binding)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         try {
             val item= dataList?.get(position)?.recipe?.xservices

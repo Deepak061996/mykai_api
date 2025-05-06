@@ -158,7 +158,6 @@
                     android:overScrollMode="never"
                     android:foregroundGravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="@dimen/_5sdp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <RelativeLayout
