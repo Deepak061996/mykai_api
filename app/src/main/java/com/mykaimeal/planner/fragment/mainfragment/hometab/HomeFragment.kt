@@ -298,7 +298,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
                 )
                 recySuperMarket = dialogAddItem.findViewById(R.id.recySuperMarket)
                 val rlDoneBtn = dialogAddItem.findViewById<RelativeLayout>(R.id.rlDoneBtn)
-                dialogAddItem.setCancelable(true)
+                dialogAddItem.setCancelable(false)
                 dialogAddItem.show()
                 dialogAddItem.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
                 adapterSuperMarket = HomeSuperMarketList(superMarketData, requireActivity(), this, 0)
@@ -669,6 +669,7 @@ class HomeFragment : Fragment(), View.OnClickListener, OnItemClickListener, OnIt
             }
 
             R.id.rlLayCheckSavings -> {
+                (activity as MainActivity?)?.upDateGraph()
                 findNavController().navigate(R.id.statisticsGraphFragment)
             }
 

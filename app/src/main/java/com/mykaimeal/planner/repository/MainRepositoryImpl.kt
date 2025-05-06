@@ -2591,10 +2591,11 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
 
     override suspend fun getGraphScreenUrl(
         successCallback: (response: NetworkResult<String>) -> Unit,
-        month: String?
+        month: String?,
+        year: String?
     ) {
         try {
-            api.getGraphScreenUrl(month).apply {
+            api.getGraphScreenUrl(month,year).apply {
                 if (isSuccessful) {
                     body()?.let {
                         successCallback(NetworkResult.Success(it.toString()))
@@ -2628,10 +2629,10 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
     }
 
     override suspend fun orderWeekUrl(
-        successCallback: (response: NetworkResult<String>) -> Unit,week:String?,month:String?
+        successCallback: (response: NetworkResult<String>) -> Unit,week:String?,month:String?,year:String?
     ) {
         try {
-            api.orderWeekUrl(week,month).apply {
+            api.orderWeekUrl(week,month,year).apply {
                 if (isSuccessful) {
                     body()?.let {
                         successCallback(NetworkResult.Success(it.toString()))

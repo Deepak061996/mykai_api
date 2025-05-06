@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -32,16 +31,16 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.gson.Gson
 import com.mykaimeal.planner.R
 import com.mykaimeal.planner.activity.MainActivity
+import com.mykaimeal.planner.apiInterface.BaseUrl
 import com.mykaimeal.planner.basedata.BaseApplication
+import com.mykaimeal.planner.basedata.BaseApplication.formatMonthYear
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.commonworkutils.RoundedBarChartRenderer
-import com.mykaimeal.planner.customview.SpendingChartView
 import com.mykaimeal.planner.databinding.FragmentStatisticsGraphBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsGraphModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsGraphModelData
@@ -53,6 +52,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -64,11 +64,11 @@ class StatisticsGraphFragment : Fragment() {
     private var referLink: String = ""
     private var lastSelectedDate: Long? = null
     private var currentMonth: String = ""
+    private var weekOfMonth: String = ""
+    private var year: String = ""
+    private var currentDate = Date() // Current date
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         binding = FragmentStatisticsGraphBinding.inflate(layoutInflater, container, false)
 
@@ -77,9 +77,22 @@ class StatisticsGraphFragment : Fragment() {
             llBottomNavigation.visibility = View.VISIBLE
         }
 
-        statisticsViewModel = ViewModelProvider(this)[StatisticsViewModel::class.java]
+        statisticsViewModel = ViewModelProvider(requireActivity())[StatisticsViewModel::class.java]
         sessionManagement = SessionManagement(requireActivity())
 
+        backButton()
+
+
+
+        initialize()
+
+
+
+
+        return binding.root
+    }
+
+    private fun backButton(){
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -87,25 +100,49 @@ class StatisticsGraphFragment : Fragment() {
                     findNavController().navigateUp()
                 }
             })
-
-        initialize()
-
-        return binding.root
     }
 
+    private fun loadGraph(){
+        if (BaseApplication.isOnline(requireContext())) {
+            getGraphList()
+        } else {
+            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun initialize() {
 
-        if (sessionManagement.getUserName()!=null){
-            binding.tvStatsNames.text="Good job "+sessionManagement.getUserName()+" you're on track to big savings! Stick with your plan and watch the results add up."
+        sessionManagement.getUserName()?.let {
+            binding.tvStatsNames.text=
+                "Good job $it you're on track to big savings! Stick with your plan and watch the results add up."
+        }
+
+
+        sessionManagement.getImage()?.let {
+            Glide.with(requireContext())
+                .load(BaseUrl.imageBaseUrl+it)
+                .placeholder(R.drawable.mask_group_icon)
+                .error(R.drawable.mask_group_icon)
+                .into(binding.imageProfile)
         }
 
         // Set currentMonth from today's date
         val calendar = Calendar.getInstance()
-        currentMonth = (calendar.get(Calendar.MONTH) + 1).toString()
 
-        // Format for tvMonthYear: "June 2024"
-        val monthYearFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
-        binding.tvDateCalendar.text = monthYearFormat.format(calendar.time)
+        statisticsViewModel.dataGraph?.let {
+            currentMonth=statisticsViewModel.dataCurrentMonth.toString()
+            year=statisticsViewModel.dataCurrentYear.toString()
+            currentDate= statisticsViewModel.currentDate!!
+            showSpendingChart(it)
+        }?:run {
+            weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH).toString()
+            currentMonth = (calendar.get(Calendar.MONTH) + 1).toString()
+            year = calendar.get(Calendar.YEAR).toString()
+            loadGraph()
+        }
+
+        binding.tvDateCalendar.text = formatMonthYear(currentMonth.toInt(),year.toInt())
 
         AppsFlyerLib.getInstance().subscribeForDeepLink { deepLinkResult ->
             when (deepLinkResult.status) {
@@ -155,18 +192,14 @@ class StatisticsGraphFragment : Fragment() {
         }
 
         binding.barChart.setOnClickListener {
+            statisticsViewModel.setGraphDataList(null)
             findNavController().navigate(R.id.statisticsWeekYearFragment)
         }
 
-//        copyShareInviteLink()
 
         generateDeepLink()
 
-        if (BaseApplication.isOnline(requireContext())) {
-            getGraphList()
-        } else {
-            BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-        }
+
 
         binding.relMonthYear.setOnClickListener {
             openDialog()
@@ -183,29 +216,31 @@ class StatisticsGraphFragment : Fragment() {
         dialog.setOnShowListener {
             calendarView?.date = lastSelectedDate ?: Calendar.getInstance().timeInMillis
         }
-        // Get today's date
-        val today = Calendar.getInstance()
-        // Set the minimum date to today
-        calendarView?.minDate = today.timeInMillis
+//        // Get today's date
+//        val today = Calendar.getInstance()
+////        // Set the minimum date to today
+////        calendarView?.minDate = today.timeInMillis
 
         calendarView?.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val calendar = Calendar.getInstance()
             calendar.set(year, month, dayOfMonth)
             lastSelectedDate = calendar.timeInMillis
 
+            val date = calendar.time  // This is the Date object
+            // Format the Date object to the desired string format
+            val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.getDefault())
+            val currentDateString = dateFormat.format(date)  // This is the formatted string
+            // To convert the string back to a Date object:
+            currentDate = dateFormat.parse(currentDateString)!!  // This is the Date object
+
+            weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH).toString()
+
             // Format for tvMonthYear: "June 2024"
             val monthYearFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
             binding.tvDateCalendar.text = monthYearFormat.format(calendar.time)
-
             // Update currentMonth (month is 0-based, so add +1)
             currentMonth = (month + 1).toString()
-
-            if (BaseApplication.isOnline(requireContext())) {
-                getGraphList()
-            } else {
-                BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-            }
-
+            loadGraph()
             dialog.dismiss()
         }
 
@@ -218,7 +253,7 @@ class StatisticsGraphFragment : Fragment() {
             statisticsViewModel.getGraphScreenUrl({
                 BaseApplication.dismissMe()
                 handleApiGraphResponse(it)
-            }, currentMonth)
+            }, currentMonth,year)
         }
     }
 
@@ -240,24 +275,30 @@ class StatisticsGraphFragment : Fragment() {
             val apiModel = Gson().fromJson(data, StatisticsGraphModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                if (apiModel.data != null) {
+                apiModel.data?.let {
                     showSpendingChart(apiModel.data)
+                }?: run {
+
                 }
             } else {
-                if (apiModel.code == ErrorMessage.code) {
-                    showAlert(apiModel.message, true)
-                } else {
-                    showAlert(apiModel.message, false)
-                }
+               handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun showSpendingChart(response: StatisticsGraphModelData) {
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlert(message, true)
+        } else {
+            showAlert(message, false)
+        }
+    }
 
+    @SuppressLint("SetTextI18n", "DefaultLocale")
+    private fun showSpendingChart(response: StatisticsGraphModelData) {
+        statisticsViewModel.setGraphData(response,currentMonth,year,weekOfMonth,currentDate)
         val month = response.month ?: ""
         val graphData = response.graph_data
 
@@ -301,9 +342,7 @@ class StatisticsGraphFragment : Fragment() {
             data = barData
             setFitBars(false)
             animateY(800)
-
             description.isEnabled = false // Hide description
-
             axisRight.isEnabled = false
             axisLeft.apply {
                 textColor = Color.DKGRAY
@@ -431,30 +470,6 @@ class StatisticsGraphFragment : Fragment() {
             })
     }
 
-/*
-    @SuppressLint("RestrictedApi")
-    private fun copyShareInviteLink() {
-
-        val afUserId = sessionManagement.getId()?.toString().orEmpty()
-        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
-        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
-        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
-
-        val baseUrl = "https://mykaimealplanner.onelink.me/mPqu/"
-
-        val fullUrl = Uri.parse(baseUrl).buildUpon()
-            .appendQueryParameter("af_user_id", afUserId)
-            .appendQueryParameter("Referrer", referrerCode)
-            .appendQueryParameter("providerName", providerName)
-            .appendQueryParameter("providerImage", providerImage)
-            .build()
-            .toString()
-
-        referLink = fullUrl
-        Log.d("AF_TEST", "Custom Raw Link: $referLink")
-    }
-*/
-
     private fun generateDeepLink() {
 
         val afUserId = sessionManagement.getId()?.toString().orEmpty()
@@ -471,9 +486,7 @@ class StatisticsGraphFragment : Fragment() {
         val deepLink = "mykai://property?af_user_id=$afUserId&Referrer=$referrerCode&providerName=$providerName&providerImage=$providerImage"
 
         //  val deepLink = "https://property?propertyId=$propertyId&propertyType=$propertyType&city=$city"
-
         val webLink = "https://https://admin.getmykai.com/" // Web fallback link
-
         // Create the link generator
         val linkGenerator = ShareInviteHelper.generateInviteUrl(requireActivity())
             .setBaseDeeplink("https://$brandDomain/$oneLinkId")
@@ -494,7 +507,6 @@ class StatisticsGraphFragment : Fragment() {
                 referLink = s
                 Log.d("***********", s)
             }
-
             override fun onResponseError(s: String) {
                 // Handle error if link generation fails
                 Log.e("***********", "Error Generating Link: $s")

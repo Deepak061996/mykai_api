@@ -41,11 +41,7 @@ class InvitationsScreenFragment : Fragment() {
 
         statisticsViewModel = ViewModelProvider(this)[StatisticsViewModel::class.java]
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()
-            }
-        })
+        backButton()
 
         adapterInviteItem = AdapterInviteItem(referralList, requireActivity())
         binding.rcyFriendsInvite.adapter = adapterInviteItem
@@ -53,6 +49,14 @@ class InvitationsScreenFragment : Fragment() {
         initialize()
 
         return binding.root
+    }
+
+    private fun backButton(){
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        })
     }
 
     private fun initialize() {
@@ -93,18 +97,12 @@ class InvitationsScreenFragment : Fragment() {
 
     // Filter data using only `data` list
     private fun filterData(filter: String) {
-        // Option 1: Reload original from server/local DB before filtering
-        // Assuming `setData()` is called again if needed
-
         val filtered = if (filter.equals("All", ignoreCase = true)) {
             referralList // just show current list
         } else {
-            referralList.filter { it.status?.equals(filter, ignoreCase = true) == true }.toMutableList()
+            referralList.filter { it.status?.trim().equals(filter, ignoreCase = true) }.toMutableList()
         }
-
-        referralList.clear()
-        referralList.addAll(filtered)
-        adapterInviteItem?.notifyDataSetChanged()
+        adapterInviteItem?.updateList(filtered)
     }
 
     private fun getInvitationList() {
@@ -136,9 +134,9 @@ class InvitationsScreenFragment : Fragment() {
             val apiModel = Gson().fromJson(data, ReferralInvitationModel::class.java)
             Log.d("@@@ addMea List ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success == true) {
-                if (apiModel.data != null && apiModel.data.size>0) {
-                    showInvitationList(apiModel.data)
-                }else{
+                apiModel.data?.let {
+                    showInvitationList(it)
+                }?:run {
                     invitedValue()
                 }
             } else {
@@ -163,23 +161,26 @@ class InvitationsScreenFragment : Fragment() {
     }
 
     private fun showInvitationList(data: MutableList<ReferralInvitationModelData>) {
-
-        referralList.clear()
-        data.let {
-            referralList.addAll(it)
-            if (referralList.size > 0) {
-                val invitedCount = referralList.size.toString()
-                val htmlText = "You have invited $invitedCount friends to use<b> MyKai</b>"
-                val formattedText = HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                binding.tvFriendsCountNumber.text = formattedText
-                binding.rcyFriendsInvite.visibility = View.VISIBLE
-                adapterInviteItem?.updateList(referralList)
-            } else {
-                invitedValue()
-                binding.rcyFriendsInvite.visibility = View.GONE
+        try {
+            referralList.clear()
+            data.let {
+                referralList.addAll(it)
+                if (referralList.size > 0) {
+                    val invitedCount = referralList.size.toString()
+                    val htmlText = "You have invited $invitedCount friends to use<b> MyKai</b>"
+                    val formattedText = HtmlCompat.fromHtml(htmlText, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                    binding.tvFriendsCountNumber.text = formattedText
+                    binding.rcyFriendsInvite.visibility = View.VISIBLE
+                    adapterInviteItem?.updateList(referralList)
+                } else {
+                    invitedValue()
+                    binding.rcyFriendsInvite.visibility = View.GONE
+                }
             }
+        }catch (e:Exception){
+            invitedValue()
+           Log.d("@Error ","*********"+e.message)
         }
-
     }
 
 }

@@ -26,20 +26,23 @@ class AdapterInviteItem(
         val item = datalist!![position]
 
         try {
-            if (item.name != null) {
-                holder.binding.tvFriendsName.text=item.name.toString()
+
+            item.name?.let {
+                holder.binding.tvFriendsName.text=it
             }
 
             if (item.status!=null){
-                if (item.status!=""){
-                    holder.binding.tvStatusBtn.text=item.status
-                    if (item.status.equals("Trial",true)){
-                        holder.binding.relTrialBtn.setBackgroundResource(R.drawable.trial_btn_bg)
-                    }else if (item.status.equals("Trial over",true)){
-                        holder.binding.relTrialBtn.setBackgroundResource(R.drawable.trial_over_bg)
-                    }else{
-                        holder.binding.relTrialBtn.setBackgroundResource(R.drawable.redeemed_btn_bg)
+
+            }
+            item.status?.let {
+                if (it!=""){
+                    holder.binding.tvStatusBtn.text=it
+                    val backgroundRes = when (it.lowercase()) {
+                        "trial" -> R.drawable.trial_btn_bg
+                        "trial over" -> R.drawable.trial_over_bg
+                        else -> R.drawable.redeemed_btn_bg
                     }
+                    holder.binding.relTrialBtn.setBackgroundResource(backgroundRes)
                 }
             }
         } catch (e: Exception) {

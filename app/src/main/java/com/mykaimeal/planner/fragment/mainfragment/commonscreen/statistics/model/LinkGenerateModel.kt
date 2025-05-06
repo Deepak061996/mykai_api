@@ -9,7 +9,7 @@ data class LinkGenerateModel(
 
 data class StatisticsGraphModel(
     val code: Int,
-    val `data`: StatisticsGraphModelData,
+    val `data`: StatisticsGraphModelData?,
     val message: String,
     val success: Boolean
 )
@@ -17,8 +17,8 @@ data class StatisticsGraphModel(
 data class StatisticsGraphModelData(
     val graph_data: GraphData,
     val month: String,
-    val saving: Double,
-    val total_spent: Double
+    val saving: Double?,
+    val total_spent: Double?
 )
 
 data class GraphData(

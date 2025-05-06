@@ -73,6 +73,7 @@ import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.model.Mea
 import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.viewmodel.MealRoutineViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.viewmodel.BasketScreenViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
+import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.viewmodel.StatisticsViewModel
 import com.mykaimeal.planner.fragment.mainfragment.searchtab.searchscreen.model.SearchMealUrlModel
 import com.mykaimeal.planner.fragment.mainfragment.searchtab.searchscreen.model.SearchMealUrlModelData
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.homeviewmodel.HomeViewModel
@@ -1689,15 +1690,21 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         ViewModelProvider(this)[PlanViewModel::class.java].setPlanDate(null)
     }
 
+
+    fun upDateGraph(){
+        ViewModelProvider(this)[StatisticsViewModel::class.java].setGraphData(null,null,null,null,null)
+        ViewModelProvider(this)[StatisticsViewModel::class.java].setGraphDataList(null)
+    }
+
     private fun searchRecipeDialog() {
         val dialogSearchDialog =Dialog(this)
         dialogSearchDialog.setContentView(R.layout.alert_dialog_search_recipe)
-        dialogSearchDialog.window!!.setLayout(
+        dialogSearchDialog.window?.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
         dialogSearchDialog.setCancelable(true)
-        dialogSearchDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialogSearchDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val relRecipeSearch = dialogSearchDialog.findViewById<RelativeLayout>(R.id.relRecipeSearch)
         val relFavouritesRecipes = dialogSearchDialog.findViewById<RelativeLayout>(R.id.relFavouritesRecipes)
