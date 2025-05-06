@@ -118,9 +118,7 @@ class AddTipScreenFragment : Fragment() {
 
                             val paymentDataRequestJson = createPaymentDataRequest()
                             val paymentDataRequest = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
-
                             val task = paymentsClient.loadPaymentData(paymentDataRequest)
-
                             task.addOnFailureListener { e ->
                                 if (e is ResolvableApiException) {
                                     try {
@@ -171,13 +169,14 @@ class AddTipScreenFragment : Fragment() {
             Log.d("Token **** status","****** :- "+status)
         }
     }
+
     private fun gpayPaymentImplement() {
         // Initialize PaymentsClient
         paymentsClient = Wallet.getPaymentsClient(
             requireContext(),
             Wallet.WalletOptions.Builder()
-                .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Use ENVIRONMENT_PRODUCTION for live
-//                .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION) // Use ENVIRONMENT_PRODUCTION for live
+//                .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Use ENVIRONMENT_PRODUCTION for live
+                .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION) // Use ENVIRONMENT_PRODUCTION for live
                 .build()
         )
     }
@@ -188,7 +187,7 @@ class AddTipScreenFragment : Fragment() {
             .put("parameters", JSONObject()
                 .put("gateway", "stripe")  // Replace with "stripe"
                 .put("stripe:version", "2020-08-27") // Adjust as needed
-                .put("stripe:publishableKey", "pk_test_51Qko2KEowij4RlG8Ehh3tKQVhxVJUMzAPIi0rTnsX77jwtz5F8LfHfSvS9d2PTg8G7I5NQ3x19JlqdMaAihRcXAn00MvY1CI0X") // Replace with real key
+                .put("stripe:publishableKey", "pk_live_51Qko2KEowij4RlG8jPdIDKTTaX12y4tNGgP2CWL2YAEOy4XMQx7vhEAeAtbmpaohAx7VOBPq0Z7iMBsAiygbJpAM00RcRMGU0W ") // Replace with real key
             )
 
         val cardPaymentMethod = JSONObject()
@@ -211,7 +210,8 @@ class AddTipScreenFragment : Fragment() {
                 .put("currencyCode", "USD") // Use USD for US payments
             )
             .put("merchantInfo", JSONObject()
-                .put("merchantName", "My Kai G pay")
+                .put("merchantName", "My Kai Ltd")
+                .put("merchantId", "acct_1Qko2KEowij4RlG8")   // ❌ Stripe Account ID — Not Allowed
             )
     }
 
@@ -307,8 +307,6 @@ class AddTipScreenFragment : Fragment() {
         binding.llFifteenPerc.setOnClickListener { updateSelection(binding.llFifteenPerc,binding.tvDollarNine.text.toString()) }
         binding.llTwentyPerc.setOnClickListener { updateSelection(binding.llTwentyPerc,binding.tvDollarTwelve.text.toString()) }
         binding.lltwentyFivePerc.setOnClickListener { updateSelection(binding.lltwentyFivePerc,binding.tvDollarFifteen.text.toString()) }
-
-
 
     }
 
@@ -429,43 +427,5 @@ class AddTipScreenFragment : Fragment() {
             }
         }
     }
-
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (requestCode == LOAD_PAYMENT_DATA_REQUEST_CODE) {
-//            when (resultCode) {
-//                Activity.RESULT_OK -> {
-//                    val paymentData = PaymentData.getFromIntent(data!!)
-//                    val paymentInfo = paymentData?.toJson()?.let { JSONObject(it) }
-//                    Log.d("GPayImplement", "Payment Success: $paymentInfo")
-//
-//                    // Extract token and send to backend (Stripe or your server)
-//                    val paymentMethodData = paymentInfo?.getJSONObject("paymentMethodData")
-//                    val tokenData = paymentMethodData
-//                        ?.getJSONObject("tokenizationData")
-//                        ?.getString("token")
-//
-//                    Log.d("GPayImplement", "Token: $tokenData")
-//                    Toast.makeText(requireContext(), "Payment Success", Toast.LENGTH_SHORT).show()
-//                }
-//
-//                Activity.RESULT_CANCELED -> {
-//                    Toast.makeText(requireContext(), "Payment Cancelled", Toast.LENGTH_SHORT).show()
-//                }
-//
-//                AutoResolveHelper.RESULT_ERROR -> {
-//                    val status = AutoResolveHelper.getStatusFromIntent(data)
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Payment Failed: ${status?.statusMessage}",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                    Log.e("GPayImplement", "Error: ${status?.statusMessage}")
-//                }
-//            }
-//        }
-//    }
 
 }
