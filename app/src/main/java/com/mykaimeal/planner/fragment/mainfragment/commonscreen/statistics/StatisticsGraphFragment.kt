@@ -82,12 +82,7 @@ class StatisticsGraphFragment : Fragment() {
 
         backButton()
 
-
-
         initialize()
-
-
-
 
         return binding.root
     }
@@ -196,10 +191,7 @@ class StatisticsGraphFragment : Fragment() {
             findNavController().navigate(R.id.statisticsWeekYearFragment)
         }
 
-
         generateDeepLink()
-
-
 
         binding.relMonthYear.setOnClickListener {
             openDialog()
@@ -492,9 +484,9 @@ class StatisticsGraphFragment : Fragment() {
             .setBaseDeeplink("https://$brandDomain/$oneLinkId")
             .setCampaign(currentCampaign)
             .addParameter("af_dp", deepLink) // App deep link
-            .addParameter("Referrer", referrerCode)
+        /*    .addParameter("Referrer", referrerCode)
             .addParameter("providerName", providerName)
-            .addParameter("providerImage", providerImage)
+            .addParameter("providerImage", providerImage)*/
             .addParameter("af_web_dp", webLink) // Web fallback URL
 
         // Generate the link
