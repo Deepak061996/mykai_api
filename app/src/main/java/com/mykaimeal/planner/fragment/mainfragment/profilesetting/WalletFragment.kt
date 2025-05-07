@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class WalletFragment : Fragment() {
 
+    
     private lateinit var binding: FragmentWalletBinding
 
     private lateinit var viewModel: WalletViewModel
