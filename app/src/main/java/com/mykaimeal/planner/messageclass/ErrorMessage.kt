@@ -4,7 +4,6 @@ object ErrorMessage {
 
 
      const val networkError:String="Please check your internet connection"
-     const val subscriptionError:String="Oops! Your limit has been exceeded. Please purchase your subscription to regain access to all features."
      const val responseError:String="Request timed out. The server is taking too long to respond. Please check your internet connection or try again later."
      const val planError:String="Please select subscription plan"
      const val servingError:String="The minimum serving count at least one."

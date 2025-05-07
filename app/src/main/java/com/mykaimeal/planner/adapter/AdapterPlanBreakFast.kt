@@ -26,8 +26,7 @@ class AdapterPlanBreakFast(var datalist: MutableList<BreakfastModel>?, private v
         return ViewHolder(binding)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateList(updateList: MutableList<BreakfastModel>, type:String){
+    fun updateList(updateList: MutableList<BreakfastModel>,type:String){
         datalist=updateList
         this.type=type
         notifyDataSetChanged()

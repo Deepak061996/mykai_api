@@ -1597,7 +1597,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         layroot.setOnClickListener {
             dialog.dismiss()
         }
-        tvTitle.text=ErrorMessage.subscriptionError
+        tvTitle.text="Oops! Your limit has been exceeded. Please purchase your subscription to regain access to all features."
         btnOk.setOnClickListener {
             dialog.dismiss()
             dialogAddRecipe?.dismiss()

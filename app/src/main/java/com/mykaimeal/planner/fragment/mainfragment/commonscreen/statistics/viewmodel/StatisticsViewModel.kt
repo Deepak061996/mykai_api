@@ -1,7 +1,6 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.google.gson.JsonObject
 import com.mykaimeal.planner.basedata.NetworkResult
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.model.CheckoutScreenModelData
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.StatisticsGraphModelData
@@ -21,29 +20,6 @@ class StatisticsViewModel @Inject constructor(private val repository: MainReposi
     suspend fun generateLinkUrl(successCallback: (response: NetworkResult<String>) -> Unit, link: RequestBody?, image: MultipartBody.Part?) {
         repository.generateLinkUrl({ successCallback(it) }, link, image)
     }
-
-
-
-    suspend fun getCookBookRequest(successCallback: (response: NetworkResult<String>) -> Unit){
-        repository.getCookBookRequestApi { successCallback(it) }
-    }
-
-
-    suspend fun likeUnlikeRequest(successCallback: (response: NetworkResult<String>) -> Unit,
-                                  uri: String,likeType: String,type:String){
-        repository.likeUnlikeRequestApi({ successCallback(it) },uri,likeType,type)
-    }
-
-    suspend fun recipeAddToPlanRequest(successCallback: (response: NetworkResult<String>) -> Unit, jsonObject: JsonObject
-    ){
-        repository.recipeAddToPlanRequestApi({ successCallback(it) },jsonObject)
-    }
-
-    suspend fun addBasketRequest(successCallback: (response: NetworkResult<String>) -> Unit,
-                                 uri: String,quantity: String,type:String){
-        repository.addBasketRequestApi({ successCallback(it) },uri,quantity,type)
-    }
-
 
     suspend fun getGraphScreenUrl(successCallback: (response: NetworkResult<String>) -> Unit, month: String?, year: String?) {
         repository.getGraphScreenUrl({ successCallback(it) }, month,year)

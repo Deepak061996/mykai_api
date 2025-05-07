@@ -8,7 +8,7 @@
         android:id="@+id/relHomeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
         android:layout_marginVertical="@dimen/_5sdp"
         android:background="@drawable/height_type_bg"
         android:orientation="horizontal"
@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/imageHome"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
+            android:layout_width="@dimen/_22sdp"
+            android:layout_height="@dimen/_22sdp"
             android:layout_centerVertical="true"
             android:src="@drawable/home_icon"
             app:tint="@color/orange" />
@@ -38,7 +38,7 @@
                 android:fontFamily="@font/montserrat_medium"
                 android:text="Home"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/_13sdp" />
 
             <ImageView
                 android:id="@+id/imgPrimary"
@@ -51,15 +51,14 @@
 
             <TextView
                 android:id="@+id/tvFullAddress"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvSetName"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:maxLines="3"
                 android:fontFamily="@font/montserrat_medium"
                 android:text="123 barn cre"
                 android:textColor="@color/light_black"
-                android:textSize="@dimen/_8sdp" />
+                android:textSize="@dimen/_10sdp" />
 
         </RelativeLayout>
 

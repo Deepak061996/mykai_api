@@ -18,7 +18,6 @@ import com.mykaimeal.planner.R
 import com.mykaimeal.planner.databinding.AdapterMealTypeItemBinding
 import com.mykaimeal.planner.databinding.AdapterStatisticsWeekYearItemBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.Breakfast
-import com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponse.BreakfastModel
 import com.mykaimeal.planner.model.DataModel
 
 class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, private var requireActivity: FragmentActivity,
@@ -31,46 +30,35 @@ class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, p
         return ViewHolder(binding)
     }
 
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateList(updateList: MutableList<Breakfast>, type:String){
-        dataList=updateList
-        this.type=type
-        notifyDataSetChanged()
-    }
-
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         try {
-            val item= dataList?.get(position)?.recipe
+            val item= dataList?.get(position)?.recipe?.xservices
 
-            if (item?.label!=null){
-                holder.binding.tvBreakfast.text = item.label
+            if (item?.recipe?.label!=null){
+                holder.binding.tvBreakfast.text = item.recipe.label
             }
 
-            if (item?.totalTime!=null){
-                holder.binding.tvTime.text = ""+ item.totalTime +" min "
+            if (item?.recipe?.totalTime!=null){
+                holder.binding.tvTime.text = ""+ item.recipe.totalTime +" min "
             }
 
-            if (dataList?.get(position)?.is_like!=null){
-                holder.binding.imgHeartRed.visibility=View.VISIBLE
-                if (dataList?.get(position)?.is_like ==0 ){
+           /* if (item?.is_like!=null){
+                if (item.is_like ==0 ){
                     holder.binding.imgHeartRed.setImageResource(R.drawable.heart_white_icon)
                 }else{
                     holder.binding.imgHeartRed.setImageResource(R.drawable.heart_red_icon)
                 }
-            }else{
-                holder.binding.imgHeartRed.visibility=View.GONE
             }
 
-            if (dataList?.get(position)?.review!=null){
-                holder.binding.tvRatingReviews.text = ""+ dataList?.get(position)?.review +"("+ dataList?.get(position)?.review_number +")"
-            }
+            if (item?.review!=null){
+                holder.binding.tvRatingReviews.text = ""+ item.review +"("+ item.review_number +")"
+            }*/
 
 
-            if (item?.images?.SMALL?.url!=null){
+            if (item?.recipe?.images?.SMALL?.url!=null){
                 Glide.with(requireActivity)
-                    .load(item?.images.SMALL.url)
+                    .load(item.recipe.images.SMALL.url)
                     .error(R.drawable.no_image)
                     .placeholder(R.drawable.no_image)
                     .listener(object : RequestListener<Drawable> {
@@ -113,8 +101,8 @@ class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, p
             }
 
             holder.itemView.setOnClickListener{
-                if (item?.uri!=null){
-                    onItemClickListener.itemClick(position, type, item?.uri)
+                if (item?.recipe?.uri!=null){
+                    onItemClickListener.itemClick(position, type, item.recipe.uri)
                 }
             }
         }catch (e:Exception){

@@ -16,7 +16,6 @@ import com.google.gson.Gson
 import com.mykaimeal.planner.adapter.AdapterInviteItem
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
-import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.databinding.FragmentInvitationsScreenBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.ReferralInvitationModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.ReferralInvitationModelData
@@ -32,8 +31,6 @@ class InvitationsScreenFragment : Fragment() {
     private var adapterInviteItem: AdapterInviteItem? = null
     private lateinit var statisticsViewModel: StatisticsViewModel
     private var referralList: MutableList<ReferralInvitationModelData> =mutableListOf()
-    private var referLink: String = ""
-    private lateinit var sessionManagement: SessionManagement
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,14 +40,11 @@ class InvitationsScreenFragment : Fragment() {
         binding=FragmentInvitationsScreenBinding.inflate(layoutInflater, container, false)
 
         statisticsViewModel = ViewModelProvider(this)[StatisticsViewModel::class.java]
-        sessionManagement = SessionManagement(requireActivity())
 
         backButton()
 
         adapterInviteItem = AdapterInviteItem(referralList, requireActivity())
         binding.rcyFriendsInvite.adapter = adapterInviteItem
-
-
 
         initialize()
 
@@ -80,10 +74,6 @@ class InvitationsScreenFragment : Fragment() {
         binding.spinnerFilterType.setOnSpinnerItemSelectedListener<String> { oldIndex, oldItem, newIndex, newItem ->
             filterData(newItem) // Call your filter function with the selected value
         }
-
-
-        generateDeepLink()
-
 
         if (BaseApplication.isOnline(requireContext())) {
             getInvitationList()

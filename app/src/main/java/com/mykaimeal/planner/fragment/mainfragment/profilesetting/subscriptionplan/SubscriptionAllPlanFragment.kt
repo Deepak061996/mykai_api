@@ -440,6 +440,11 @@ class SubscriptionAllPlanFragment : Fragment() {
                     binding.rlNextBtn.isClickable=false
                     binding.rlNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
                     Toast.makeText(requireContext(),apiModel.message,Toast.LENGTH_SHORT).show()
+                    if (screen.equals("login",true)){
+                        val intent = Intent(requireActivity(), MainActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().finish()
+                    }
                 }else{
                     when(apiModel.data?.active_plan){
                         AppConstant.Premium_Monthly ->  selectPlan(
@@ -506,6 +511,11 @@ class SubscriptionAllPlanFragment : Fragment() {
                     }else{
                         binding.rlNextBtn.isClickable=false
                         binding.rlNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+                    }
+                    if (screen.equals("login",true)){
+                        val intent = Intent(requireActivity(), MainActivity::class.java)
+                        startActivity(intent)
+                        requireActivity().finish()
                     }
                 }
             } else {

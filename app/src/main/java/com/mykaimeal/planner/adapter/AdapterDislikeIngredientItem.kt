@@ -47,9 +47,6 @@ class AdapterDislikeIngredientItem(private var dislikeIngredientsData: List<Disl
                 dietaryId.remove(dislikeIngredientsData[position].id.toString())
             }
 
-
-
-
             // Handle item click logic
             relMainLayout.setOnClickListener {
                 when (position) {
@@ -95,10 +92,6 @@ class AdapterDislikeIngredientItem(private var dislikeIngredientsData: List<Disl
 
                 notifyDataSetChanged() // Refresh the UI
             }
-
-
-
-
         }
     }
 

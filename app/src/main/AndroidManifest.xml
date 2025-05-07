@@ -115,27 +115,19 @@
             </intent-filter>
 
 
-            <!--DeepLink-->
-            <intent-filter>
+            <intent-filter
+                android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <!--<data android:scheme="https" android:host="mykaimealplanner.onelink.me" />-->
                 <data android:scheme="mykai" android:host="property" />
+                <!--       <data android:scheme="mykai" android:host="property" />-->
+                <!-- <data
+                     android:scheme="https"
+                     android:host="mykaimealplanner.onelink.me"
+                     android:pathPrefix="/mPqu" />-->
             </intent-filter>
-
-<!--            <intent-filter-->
-<!--                android:autoVerify="true">-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-<!--                &lt;!&ndash;<data android:scheme="https" android:host="mykaimealplanner.onelink.me" />&ndash;&gt;-->
-<!--                <data android:scheme="mykai" android:host="property" />-->
-<!--                &lt;!&ndash;       <data android:scheme="mykai" android:host="property" />&ndash;&gt;-->
-<!--                &lt;!&ndash; <data-->
-<!--                     android:scheme="https"-->
-<!--                     android:host="mykaimealplanner.onelink.me"-->
-<!--                     android:pathPrefix="/mPqu" />&ndash;&gt;-->
-<!--            </intent-filter>-->
         </activity>
 
         <meta-data

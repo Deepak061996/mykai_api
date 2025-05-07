@@ -37,7 +37,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.common.api.GoogleApiClient
@@ -191,47 +190,12 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         }
 
         binding.btnLock.setOnClickListener {
-            subscriptionAlert(requireContext())
+            (activity as? MainActivity)?.subscriptionAlertError(requireContext())
         }
 
         initialize()
 
         return binding.root
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun subscriptionAlert(context: Context){
-        val dialog= Dialog(context, R.style.BottomSheetDialog)
-        dialog.setCancelable(true)
-        dialog.setCanceledOnTouchOutside(true)
-        dialog.setContentView(R.layout.alert_dialog_subscription_error)
-        val layoutParams = WindowManager.LayoutParams()
-        layoutParams.copyFrom(dialog.window!!.attributes)
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
-        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
-        dialog.window!!.attributes = layoutParams
-        val tvTitle: TextView =dialog.findViewById(R.id.tv_text)
-        val btnOk: RelativeLayout =dialog.findViewById(R.id.btn_okay)
-        val btnCancel: ImageView =dialog.findViewById(R.id.crossImages)
-        val layroot: RelativeLayout =dialog.findViewById(R.id.layroot)
-
-        layroot.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        tvTitle.text=ErrorMessage.subscriptionError
-        btnOk.setOnClickListener {
-            dialog.dismiss()
-            val bundle = Bundle()
-            bundle.putString("screen","main")
-            findNavController().navigate(R.id.homeSubscriptionAllPlanFragment,bundle)
-        }
-
-        btnCancel.setOnClickListener {
-            dialog.dismiss()
-            findNavController().navigateUp()
-        }
-        dialog.show()
     }
 
     private fun viewModelData(){
@@ -419,7 +383,7 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
     private fun showDataInAddressUI(data: MutableList<GetAddressListModelData>?) {
         addressList = data
         adapterGetAddressItem = AdapterGetAddressItem(addressList, requireActivity(), this)
-        rcySavedAddress?.adapter = adapterGetAddressItem
+        rcySavedAddress!!.adapter = adapterGetAddressItem
 
     }
 

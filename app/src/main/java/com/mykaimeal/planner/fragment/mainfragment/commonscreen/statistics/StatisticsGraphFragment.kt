@@ -144,7 +144,33 @@ class StatisticsGraphFragment : Fragment() {
 
         binding.tvDateCalendar.text = formatMonthYear(currentMonth.toInt(),year.toInt())
 
+        AppsFlyerLib.getInstance().subscribeForDeepLink { deepLinkResult ->
+            when (deepLinkResult.status) {
+                DeepLinkResult.Status.FOUND -> {
+                    Log.d("AppsFlyer22", "Deep link found, store")
 
+                    val deepLinkValue = deepLinkResult.deepLink?.getStringValue("deep_link_value")
+                    if (deepLinkValue == "profile_screen") {
+                        // Navigate to Profile Screen
+                        Log.d("AppsFlyer22", "profile")
+
+                    } else {
+                        Log.d("AppsFlyer22", "Deep link statistics")
+
+                        // Handle other deep link values
+                    }
+                }
+
+                DeepLinkResult.Status.NOT_FOUND -> {
+                    Log.d("AppsFlyer22", "Deep link not found, redirecting to Play Store")
+                    redirectToPlayStore()
+                }
+
+                DeepLinkResult.Status.ERROR -> {
+                    Log.d("AppsFlyer22", "Error in deep link: ${deepLinkResult.error}")
+                }
+            }
+        }
 
         binding.imgBackStats.setOnClickListener {
             findNavController().navigateUp()
@@ -170,22 +196,14 @@ class StatisticsGraphFragment : Fragment() {
             findNavController().navigate(R.id.statisticsWeekYearFragment)
         }
 
-        // Enable pinch zoom and double tap zoom
-        binding.barChart.setPinchZoom(false)
-        binding.barChart.setScaleEnabled(false)
-        binding.barChart.isDoubleTapToZoomEnabled = false
-
-// Optional: enable dragging and scaling
-        binding.barChart.isDragEnabled = false
-        binding.barChart.isScaleXEnabled = false
-        binding.barChart.isScaleYEnabled = false
 
         generateDeepLink()
+
+
 
         binding.relMonthYear.setOnClickListener {
             openDialog()
         }
-
     }
 
     private fun openDialog() {
@@ -493,49 +511,6 @@ class StatisticsGraphFragment : Fragment() {
                 // Handle error if link generation fails
                 Log.e("***********", "Error Generating Link: $s")
             }
-        })*/
-
-
-        val afUserId = sessionManagement.getId()?.toString().orEmpty()
-        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
-        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
-        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
-
-
-
-        // from deepak
-        // Base URL for the OneLink template
-        val baseURL = "https://mykaimealplanner.onelink.me/mPqu/" // Replace with your OneLink template
-
-        // Deep link URL for when the app is installed
-        val deepLink = "mykai://property?" +
-                "af_user_id=$afUserId" +
-                "&providerName=$providerName" +
-                "&providerImage=$providerImage"
-
-        // Web fallback URL (e.g., if app is not installed)
-        val webLink = "https://www.mykaimealplanner.com" // Replace with your fallback web URL
-        // Build OneLink parameters
-        val parameters = mapOf(
-//            "af_user_id" to afUserId,
-//            "providerName" to providerName,
-//            "CookbooksID" to id,
-//            "ItemName" to name,
-//            "ScreenName" to "CookBooksType",
-            "Referrer" to referrerCode,
-            "af_dp" to deepLink, // App deep link
-            "af_web_dp" to webLink // Web fallback URL
-        )
-
-       // Use Uri.Builder to construct the URL with query parameters
-        val uriBuilder = Uri.parse(baseURL).buildUpon()
-        for ((key, value) in parameters) {
-            uriBuilder.appendQueryParameter(key, value)
-        }
-
-        // Convert the URI to string and call the completion handler
-        val fullURL = uriBuilder.toString()
-        referLink = fullURL
-        Log.d("link ", "Generated OneLink URL: $fullURL")
+        })
     }
 }

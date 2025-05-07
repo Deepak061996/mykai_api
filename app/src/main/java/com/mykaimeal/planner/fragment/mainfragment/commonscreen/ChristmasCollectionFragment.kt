@@ -419,131 +419,47 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
         val providerImage = sessionManagement.getImage()?.toString().orEmpty()
 
 
+        // Your OneLink base URL and campaign details
+        val currentCampaign = "property_share"
+        val oneLinkId = "mPqu" // Replace with your OneLink ID
+        val brandDomain = "mykaimealplanner.onelink.me" // Your OneLink domain
 
-        // from deepak
-      // Base URL for the OneLink template
-        val baseURL = "https://mykaimealplanner.onelink.me/mPqu/" // Replace with your OneLink template
+        // Prepare the deep link values
+        val deepLink = "mykai://property?af_user_id=$afUserId&ScreenName=CookBooksType&CookbooksID=$id&ItemName=$name"
 
-      // Deep link URL for when the app is installed
-        val deepLink = "mykai://property?" +
-                "af_user_id=$afUserId" +
-                "&CookbooksID=$id" +
-                "&ItemName=$name" +
-                "&ScreenName=CookBooksType"
+        //  val deepLink = "https://property?propertyId=$propertyId&propertyType=$propertyType&city=$city"
 
-       // Web fallback URL (e.g., if app is not installed)
-        val webLink = "https://www.mykaimealplanner.com" // Replace with your fallback web URL
+        val webLink = "https://https://admin.getmykai.com/" // Web fallback link
 
-       // Build OneLink parameters
-        val parameters = mapOf(
-//            "af_user_id" to afUserId,
-//            "providerName" to providerName,
-//            "CookbooksID" to id,
-//            "ItemName" to name,
-            "providerImage" to providerImage,
-//            "ScreenName" to "CookBooksType",
-            "Referrer" to referrerCode,
-            "af_dp" to deepLink, // App deep link
-            "af_web_dp" to webLink // Web fallback URL
-        )
+        // Create the link generator
+        val linkGenerator = ShareInviteHelper.generateInviteUrl(requireActivity())
+            .setBaseDeeplink("https://$brandDomain/$oneLinkId")
+            .setCampaign(currentCampaign)
+            .addParameter("af_dp", deepLink) // App deep link
+            .addParameter("Referrer", referrerCode)
+            .addParameter("CookbooksID", id)
+            .addParameter("ItemName", name)
+            .addParameter("ScreenName", "CookBooksType")
+            .addParameter("providerName", providerName)
+            .addParameter("providerImage", providerImage)
+            .addParameter("af_web_dp", webLink) // Web fallback URL
 
-// Use Uri.Builder to construct the URL with query parameters
-        val uriBuilder = Uri.parse(baseURL).buildUpon()
-        for ((key, value) in parameters) {
-            uriBuilder.appendQueryParameter(key, value)
-        }
+        // Generate the link
+        linkGenerator.generateLink(requireActivity(), object : LinkGenerator.ResponseListener {
+            override fun onResponse(s: String) {
+                // Successfully generated the link
+                Log.d("TAG", s)
+                // Example share message with the generated link
+                val message = "Check out this property: $s"
+                referLink = s
+                Log.d("***********", s)
+            }
 
-// Convert the URI to string and call the completion handler
-        val fullURL = uriBuilder.toString()
-        referLink = fullURL
-        Log.d("link ", "Generated OneLink URL: $fullURL")
-
-
-        // from dhananjay
-
-//        val afUserId = sessionManagement.getId()?.toString().orEmpty()
-//        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
-//        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
-//        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
-//
-//        // Base URL for the OneLink template
-//        val baseURL = "https://mykaimealplanner.onelink.me/mPqu/" // Replace with your OneLink template
-//        val deepLink = "mykai://property?" +
-//                "af_user_id=$afUserId" +
-//                "&CookbooksID=$id" +
-//                "&ItemName=$name" +
-//                "&ScreenName=CookBooksType"
-//
-//        // Build query parameters
-//        val parameters = mapOf(
-//            "af_user_id" to afUserId,
-//            "providerName" to providerName,
-//            "CookbooksID" to id,
-//            "ItemName" to name,
-//            "providerImage" to providerImage,
-//            "ScreenName" to "CookBooksType",
-//            "Referrer" to referrerCode
-//        )
-//
-//        // Use Uri.Builder to construct the URL with query parameters
-//        val uriBuilder = Uri.parse(baseURL).buildUpon()
-//        for ((key, value) in parameters) {
-//            uriBuilder.appendQueryParameter(key, value)
-//        }
-//
-//        // Convert the URI to string and call the completion handler
-//        val fullURL = uriBuilder.toString()
-//        referLink= fullURL
-//        Log.d("link ", "*****$fullURL")
-
-
-//        // Your OneLink base config
-//        val currentCampaign = "property_share"
-//        val oneLinkId = "mPqu" // Replace with your OneLink ID
-//        val brandDomain = "mykaimealplanner.onelink.me" // Replace with your OneLink domain
-//
-//        // Deep link for the app (must match the intent filter)
-//        val deepLink = "mykai://property?" +
-//                "af_user_id=$afUserId" +
-//                "&ScreenName=CookBooksType" +
-//                "&CookbooksID=$id" +
-//                "&ItemName=$name"
-//
-//        // Web fallback link (optional, opens if app not installed)
-//        val webLink = "https://https://admin.getmykai.com/" // Web fallback link
-//
-//
-//
-//        // Create the link generator
-//        val linkGenerator = ShareInviteHelper.generateInviteUrl(requireActivity())
-//            .setBaseDeeplink("https://$brandDomain/$oneLinkId")
-//            .setCampaign(currentCampaign)
-//            .addParameter("af_dp", deepLink) // App deep link
-//            .addParameter("Referrer", referrerCode)
-//            .addParameter("af_web_dp", webLink) // Web fallback URL
-//            .addParameter("CookbooksID", id)
-//            .addParameter("ItemName", name)
-//            .addParameter("ScreenName", "CookBooksType")
-//            .addParameter("providerName", providerName)
-//            .addParameter("providerImage", providerImage)
-//
-//
-//        // Generate the link
-//        linkGenerator.generateLink(requireActivity(), object : LinkGenerator.ResponseListener {
-//            override fun onResponse(s: String) {
-//                // Successfully generated the link
-//                Log.d("TAG", s)
-//                // Example share message with the generated link
-//                val message = "Check out this property: $s"
-//                referLink = s
-//                Log.d("***********", s)
-//            }
-//
-//            override fun onResponseError(s: String) {
-//                // Handle error if link generation fails
-//                Log.e("***********", "Error Generating Link: $s")
-//            }
-//        })
+            override fun onResponseError(s: String) {
+                // Handle error if link generation fails
+                Log.e("***********", "Error Generating Link: $s")
+            }
+        })
     }
 
 
