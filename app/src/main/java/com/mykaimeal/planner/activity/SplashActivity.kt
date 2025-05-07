@@ -108,7 +108,7 @@ class SplashActivity : AppCompatActivity() {
         val data: Uri? = intent?.data
         Log.d("DeepLink", "Received URI: $data")
         if (intent?.action == Intent.ACTION_VIEW && data != null) {
-            if (data.scheme == "mykai" && data.host == "property") {
+            if (data.scheme == "mykai" || data.host == "property") {
                 val screenName = data.getQueryParameter("ScreenName")
                 val cookbooksId = data.getQueryParameter("CookbooksID")
                 val itemName = data.getQueryParameter("ItemName")

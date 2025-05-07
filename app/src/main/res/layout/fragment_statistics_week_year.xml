@@ -5,47 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.mainfragment.commonscreen.statistics.StatisticsWeekYearFragment">
+    <RelativeLayout
+        android:id="@+id/rlToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_20sdp">
+
+        <ImageView
+            android:id="@+id/imgBackChristmas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/black_images_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Stats for Week/years"
+            android:textSize="@dimen/_13sdp" />
+
+
+    </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/rlToolbar"
+        android:layout_marginTop="@dimen/_5sdp"
         android:fillViewport="true">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:id="@+id/rlToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_20sdp">
-
-                <ImageView
-                    android:id="@+id/imgBackChristmas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:padding="@dimen/_5sdp"
-                    android:src="@drawable/black_images_back" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Stats for Week/years"
-                    android:textSize="@dimen/_13sdp" />
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/relWeekDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rlToolbar"
                 android:layout_marginHorizontal="@dimen/_16sdp"
                 android:layout_marginTop="@dimen/_25sdp">
 
@@ -264,7 +263,7 @@
                     android:id="@+id/rcyBreakfast"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal"
                     android:padding="@dimen/_10sdp"
@@ -399,7 +398,7 @@
                     android:id="@+id/rcyLunch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal"
                     android:padding="@dimen/_10sdp"
@@ -534,7 +533,7 @@
                     android:id="@+id/rcyDinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal"
                     android:padding="@dimen/_10sdp"
@@ -668,7 +667,7 @@
                     android:id="@+id/rcySnacks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal"
                     android:padding="@dimen/_10sdp"
@@ -803,16 +802,13 @@
                     android:id="@+id/rcyBrunch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:orientation="horizontal"
                     android:padding="@dimen/_10sdp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             </LinearLayout>
-
-
         </RelativeLayout>
-
     </ScrollView>
 </RelativeLayout>

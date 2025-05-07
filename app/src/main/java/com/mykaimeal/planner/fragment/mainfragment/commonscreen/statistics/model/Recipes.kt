@@ -25,13 +25,16 @@ data class Breakfast(
     val deleted_at: Any,
     val id: Int?,
     val plan_type: Int?,
-    val recipe: Recipe?,
+    val recipe: RecipeX?,
     val servings: Int?,
     val status: Int?,
     val type: String?,
     val updated_at: String?,
     val uri: String?,
-    val user_id: Int?
+    val user_id: Int?,
+    var is_like: Int?,
+    val review: Int?,
+    val review_number: Int?
 )
 
 
@@ -77,7 +80,7 @@ data class RecipeX(
     val totalWeight: Double?,
     val uri: String?,
     val url: String?,
-    val yield: Int?
+    val yield: Double?
 )
 
 data class Digest(

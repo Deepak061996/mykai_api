@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.mykaimeal.planner.OnItemClickedListener
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.MealRoutineAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.BaseApplication.alertError
@@ -311,6 +312,7 @@ class MealRoutineFragment : Fragment(), View.OnClickListener, OnItemClickedListe
                             val gson = Gson()
                             val updateModel = gson.fromJson(it.data, UpdatePreferenceSuccessfully::class.java)
                             if (updateModel.code == 200 && updateModel.success) {
+                                (activity as MainActivity?)?.upDatePlan()
                                 findNavController().navigateUp()
                             } else {
                                 if (updateModel.code == ErrorMessage.code) {

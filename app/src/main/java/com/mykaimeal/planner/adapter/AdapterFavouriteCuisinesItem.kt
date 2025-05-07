@@ -38,7 +38,7 @@ class AdapterFavouriteCuisinesItem(private var favouriteCuisineModelData: List<F
                 if (!dietaryId.contains(favouriteCuisineModelData[position].id.toString())) {
                     dietaryId.add(favouriteCuisineModelData[position].id.toString())
                 }
-                onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
+//                onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
             } else {
                 imageRightTick.visibility = View.GONE
                 relMainLayout.setBackgroundResource(R.drawable.gray_box_border_bg)
@@ -48,21 +48,24 @@ class AdapterFavouriteCuisinesItem(private var favouriteCuisineModelData: List<F
             // Handle item click
             relMainLayout.setOnClickListener {
                 // Toggle selection state
-                favouriteCuisineModelData[position].selected = !favouriteCuisineModelData[position].selected
-
-                if (favouriteCuisineModelData[position].selected) {
+                val data=favouriteCuisineModelData[position]
+                data.selected = !favouriteCuisineModelData[position].selected
+                notifyItemChanged(position,data)
+                onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
+                /*if (favouriteCuisineModelData[position].selected) {
                     dietaryId.add(favouriteCuisineModelData[position].id.toString())
                     selectedPositions.add(position)
+                    // Callback to notify selection change
+                    onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
                 } else {
                     dietaryId.remove(favouriteCuisineModelData[position].id.toString())
                     selectedPositions.remove(position)
-                }
-
-                // Callback to notify selection change
-                onItemClickedListener.itemClicked(position, dietaryId, "2", favouriteCuisineModelData[position].selected.toString())
-
+                    // Callback to notify selection change
+                    onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
+                }*/
                 notifyItemChanged(position) // Efficiently update only the clicked item
             }
+
         }
 
 

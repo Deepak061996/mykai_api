@@ -43,7 +43,7 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
     private var status: String? = ""
     private var favouriteSelectId = mutableListOf<String>()
     private lateinit var favouriteCuisineViewModel: FavouriteCuisineViewModel
-    private var favouriteCuiModelData: MutableList<FavouriteCuisinesModelData>? = null
+    private var favouriteCuiModelData: MutableList<FavouriteCuisinesModelData>  = mutableListOf()
     private var isExpanded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -96,6 +96,7 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
         backButton()
 
         initialize()
+
         return binding.root
     }
 
@@ -127,7 +128,13 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
 
         binding.tvNextBtn.setOnClickListener {
             if (status == "2") {
-                favouriteCuisineViewModel.setFavouriteCuiData(favouriteCuiModelData!!)
+                favouriteSelectId.clear()
+                favouriteCuiModelData.forEach {
+                    if (it.selected){
+                        favouriteSelectId.add(it.id.toString())
+                    }
+                }
+                favouriteCuisineViewModel.setFavouriteCuiData(favouriteCuiModelData)
                 sessionManagement.setFavouriteCuisineList(favouriteSelectId)
                 if (sessionManagement.getCookingFor().equals("Myself")) {
                     findNavController().navigate(R.id.ingredientDislikesFragment)
@@ -142,6 +149,12 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
         binding.rlUpdateFavCuisine.setOnClickListener {
             if (status=="2"){
                 if (BaseApplication.isOnline(requireContext())) {
+                    favouriteSelectId.clear()
+                    favouriteCuiModelData.forEach {
+                        if (it.selected){
+                            favouriteSelectId.add(it.id.toString())
+                        }
+                    }
                     updateFavCuisineApi()
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
@@ -307,11 +320,13 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
                     favouriteModelData[0] = FavouriteCuisinesModelData(id = -1, selected = true, "None")
                 }*/
                 // Show "Show More" button only if there are more than 3 items
-                if (favouriteModelData.size > 5) {
+                favouriteCuiModelData.clear()
+                favouriteCuiModelData.addAll(favouriteModelData)
+                if (favouriteCuiModelData.size > 5) {
                     binding.relMoreButton.visibility = View.VISIBLE
                 }
-                favouriteCuiModelData = favouriteModelData
-                adapterFavouriteCuisinesItem = AdapterFavouriteCuisinesItem(favouriteModelData, requireActivity(), this)
+                hideShow()
+                adapterFavouriteCuisinesItem = AdapterFavouriteCuisinesItem(favouriteCuiModelData, requireActivity(), this)
                 binding.rcyFavCuisines.adapter = adapterFavouriteCuisinesItem
             }
         } catch (e: Exception) {
@@ -326,11 +341,13 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
           /*      if (favouriteCuisineViewModel.getFavouriteCuiData() == null) {
                     favouriteModelData.add(0, FavouriteCuisinesModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
                 }*/
-                favouriteCuiModelData = favouriteModelData
+                favouriteCuiModelData.clear()
+                favouriteCuiModelData.addAll(favouriteModelData)
                 // Show "Show More" button only if there are more than 3 items
-                if (favouriteModelData.size > 5) {
+                if (favouriteCuiModelData.size > 5) {
                     binding.relMoreButton.visibility = View.VISIBLE
                 }
+                hideShow()
                 adapterFavouriteCuisinesItem = AdapterFavouriteCuisinesItem(favouriteModelData, requireActivity(), this)
                 binding.rcyFavCuisines.adapter = adapterFavouriteCuisinesItem
             }
@@ -344,17 +361,15 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
     }
 
 
-    override fun itemClicked(
-        position: Int?,
-        list: MutableList<String>?,
-        status1: String?,
-        type: String?
-    ) {
+    override fun itemClicked(position: Int?, list: MutableList<String>?, status1: String?, type: String?) {
 
-        if (status1.equals("-1")) {
+
+        hideShow()
+
+        /*if (status1.equals("-1")) {
             if (position == 0) {
                 favouriteSelectId = mutableListOf()
-                /*  favouriteSelectId.clear()*/
+                *//*  favouriteSelectId.clear()*//*
             } else {
                 favouriteSelectId = list!!
             }
@@ -376,8 +391,32 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
             favouriteSelectId = list!!
         } else {
             status = ""
+            binding.rlUpdateFavCuisine.isClickable = false
             binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
             binding.rlUpdateFavCuisine.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+        }*/
+
+
+
+
+
+    }
+
+
+    private fun hideShow(){
+        val count= favouriteCuiModelData.count { it.selected }
+        if (count==0){
+            status = ""
+            binding.tvNextBtn.isClickable = false
+            binding.rlUpdateFavCuisine.isClickable = false
+            binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+            binding.rlUpdateFavCuisine.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+        }else{
+            status = "2"
+            binding.tvNextBtn.isClickable = true
+            binding.rlUpdateFavCuisine.isClickable = true
+            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
+            binding.rlUpdateFavCuisine.setBackgroundResource(R.drawable.green_fill_corner_bg)
         }
     }
 

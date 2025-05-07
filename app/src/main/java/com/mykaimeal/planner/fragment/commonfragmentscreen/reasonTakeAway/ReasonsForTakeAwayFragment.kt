@@ -265,6 +265,7 @@ class ReasonsForTakeAwayFragment : Fragment(), OnItemClickListener {
 
 
         binding.edtext.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Before text changes
             }
@@ -274,12 +275,16 @@ class ReasonsForTakeAwayFragment : Fragment(), OnItemClickListener {
                     reasonTakeAway = s.toString()
                     status="2"
                     binding.tvNextBtn.isClickable = true
+                    binding.rlUpdateReasonTakeAway.isClickable = true
                     binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_select_background)
+                    binding.rlUpdateReasonTakeAway.setBackgroundResource(R.drawable.gray_btn_select_background)
                 }else{
                     status=""
                     reasonTakeAway = ""
                     binding.tvNextBtn.isClickable = false
+                    binding.rlUpdateReasonTakeAway.isClickable = false
                     binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+                    binding.rlUpdateReasonTakeAway.setBackgroundResource(R.drawable.gray_btn_unselect_background)
                 }
             }
 

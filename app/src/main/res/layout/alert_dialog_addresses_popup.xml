@@ -30,7 +30,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:fontFamily="@font/montserrat_semibold"
                     android:text="Addresses"
                     android:textColor="@color/black"
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAddresses"
                     android:layout_marginHorizontal="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:background="@drawable/gray_edittext_bg">
 
                     <AutoCompleteTextView
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relIngSearchBar"
                     android:layout_marginHorizontal="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -86,7 +86,7 @@
                         android:background="@drawable/outline_address_green_border_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:padding="@dimen/_10sdp">
+                        android:padding="@dimen/_5sdp">
 
                         <ImageView
                             android:id="@+id/imageHome"
@@ -115,7 +115,7 @@
                         android:background="@drawable/height_type_bg"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:padding="@dimen/_10sdp">
+                        android:padding="@dimen/_5sdp">
 
                         <ImageView
                             android:id="@+id/imageWork"
@@ -142,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/llSetHomeWork"
                     android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:fontFamily="@font/montserrat_semibold"
                     android:text="Explore Nearby"
                     android:textColor="@color/black"
@@ -154,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvExploreNearBy"
                     android:layout_marginHorizontal="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp">
+                    android:layout_marginTop="@dimen/_8sdp">
 
                     <ImageView
                         android:id="@+id/imgLocation"
@@ -212,7 +212,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/view1"
                     android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:fontFamily="@font/montserrat_semibold"
                     android:text="Saved addresses"
                     android:textColor="@color/black"
@@ -227,7 +227,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rcySavedAddress"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_100sdp"
                         android:layout_marginHorizontal="@dimen/_10sdp"
                         android:nestedScrollingEnabled="false"
                         android:orientation="vertical"
@@ -241,7 +241,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relUpdateAddress"
                     android:layout_marginHorizontal="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:background="@drawable/green_btn_background">
 
                     <TextView

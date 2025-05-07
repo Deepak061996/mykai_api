@@ -516,10 +516,9 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
             recipesModel = data.recipes
 
             if (recipesModel != null) {
-                fun setupMealAdapter(
-                    mealRecipes: MutableList<BreakfastModel>?, recyclerView: RecyclerView, type: String
-                ): AdapterPlanBreakFast? {
-                    return if (mealRecipes != null && mealRecipes.isNotEmpty()) {
+
+                fun setupMealAdapter(mealRecipes: MutableList<BreakfastModel>?, recyclerView: RecyclerView, type: String): AdapterPlanBreakFast? {
+                    return if (!mealRecipes.isNullOrEmpty()) {
                         val adapter = AdapterPlanBreakFast(mealRecipes, requireActivity(), this, type)
                         recyclerView.adapter = adapter
                         adapter
@@ -528,12 +527,12 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
                     }
                 }
 
+
                 binding.llCalculateBmr.visibility = View.GONE
 
                 // Breakfast
                 if (recipesModel?.Breakfast != null && recipesModel?.Breakfast?.size!! > 0) {
-                    breakfastAdapter =
-                        setupMealAdapter(recipesModel?.Breakfast, binding.rcyBreakFast, ErrorMessage.Breakfast)
+                    breakfastAdapter = setupMealAdapter(recipesModel?.Breakfast, binding.rcyBreakFast, ErrorMessage.Breakfast)
                     binding.linearBreakfast.visibility = View.VISIBLE
                 } else {
                     binding.linearBreakfast.visibility = View.GONE
@@ -1018,7 +1017,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
             WindowManager.LayoutParams.WRAP_CONTENT
         )
         dialogChooseDay.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        rcyChooseDaySch = dialogChooseDay.findViewById<RecyclerView>(R.id.rcyChooseDaySch)
+        rcyChooseDaySch = dialogChooseDay.findViewById(R.id.rcyChooseDaySch)
         tvWeekRange = dialogChooseDay.findViewById(R.id.tvWeekRange)
         val rlDoneBtn = dialogChooseDay.findViewById<RelativeLayout>(R.id.rlDoneBtn)
         val btnPrevious = dialogChooseDay.findViewById<ImageView>(R.id.btnPrevious)
