@@ -387,6 +387,13 @@ class StatisticsGraphFragment : Fragment() {
     }
 
 
+    private fun redirectToPlayStore() {
+        val playStoreIntent = Intent(Intent.ACTION_VIEW).apply {
+            data = Uri.parse("https://play.google.com/store/apps/details?id=com.mykaimeal.planner")
+        }
+        startActivity(playStoreIntent)
+    }
+
     private fun shareImageWithText(description: String, link: String) {
         // Download image using Glide
         Glide.with(requireContext())
@@ -447,7 +454,7 @@ class StatisticsGraphFragment : Fragment() {
 
     private fun generateDeepLink() {
 
-       /* val afUserId = sessionManagement.getId()?.toString().orEmpty()
+        val afUserId = sessionManagement.getId()?.toString().orEmpty()
         val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
         val providerName = sessionManagement.getUserName()?.toString().orEmpty()
         val providerImage = sessionManagement.getImage()?.toString().orEmpty()
