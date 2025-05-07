@@ -336,7 +336,8 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
         }
 
         //copyShareInviteLink()
-        generateDeepLink()
+//        generateDeepLink()
+        deepLink()
 
         binding.imgThreeDotIcon.setOnClickListener {
             if (binding.cardViewMenuPopUp.visibility == View.VISIBLE) {
@@ -411,13 +412,58 @@ class ChristmasCollectionFragment : Fragment(), OnItemClickListener {
     }
 
 
+    private fun deepLink(){
+        val afUserId = sessionManagement.getId()?.toString().orEmpty()
+        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
+        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
+        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
+
+        // Base URL for the OneLink template
+        val baseURL = "https://mykaimealplanner.onelink.me/mPqu/" // Replace with your OneLink template
+
+        // Deep link URL for when the app is installed
+        val deepLink = "mykai://property?" +
+                "af_user_id=$afUserId" +
+                "&CookbooksID=$id" +
+                "&ItemName=$name" +
+                "&ScreenName=CookBooksType"
+
+        // Web fallback URL (e.g., if app is not installed)
+        val webLink = "https://www.mykaimealplanner.com" // Replace with your fallback web URL
+
+        // Build OneLink parameters
+        val parameters = mapOf(
+//            "af_user_id" to afUserId,
+            "providerName" to providerName,
+//            "CookbooksID" to id,
+//            "ItemName" to name,
+            "providerImage" to providerImage,
+//            "ScreenName" to "CookBooksType",
+            "Referrer" to referrerCode,
+            "af_dp" to deepLink, // App deep link
+            "af_web_dp" to webLink // Web fallback URL
+        )
+
+
+        // Use Uri.Builder to construct the URL with query parameters
+        val uriBuilder = Uri.parse(baseURL).buildUpon()
+        for ((key, value) in parameters) {
+            uriBuilder.appendQueryParameter(key, value)
+        }
+        // Convert the URI to string and call the completion handler
+        val fullURL = uriBuilder.toString()
+        referLink = fullURL
+        Log.d("link ", "Generated OneLink URL: $fullURL")
+
+    }
+
+
     private fun generateDeepLink() {
 
         val afUserId = sessionManagement.getId()?.toString().orEmpty()
         val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
         val providerName = sessionManagement.getUserName()?.toString().orEmpty()
         val providerImage = sessionManagement.getImage()?.toString().orEmpty()
-
 
         // Your OneLink base URL and campaign details
         val currentCampaign = "property_share"

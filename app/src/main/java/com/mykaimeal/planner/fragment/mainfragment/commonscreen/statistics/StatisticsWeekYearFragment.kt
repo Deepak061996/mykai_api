@@ -152,7 +152,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
                     showSpendingWeekYear(it)
                 }
             } else {
-               handleError(apiModel.code,apiModel.message)
+                handleError(apiModel.code,apiModel.message)
             }
         } catch (e: Exception) {
             showAlert(e.message, false)

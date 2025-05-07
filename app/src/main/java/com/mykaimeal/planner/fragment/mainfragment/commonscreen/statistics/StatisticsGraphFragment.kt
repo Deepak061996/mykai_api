@@ -144,33 +144,7 @@ class StatisticsGraphFragment : Fragment() {
 
         binding.tvDateCalendar.text = formatMonthYear(currentMonth.toInt(),year.toInt())
 
-        AppsFlyerLib.getInstance().subscribeForDeepLink { deepLinkResult ->
-            when (deepLinkResult.status) {
-                DeepLinkResult.Status.FOUND -> {
-                    Log.d("AppsFlyer22", "Deep link found, store")
 
-                    val deepLinkValue = deepLinkResult.deepLink?.getStringValue("deep_link_value")
-                    if (deepLinkValue == "profile_screen") {
-                        // Navigate to Profile Screen
-                        Log.d("AppsFlyer22", "profile")
-
-                    } else {
-                        Log.d("AppsFlyer22", "Deep link statistics")
-
-                        // Handle other deep link values
-                    }
-                }
-
-                DeepLinkResult.Status.NOT_FOUND -> {
-                    Log.d("AppsFlyer22", "Deep link not found, redirecting to Play Store")
-                    redirectToPlayStore()
-                }
-
-                DeepLinkResult.Status.ERROR -> {
-                    Log.d("AppsFlyer22", "Error in deep link: ${deepLinkResult.error}")
-                }
-            }
-        }
 
         binding.imgBackStats.setOnClickListener {
             findNavController().navigateUp()
