@@ -2,7 +2,9 @@ package com.mykaimeal.planner.fragment.mainfragment.searchtab.searchscreen
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
@@ -10,9 +12,11 @@ import android.text.Html
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -115,6 +119,38 @@ class SearchFragment : Fragment(),View.OnClickListener, OnItemClickListener {
 
 
         return binding.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupUI(view)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupUI(view: View) {
+        // Set up touch listener for non-EditText views to hide keyboard.
+        if (view !is EditText) {
+            view.setOnTouchListener { _, _ ->
+                hideKeyboard(view)
+                false
+            }
+        }
+
+        // If a layout container, iterate over children
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                val innerView = view.getChildAt(i)
+                setupUI(innerView)
+            }
+        }
+
+
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun lunchApi() {
@@ -395,5 +431,8 @@ class SearchFragment : Fragment(),View.OnClickListener, OnItemClickListener {
         super.onDestroyView()
         _binding = null
     }
+
+
+
 
 }

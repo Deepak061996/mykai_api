@@ -1597,7 +1597,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
         layroot.setOnClickListener {
             dialog.dismiss()
         }
-        tvTitle.text="Oops! Your limit has been exceeded. Please purchase your subscription to regain access to all features."
+        tvTitle.text=ErrorMessage.subscriptionError
         btnOk.setOnClickListener {
             dialog.dismiss()
             dialogAddRecipe?.dismiss()
@@ -1606,10 +1606,10 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             bundle.putString("screen","main")
             findNavController(R.id.frameContainerMain).navigate(R.id.homeSubscriptionAllPlanFragment,bundle)
         }
-
         btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+
         dialog.show()
     }
 

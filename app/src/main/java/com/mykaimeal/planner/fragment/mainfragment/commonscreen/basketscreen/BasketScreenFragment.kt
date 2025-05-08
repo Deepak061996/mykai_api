@@ -191,7 +191,7 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         }
 
         binding.btnLock.setOnClickListener {
-            subscriptionAlertError(requireContext())
+            subscriptionAlert(requireContext())
         }
 
         initialize()
@@ -200,7 +200,7 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
     }
 
     @SuppressLint("SetTextI18n")
-    fun subscriptionAlertError(context: Context){
+    fun subscriptionAlert(context: Context){
         val dialog= Dialog(context, R.style.BottomSheetDialog)
         dialog.setCancelable(true)
         dialog.setCanceledOnTouchOutside(true)
@@ -217,9 +217,9 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
 
         layroot.setOnClickListener {
             dialog.dismiss()
-            findNavController().navigateUp()
         }
-        tvTitle.text="Oops! Your limit has been exceeded. Please purchase your subscription to regain access to all features."
+
+        tvTitle.text=ErrorMessage.subscriptionError
         btnOk.setOnClickListener {
             dialog.dismiss()
             val bundle = Bundle()
@@ -228,6 +228,7 @@ class BasketScreenFragment : Fragment(), OnItemLongClickListener, OnItemSelectLi
         }
 
         btnCancel.setOnClickListener {
+            findNavController().navigateUp()
             dialog.dismiss()
         }
         dialog.show()

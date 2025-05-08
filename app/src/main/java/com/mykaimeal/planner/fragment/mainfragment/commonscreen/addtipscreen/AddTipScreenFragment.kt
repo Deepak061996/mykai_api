@@ -114,7 +114,6 @@ class AddTipScreenFragment : Fragment() {
 //                                LOAD_PAYMENT_DATA_REQUEST_CODE
 //                            )
 
-
                             val paymentDataRequestJson = createPaymentDataRequest()
                             val paymentDataRequest = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
                             val task = paymentsClient.loadPaymentData(paymentDataRequest)

@@ -1,21 +1,31 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.FileProvider
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.google.gson.Gson
+import com.mykaimeal.planner.R
 import com.mykaimeal.planner.adapter.AdapterInviteItem
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.NetworkResult
+import com.mykaimeal.planner.basedata.SessionManagement
 import com.mykaimeal.planner.databinding.FragmentInvitationsScreenBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.ReferralInvitationModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.ReferralInvitationModelData
@@ -23,6 +33,8 @@ import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.viewm
 import com.mykaimeal.planner.messageclass.ErrorMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class InvitationsScreenFragment : Fragment() {
@@ -31,6 +43,10 @@ class InvitationsScreenFragment : Fragment() {
     private var adapterInviteItem: AdapterInviteItem? = null
     private lateinit var statisticsViewModel: StatisticsViewModel
     private var referralList: MutableList<ReferralInvitationModelData> =mutableListOf()
+    private var referLink: String = ""
+
+    private lateinit var sessionManagement: SessionManagement
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +56,7 @@ class InvitationsScreenFragment : Fragment() {
         binding=FragmentInvitationsScreenBinding.inflate(layoutInflater, container, false)
 
         statisticsViewModel = ViewModelProvider(this)[StatisticsViewModel::class.java]
+        sessionManagement = SessionManagement(requireActivity())
 
         backButton()
 
@@ -81,17 +98,114 @@ class InvitationsScreenFragment : Fragment() {
             BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
         }
 
-      /*  binding.textInviteFriends.setOnClickListener {
-            val appPackageName: String = requireActivity().packageName
-            val myIntent = Intent(Intent.ACTION_SEND)
-            myIntent.type = "text/plain"
-            val body =
-                "https://play.google.com/store/apps/details?id=$appPackageName"
-            val sub = "Your Subject"
-            myIntent.putExtra(Intent.EXTRA_SUBJECT, sub)
-            myIntent.putExtra(Intent.EXTRA_TEXT, body)
-            startActivity(Intent.createChooser(myIntent, "Share Using"))
-        }*/
+
+        binding.textInviteFriends.setOnClickListener {
+
+            shareImageWithText(
+                "Hey! I put together this cookbook in My" +
+                        "Kai, and I think you’ll love it! It’s packed with delicious meals, check it out and let me know what you think!" +
+                        "\nclick on the link below:\n\n",
+                referLink
+            )
+        }
+
+        deepLink()
+
+    }
+
+    private fun shareImageWithText(description: String, link: String) {
+        // Download image using Glide
+        Glide.with(requireContext())
+            .asBitmap() // Request a Bitmap image
+            .load(R.mipmap.app_icon) // Provide the URL to load the image from
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                ) {
+                    try {
+                        // Save the image to a file in the app's external storage
+                        val file = File(
+                            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                            "shared_image.png"
+                        )
+                        val fos = FileOutputStream(file)
+                        resource.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                        fos.close()
+
+                        // Create URI for the file using FileProvider
+                        val uri: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            requireActivity().packageName + ".provider", // Make sure this matches your manifest provider
+                            file
+                        )
+
+                        // Format the message with line breaks
+                        val formattedText = """$description$link""".trimIndent()
+
+                        // Create an intent to share the image and text
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "image/png"
+                            putExtra(Intent.EXTRA_STREAM, uri)
+                            putExtra(Intent.EXTRA_TEXT, formattedText)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+
+                        // Launch the share dialog
+                        requireContext().startActivity(
+                            Intent.createChooser(
+                                shareIntent,
+                                "Share Image"
+                            )
+                        )
+
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        Log.d("ImageShareError", "onResourceReady: ${e.message}")
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // Optional: Handle if the image load is cleared or cancelled
+                }
+            })
+    }
+
+    private fun deepLink(){
+        val afUserId = sessionManagement.getId()?.toString().orEmpty()
+        val referrerCode = sessionManagement.getReferralCode()?.toString().orEmpty()
+        val providerName = sessionManagement.getUserName()?.toString().orEmpty()
+        val providerImage = sessionManagement.getImage()?.toString().orEmpty()
+
+        // Base URL for the OneLink template
+        val baseURL = "https://mykaimealplanner.onelink.me/mPqu/" // Replace with your OneLink template
+
+        // Deep link URL for when the app is installed
+        val deepLink = "mykai://property?" +
+                "af_user_id=$afUserId" +
+                "&Referrer=$referrerCode" +
+                "&providerName=$providerName" +
+                "&providerImage=$providerImage"
+
+        // Web fallback URL (e.g., if app is not installed)
+        val webLink = "https://www.mykaimealplanner.com" // Replace with your fallback web URL
+
+        // Build OneLink parameters
+        val parameters = mapOf(
+            "af_dp" to deepLink, // App deep link
+            "af_web_dp" to webLink // Web fallback URL
+        )
+
+
+        // Use Uri.Builder to construct the URL with query parameters
+        val uriBuilder = Uri.parse(baseURL).buildUpon()
+        for ((key, value) in parameters) {
+            uriBuilder.appendQueryParameter(key, value)
+        }
+        // Convert the URI to string and call the completion handler
+        val fullURL = uriBuilder.toString()
+        referLink = fullURL
+        Log.d("link ", "Generated OneLink URL: $fullURL")
 
     }
 

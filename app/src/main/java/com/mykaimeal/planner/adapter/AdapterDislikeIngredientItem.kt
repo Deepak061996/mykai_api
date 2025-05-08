@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class AdapterDislikeIngredientItem(private var dislikeIngredientsData: List<Disl
         return ViewHolder(binding)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.binding.tvTitleName.text=dislikeIngredientsData[position].name
@@ -42,55 +44,35 @@ class AdapterDislikeIngredientItem(private var dislikeIngredientsData: List<Disl
                 if (!dietaryId.contains(dislikeIngredientsData[position].id.toString())) {
                     dietaryId.add(dislikeIngredientsData[position].id.toString())
                 }
-                onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
             } else {
                 dietaryId.remove(dislikeIngredientsData[position].id.toString())
             }
 
             // Handle item click logic
             relMainLayout.setOnClickListener {
-                when (position) {
-                    0 -> { // Handle "Select All" or "None"
-                        if (dislikeIngredientsData[position].selected) {
-                            // Deselect "None" or "Select All"
-                            dislikeIngredientsData[position].selected = false
-                            selectedPositions.clear()
-                            dietaryId.clear()
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
-                        } else {
-                            // Select "None" or "Select All" and clear all other selections
-                            selectedPositions.clear()
-                            dislikeIngredientsData.forEach { it.selected = false }
-                            dietaryId.clear()
-
-                            dislikeIngredientsData[position].selected = true
-                            selectedPositions.add(0)
-                            dietaryId.add(dislikeIngredientsData[position].id.toString())
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
-                        }
-                    } else -> { // Handle individual item selection
-                        // Deselect "Select All" if any other item is clicked
-                      /*  if (selectedPositions.contains(0)) {
-                            selectedPositions.remove(0)*/
-                            dislikeIngredientsData[0].selected = false
-                            dietaryId.clear()
-                      /*  }*/
-
-                        // Toggle the current item's selection state
-                        dislikeIngredientsData[position].selected = !dislikeIngredientsData[position].selected
-                        if (dislikeIngredientsData[position].selected) {
-                            selectedPositions.add(position)
-                            dietaryId.add(dislikeIngredientsData[position].id.toString())
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
-                        } else {
-                            selectedPositions.remove(position)
-                            dietaryId.remove(dislikeIngredientsData[position].id.toString())
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
+                if (dislikeIngredientsData[position].name.equals("None",true)){
+                    // In your click listener or wherever you're handling item selection
+                    dislikeIngredientsData.forEachIndexed { index, item ->
+                        if (index==0){
+                            item.selected = !item.selected
+                        }else{
+                            item.selected = false
                         }
                     }
+                }else{
+                    // In your click listener or wherever you're handling item selection
+                    dislikeIngredientsData.forEachIndexed { index, item ->
+                        if (index==0){
+                            item.selected = false
+                        }
+                    }
+                    val data=dislikeIngredientsData[position]
+                    data.selected = !dislikeIngredientsData[position].selected
+                    notifyItemChanged(position,data)
                 }
+                notifyDataSetChanged()
+                onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
 
-                notifyDataSetChanged() // Refresh the UI
             }
         }
     }

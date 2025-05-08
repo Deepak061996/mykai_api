@@ -47,32 +47,14 @@ class CookingFrequencyFragment : Fragment(), OnItemClickListener {
     private var cookingFreqModelData: List<BodyGoalModelData>? = null
 
     @SuppressLint("SetTextI18n")
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
         _binding = FragmentCookingFrequencyBinding.inflate(inflater, container, false)
 
         cookingFrequencyViewModel = ViewModelProvider(this)[CookingFrequencyViewModel::class.java]
 
         sessionManagement = SessionManagement(requireContext())
-//        if (sessionManagement.getCookingFor().equals("Myself")) {
-//            binding.tvCookFreqDesc.text = "How often do you cook meals at home?"
-//            binding.progressBar7.max = 10
-//            totalProgressValue = 10
-//            updateProgress(7)
-//        } else if (sessionManagement.getCookingFor().equals("MyPartner")) {
-//            binding.tvCookFreqDesc.text = "How often do you cook meals at home?"
-//            binding.progressBar7.max = 11
-//            totalProgressValue = 11
-//            updateProgress(8)
-//        } else {
-//            binding.tvCookFreqDesc.text = "How often do you cook meals for your family?"
-//            binding.progressBar7.max = 11
-//            totalProgressValue = 11
-//            updateProgress(8)
-//        }
+
 
         val cookingFor = sessionManagement.getCookingFor()
         var progressValue = 8

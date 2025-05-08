@@ -84,11 +84,11 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
 
         backButton()
 
-        statisticsViewModel.dataGraphDataList?.let {
-            showSpendingWeekYear(it)
-        }?:run{
-            loadWeekListApi()
-        }
+//        statisticsViewModel.dataGraphDataList?.let {
+//            showSpendingWeekYear(it)
+//        }?:run{
+//            loadWeekListApi()
+//        }
 
 
         statisticsViewModel.currentDate?.let {
@@ -549,11 +549,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
 
 
     override fun itemClick(position: Int?, status: String?, type: String?) {
-        if (status=="1"){
-            chooseDayDialog()
-        }else{
-            findNavController().navigate(R.id.basketScreenFragment)
-        }
+
     }
 
 

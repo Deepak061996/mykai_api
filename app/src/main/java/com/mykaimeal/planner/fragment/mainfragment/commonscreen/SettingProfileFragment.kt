@@ -602,9 +602,16 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showLogoutDialog() {
-        val dialog=Dialog(requireContext())
+        val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.alert_dialog_logout_popup)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // Set width and height
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,  // or specific width like 600
+            ViewGroup.LayoutParams.WRAP_CONTENT   // or specific height like 400
+        )
+
         dialog.findViewById<TextView>(R.id.tvDialogCancelBtn).setOnClickListener { dialog.dismiss() }
 
         dialog.findViewById<TextView>(R.id.tvDialogLogoutBtn)?.setOnClickListener {
@@ -614,6 +621,7 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
                 BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
             }
         }
+
         dialog.show()
     }
 
@@ -622,6 +630,12 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
         dialog.setContentView(R.layout.alert_dialog_delete_account)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.findViewById<TextView>(R.id.tvDialogCancelBtn).setOnClickListener { dialog.dismiss() }
+
+        // Set width and height
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,  // or specific width like 600
+            ViewGroup.LayoutParams.WRAP_CONTENT   // or specific height like 400
+        )
 
         dialog.findViewById<TextView>(R.id.tvDialogRemoveBtn)?.setOnClickListener {
             if (BaseApplication.isOnline(requireActivity())) {

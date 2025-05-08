@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class AdapterAllergensIngItem(
         return ViewHolder(binding)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.binding.tvTitleName.text = allergensIngredientsData[position].name
@@ -45,58 +47,37 @@ class AdapterAllergensIngItem(
                 if (!dietaryId.contains(allergensIngredientsData[position].id.toString())) {
                     dietaryId.add(allergensIngredientsData[position].id.toString())
                 }
-                onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
+//                onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
             } else {
                 dietaryId.remove(allergensIngredientsData[position].id.toString())
             }
 
             // Handle item click logic
             relMainLayout.setOnClickListener {
-                when (position) {
-                    0 -> { // Handle "Select All" or "None"
-                        if (allergensIngredientsData[position].selected) {
-                            // Deselect "None" or "Select All"
-                            allergensIngredientsData[position].selected = false
-                            selectedPositions.clear()
-                            dietaryId.clear()
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
-                        } else {
-                            // Select "None" or "Select All" and clear all other selections
-                            selectedPositions.clear()
-                            allergensIngredientsData.forEach { it.selected = false }
-                            dietaryId.clear()
-
-                            allergensIngredientsData[position].selected = true
-                            selectedPositions.add(0)
-                            dietaryId.add(allergensIngredientsData[position].id.toString())
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
+                if (allergensIngredientsData[position].name.equals("None",true)){
+                    // In your click listener or wherever you're handling item selection
+                    allergensIngredientsData.forEachIndexed { index, item ->
+                        if (index==0){
+                            item.selected = !item.selected
+                        }else{
+                            item.selected = false
                         }
                     }
-
-                    else -> { // Handle individual item selection
-                        // Deselect "Select All" if any other item is clicked
-                        /*   if (selectedPositions.contains(0)) {
-                               selectedPositions.remove(0)*/
-                        allergensIngredientsData[0].selected = false
-                        dietaryId.clear()
-                        /*    }*/
-
-                        // Toggle the current item's selection state
-                        allergensIngredientsData[position].selected =
-                            !allergensIngredientsData[position].selected
-                        if (allergensIngredientsData[position].selected) {
-                            selectedPositions.add(position)
-                            dietaryId.add(allergensIngredientsData[position].id.toString())
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
-                        } else {
-                            selectedPositions.remove(position)
-                            dietaryId.remove(allergensIngredientsData[position].id.toString())
-                            onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
+                }else{
+                    // In your click listener or wherever you're handling item selection
+                    allergensIngredientsData.forEachIndexed { index, item ->
+                        if (index==0){
+                            item.selected = false
                         }
                     }
+                    val data=allergensIngredientsData[position]
+                    data.selected = !allergensIngredientsData[position].selected
+                    notifyItemChanged(position,data)
                 }
+                notifyDataSetChanged()
 
-                notifyDataSetChanged() // Refresh the UI
+                onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
+
             }
         }
     }

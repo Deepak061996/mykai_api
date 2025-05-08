@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.mykaimeal.planner.OnItemClickedListener
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.adapter.MealRoutineAdapter
 import com.mykaimeal.planner.basedata.BaseApplication
 import com.mykaimeal.planner.basedata.BaseApplication.alertError
@@ -223,11 +224,7 @@ class MealRoutineFragment : Fragment(), View.OnClickListener, OnItemClickedListe
                             if (bodyModel.code == 200 && bodyModel.success) {
                                 showDataInUi(bodyModel.data.mealroutine)
                             } else {
-                                if (bodyModel.code == ErrorMessage.code) {
-                                    showAlertFunction(bodyModel.message, true)
-                                } else {
-                                    showAlertFunction(bodyModel.message, false)
-                                }
+                                handleError(bodyModel.code,bodyModel.message)
                             }
                         }catch (e:Exception){
                             Log.d("MealRoutine@@","message:---"+e.message)
@@ -311,13 +308,10 @@ class MealRoutineFragment : Fragment(), View.OnClickListener, OnItemClickedListe
                             val gson = Gson()
                             val updateModel = gson.fromJson(it.data, UpdatePreferenceSuccessfully::class.java)
                             if (updateModel.code == 200 && updateModel.success) {
+                                (activity as MainActivity?)?.upDatePlan()
                                 findNavController().navigateUp()
                             } else {
-                                if (updateModel.code == ErrorMessage.code) {
-                                    showAlertFunction(updateModel.message, true)
-                                } else {
-                                    showAlertFunction(updateModel.message, false)
-                                }
+                                handleError(updateModel.code,updateModel.message)
                             }
                         }catch (e:Exception){
                             Log.d("MealRoutine@@@","message:---"+e.message)
@@ -336,6 +330,14 @@ class MealRoutineFragment : Fragment(), View.OnClickListener, OnItemClickedListe
         }
     }
 
+
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlertFunction(message, true)
+        } else {
+            showAlertFunction(message, false)
+        }
+    }
     override fun itemClicked(position: Int?, list: MutableList<String>?, status1: String?, type: String?) {
         if (status1.equals("-1")) {
             if (position==0){

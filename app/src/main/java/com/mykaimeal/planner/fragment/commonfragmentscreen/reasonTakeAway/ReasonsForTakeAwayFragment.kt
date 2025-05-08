@@ -274,12 +274,16 @@ class ReasonsForTakeAwayFragment : Fragment(), OnItemClickListener {
                     reasonTakeAway = s.toString()
                     status="2"
                     binding.tvNextBtn.isClickable = true
+                    binding.rlUpdateReasonTakeAway.isClickable = true
+                    binding.rlUpdateReasonTakeAway.setBackgroundResource(R.drawable.gray_btn_select_background)
                     binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_select_background)
                 }else{
                     status=""
                     reasonTakeAway = ""
                     binding.tvNextBtn.isClickable = false
+                    binding.rlUpdateReasonTakeAway.isClickable = false
                     binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+                    binding.rlUpdateReasonTakeAway.setBackgroundResource(R.drawable.gray_btn_unselect_background)
                 }
             }
 

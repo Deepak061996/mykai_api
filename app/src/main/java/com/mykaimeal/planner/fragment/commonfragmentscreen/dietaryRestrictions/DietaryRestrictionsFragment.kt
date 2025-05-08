@@ -44,7 +44,7 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
     private var status: String? = null
     private var dietarySelectedId = mutableListOf<String>()
     private lateinit var dietaryRestrictionsViewModel: DietaryRestrictionsViewModel
-    private var dietaryModelsData: MutableList<DietaryRestrictionsModelData>? = null
+    private var dietaryModelsData: MutableList<DietaryRestrictionsModelData> = mutableListOf()
     private var isExpanded = false
 
     @SuppressLint("SetTextI18n")
@@ -55,8 +55,7 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentDietaryRestrictionsBinding.inflate(inflater, container, false)
-        dietaryRestrictionsViewModel =
-            ViewModelProvider(this)[DietaryRestrictionsViewModel::class.java]
+        dietaryRestrictionsViewModel = ViewModelProvider(this)[DietaryRestrictionsViewModel::class.java]
         sessionManagement = SessionManagement(requireContext())
 
         val cookingFor = sessionManagement.getCookingFor()
@@ -87,6 +86,7 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
         binding.tvRestrictions.text = restrictionText
         binding.progressBar2.max = maxProgress
         totalProgressValue = maxProgress
+
         updateProgress(progressValue)
 
         val isProfileScreen = sessionManagement.getCookingScreen().equals("Profile", true)
@@ -133,13 +133,14 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
                             val gson = Gson()
                             val bodyModel = gson.fromJson(it.data, GetUserPreference::class.java)
                             if (bodyModel.code == 200 && bodyModel.success) {
-                                showDataInUi(bodyModel.data.dietaryrestriction)
-                            } else {
-                                if (bodyModel.code == ErrorMessage.code) {
-                                    showAlertFunction(bodyModel.message, true)
-                                } else {
-                                    showAlertFunction(bodyModel.message, false)
+                                dietaryModelsData.clear()
+                                dietaryModelsData.add(0, DietaryRestrictionsModelData(id = -1, selected = false, name = "None"))
+                                bodyModel.data.dietaryrestriction.let { local->
+                                    dietaryModelsData.addAll(local)
                                 }
+                                showDataInUi(dietaryModelsData)
+                            } else {
+                                handleError(bodyModel.code,bodyModel.message)
                             }
                         } catch (e: Exception) {
                             Log.d("DietaryRestriction", "message" + e.message)
@@ -158,6 +159,14 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
         }
     }
 
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlertFunction(message, true)
+        } else {
+            showAlertFunction(message, false)
+        }
+    }
+
     private fun dietaryRestrictionApi() {
         BaseApplication.showMe(requireContext())
         lifecycleScope.launch {
@@ -170,13 +179,11 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
                             val dietaryModel =
                                 gson.fromJson(it.data, DietaryRestrictionsModel::class.java)
                             if (dietaryModel.code == 200 && dietaryModel.success) {
+                                dietaryModelsData.clear()
+                                dietaryModelsData.add(0, DietaryRestrictionsModelData(id = -1, selected = false, name = "None"))
                                 showDataFirstUi(dietaryModel.data)
                             } else {
-                                if (dietaryModel.code == ErrorMessage.code) {
-                                    showAlertFunction(dietaryModel.message, true)
-                                } else {
-                                    showAlertFunction(dietaryModel.message, false)
-                                }
+                                handleError(dietaryModel.code,dietaryModel.message)
                             }
                         } catch (e: Exception) {
                             Log.d("DietaryRestriction@@", "message" + e.message)
@@ -197,31 +204,11 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
 
     private fun showDataInUi(dietaryModelData: MutableList<DietaryRestrictionsModelData>) {
         try {
-            if (dietaryModelData != null && dietaryModelData.isNotEmpty()) {
-                val data = dietaryRestrictionsViewModel.getDietaryResData()
-
-              // Add "None" option if data is null
-                if (data == null) {
-                    dietaryModelData.add(0, DietaryRestrictionsModelData(id = -1, selected = false, name = "None")
-                    )
-                }
-
-             // Ensure at least one item is selected
-                if (dietaryModelData.none { it.selected }) {
-                    dietaryModelData[0] =
-                        DietaryRestrictionsModelData(id = -1, selected = true, name = "None")
-                }
-
-             // Show "Show More" button only if there are more than 5 items
-                binding.relMoreButton.visibility =
-                    if (dietaryModelData.size > 5) View.VISIBLE else View.GONE
-
-             // Setup adapter
-                dietaryModelsData = dietaryModelData
-                dietaryRestrictionsAdapter =
-                    DietaryRestrictionsAdapter(dietaryModelData, requireActivity(), this)
+            if (dietaryModelData.size>0) {
+                hideShow()
+                binding.relMoreButton.visibility = if (dietaryModelData.size > 5) View.VISIBLE else View.GONE
+                dietaryRestrictionsAdapter = DietaryRestrictionsAdapter(dietaryModelData, requireActivity(), this)
                 binding.rcyDietaryRestrictions.adapter = dietaryRestrictionsAdapter
-
             }
         } catch (e: Exception) {
             Log.d("DietaryRestriction", "message" + e.message)
@@ -231,21 +218,19 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
 
     private fun showDataFirstUi(dietaryModelData: MutableList<DietaryRestrictionsModelData>) {
         try {
-            if (dietaryModelData != null && dietaryModelData.isNotEmpty()) {
-                if (dietaryRestrictionsViewModel.getDietaryResData() == null) {
-                    // Add "None" option at the first position
-                    dietaryModelData.add(
-                        0,
-                        DietaryRestrictionsModelData(id = -1, selected = false, "None")
-                    ) // ID set to -1 as an indicator
-                }
-                dietaryModelsData = dietaryModelData
+
+            dietaryModelData.let {
+                dietaryModelsData.addAll(it)
+            }
+
+            if (dietaryModelsData.size>0) {
+
+                hideShow()
                 // Show "Show More" button only if there are more than 3 items
-                if (dietaryModelData.size > 3) {
+                if (dietaryModelsData.size > 3) {
                     binding.relMoreButton.visibility = View.VISIBLE
                 }
-                dietaryRestrictionsAdapter =
-                    DietaryRestrictionsAdapter(dietaryModelData, requireActivity(), this)
+                dietaryRestrictionsAdapter = DietaryRestrictionsAdapter(dietaryModelsData, requireActivity(), this)
                 binding.rcyDietaryRestrictions.adapter = dietaryRestrictionsAdapter
             }
         } catch (e: Exception) {
@@ -275,7 +260,13 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
 
         binding.tvNextBtn.setOnClickListener {
             if (status == "2") {
-                dietaryRestrictionsViewModel.setDietaryResData(dietaryModelsData!!)
+                dietarySelectedId.clear()
+                dietaryModelsData.forEach {
+                    if (it.selected){
+                        dietarySelectedId.add(it.id.toString())
+                    }
+                }
+                dietaryRestrictionsViewModel.setDietaryResData(dietaryModelsData)
                 sessionManagement.setDietaryRestrictionList(dietarySelectedId)
                 if (sessionManagement.getCookingFor().equals("Myself")) {
                     findNavController().navigate(R.id.favouriteCuisinesFragment)
@@ -290,6 +281,12 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
         binding.rlUpdateDietRest.setOnClickListener {
             if (status=="2"){
                 if (BaseApplication.isOnline(requireContext())) {
+                    dietarySelectedId.clear()
+                    dietaryModelsData.forEach {
+                        if (it.selected){
+                            dietarySelectedId.add(it.id.toString())
+                        }
+                    }
                     updateDietaryRestApi()
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
@@ -374,31 +371,50 @@ class DietaryRestrictionsFragment : Fragment(), OnItemClickedListener {
         type: String?
     ) {
 
-        if (status1.equals("-1")) {
-            if (position == 0) {
-                dietarySelectedId = mutableListOf()
-            } else {
-                dietarySelectedId = list!!
-            }
-            status = "2"
-            binding.tvNextBtn.isClickable = true
-            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            binding.rlUpdateDietRest.isClickable = true
-            binding.rlUpdateDietRest.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            return
-        }
+        hideShow()
 
-        if (type.equals("true")) {
-            status = "2"
-            binding.tvNextBtn.isClickable = true
-            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            binding.rlUpdateDietRest.isClickable = true
-            binding.rlUpdateDietRest.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            dietarySelectedId = list!!
-        } else {
+//        if (status1.equals("-1")) {
+//            if (position == 0) {
+//                dietarySelectedId = mutableListOf()
+//            } else {
+//                dietarySelectedId = list!!
+//            }
+//            status = "2"
+//            binding.tvNextBtn.isClickable = true
+//            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
+//            binding.rlUpdateDietRest.isClickable = true
+//            binding.rlUpdateDietRest.setBackgroundResource(R.drawable.green_fill_corner_bg)
+//            return
+//        }
+//
+//        if (type.equals("true")) {
+//            status = "2"
+//            binding.tvNextBtn.isClickable = true
+//            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
+//            binding.rlUpdateDietRest.isClickable = true
+//            binding.rlUpdateDietRest.setBackgroundResource(R.drawable.green_fill_corner_bg)
+//            dietarySelectedId = list!!
+//        } else {
+//            status = ""
+//            binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+//            binding.rlUpdateDietRest.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+//        }
+    }
+
+    private fun hideShow() {
+        val count = dietaryModelsData.count { it.selected }
+        if (count == 0) {
             status = ""
+            binding.tvNextBtn.isClickable = false
+            binding.rlUpdateDietRest.isClickable = false
             binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
             binding.rlUpdateDietRest.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+        } else {
+            status = "2"
+            binding.tvNextBtn.isClickable = true
+            binding.rlUpdateDietRest.isClickable = true
+            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
+            binding.rlUpdateDietRest.setBackgroundResource(R.drawable.green_fill_corner_bg)
         }
     }
 

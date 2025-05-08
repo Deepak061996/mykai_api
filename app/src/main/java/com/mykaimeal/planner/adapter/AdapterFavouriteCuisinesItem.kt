@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +16,6 @@ class AdapterFavouriteCuisinesItem(private var favouriteCuisineModelData: List<F
                                    private var onItemClickedListener: OnItemClickedListener):
     RecyclerView.Adapter<AdapterFavouriteCuisinesItem.ViewHolder>() {
     private var isNoneSelected :Boolean = true
-
-    private val selectedPositions = mutableSetOf<Int>() // Track selected positions
     private val dietaryId = mutableListOf<String>() // Track selected dietary IDs
     private var isExpanded = false
 
@@ -38,7 +37,7 @@ class AdapterFavouriteCuisinesItem(private var favouriteCuisineModelData: List<F
                 if (!dietaryId.contains(favouriteCuisineModelData[position].id.toString())) {
                     dietaryId.add(favouriteCuisineModelData[position].id.toString())
                 }
-                onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
+//                onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
             } else {
                 imageRightTick.visibility = View.GONE
                 relMainLayout.setBackgroundResource(R.drawable.gray_box_border_bg)
@@ -47,88 +46,19 @@ class AdapterFavouriteCuisinesItem(private var favouriteCuisineModelData: List<F
 
             // Handle item click
             relMainLayout.setOnClickListener {
-                // Toggle selection state
-                favouriteCuisineModelData[position].selected = !favouriteCuisineModelData[position].selected
 
-                if (favouriteCuisineModelData[position].selected) {
-                    dietaryId.add(favouriteCuisineModelData[position].id.toString())
-                    selectedPositions.add(position)
-                } else {
-                    dietaryId.remove(favouriteCuisineModelData[position].id.toString())
-                    selectedPositions.remove(position)
-                }
+                    val data=favouriteCuisineModelData[position]
+                    data.selected = !favouriteCuisineModelData[position].selected
+                    notifyItemChanged(position,data)
+                    onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
 
-                // Callback to notify selection change
-                onItemClickedListener.itemClicked(position, dietaryId, "2", favouriteCuisineModelData[position].selected.toString())
 
-                notifyItemChanged(position) // Efficiently update only the clicked item
             }
         }
 
-
-        /*   holder.binding.tvTitleName.text=favouriteCuisineModelData[position].name
-
-           // Inside your adapter's onBindViewHolder method
-           holder.binding.apply {
-               // Update UI based on the data model's 'selected' property
-               if (favouriteCuisineModelData[position].selected) {
-                   imageRightTick.visibility = View.VISIBLE
-                   relMainLayout.setBackgroundResource(R.drawable.orange_box_bg)
-                   if (!dietaryId.contains(favouriteCuisineModelData[position].id.toString())) {
-                       dietaryId.add(favouriteCuisineModelData[position].id.toString())
-                   }
-                   onItemClickedListener.itemClicked(position, dietaryId, "-1", "")
-               } else {
-                   imageRightTick.visibility = View.GONE
-                   relMainLayout.setBackgroundResource(R.drawable.gray_box_border_bg)
-                   dietaryId.remove(favouriteCuisineModelData[position].id.toString())
-               }
-
-               // Handle item click
-               relMainLayout.setOnClickListener {
-                  *//* if (position == 0) {
-                    // Handle "None" (first item) case
-                    if (favouriteCuisineModelData[position].selected) {
-                        // Deselect "None"
-                        favouriteCuisineModelData[position].selected = false
-                        selectedPositions.remove(0)
-                        dietaryId.clear()
-                        onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
-                    } else {
-                        // Select "None" and clear all other selections
-                        selectedPositions.clear()
-                        favouriteCuisineModelData.forEach { it.selected = false }
-                        dietaryId.clear()
-
-                        favouriteCuisineModelData[position].selected = true
-                        selectedPositions.add(0)
-                        dietaryId.add(favouriteCuisineModelData[position].id.toString())
-                        onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
-                    }
-                } else {*//*
-                        favouriteCuisineModelData[0].selected = false
-                        dietaryId.clear()
-
-                    // Toggle the current item's selection state
-                    if (favouriteCuisineModelData[position].selected) {
-                        // Deselect the item
-                        favouriteCuisineModelData[position].selected = false
-                        selectedPositions.remove(position)
-                        dietaryId.remove(favouriteCuisineModelData[position].id.toString())
-                        onItemClickedListener.itemClicked(position, dietaryId, "2", "false")
-                    } else {
-                        // Select the item
-                        favouriteCuisineModelData[position].selected = true
-                        selectedPositions.add(position)
-                        dietaryId.add(favouriteCuisineModelData[position].id.toString())
-                        onItemClickedListener.itemClicked(position, dietaryId, "2", "true")
-                    }
-                *//*}*//*
-                notifyDataSetChanged() // Refresh the UI
-            }
-        }*/
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setExpanded(expanded: Boolean) {
         isExpanded = expanded
         notifyDataSetChanged()

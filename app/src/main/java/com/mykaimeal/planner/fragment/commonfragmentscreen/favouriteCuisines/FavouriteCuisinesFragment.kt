@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -43,14 +44,14 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
     private var status: String? = ""
     private var favouriteSelectId = mutableListOf<String>()
     private lateinit var favouriteCuisineViewModel: FavouriteCuisineViewModel
-    private var favouriteCuiModelData: MutableList<FavouriteCuisinesModelData>? = null
+    private var favouriteCuiModelData: MutableList<FavouriteCuisinesModelData> = mutableListOf()
     private var isExpanded = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         // Inflate the layout for this fragment
         binding = FragmentFavouriteCuisinesBinding.inflate(inflater, container, false)
-        favouriteCuisineViewModel = ViewModelProvider(this)[FavouriteCuisineViewModel::class.java]
+        favouriteCuisineViewModel = ViewModelProvider(requireActivity())[FavouriteCuisineViewModel::class.java]
         sessionManagement = SessionManagement(requireContext())
 
         val cookingFor = sessionManagement.getCookingFor()
@@ -127,6 +128,12 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
 
         binding.tvNextBtn.setOnClickListener {
             if (status == "2") {
+                favouriteSelectId.clear()
+                favouriteCuiModelData.forEach {
+                    if (it.selected){
+                        favouriteSelectId.add(it.id.toString())
+                    }
+                }
                 favouriteCuisineViewModel.setFavouriteCuiData(favouriteCuiModelData!!)
                 sessionManagement.setFavouriteCuisineList(favouriteSelectId)
                 if (sessionManagement.getCookingFor().equals("Myself")) {
@@ -142,6 +149,12 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
         binding.rlUpdateFavCuisine.setOnClickListener {
             if (status=="2"){
                 if (BaseApplication.isOnline(requireContext())) {
+                    favouriteSelectId.clear()
+                    favouriteCuiModelData.forEach {
+                        if (it.selected){
+                            favouriteSelectId.add(it.id.toString())
+                        }
+                    }
                     updateFavCuisineApi()
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
@@ -149,11 +162,13 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
             }
         }
 
-        binding.relMoreButton.setOnClickListener { v ->
+        binding.relMoreButton.setOnClickListener {
             isExpanded = true
             adapterFavouriteCuisinesItem!!.setExpanded(true)
             binding.relMoreButton.visibility = View.GONE // Hide button after expanding
         }
+
+
     }
 
     private fun updateFavCuisineApi() {
@@ -230,13 +245,13 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
                             val gson = Gson()
                             val bodyModel = gson.fromJson(it.data, GetUserPreference::class.java)
                             if (bodyModel.code == 200 && bodyModel.success) {
-                                showDataInUi(bodyModel.data.favouritcuisine)
-                            } else {
-                                if (bodyModel.code == ErrorMessage.code) {
-                                    showAlertFunction(bodyModel.message, true)
-                                } else {
-                                    showAlertFunction(bodyModel.message, false)
+                                favouriteCuiModelData.clear()
+                                bodyModel.data.favouritcuisine?.let {localData->
+                                    favouriteCuiModelData.addAll(localData)
                                 }
+                                showDataInUi(favouriteCuiModelData)
+                            } else {
+                                handleError(bodyModel.code,bodyModel.message)
                             }
                         } catch (e: Exception) {
                             Log.d("FavouriteCuisines@@@", "message" + e.message)
@@ -255,6 +270,14 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
         }
     }
 
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlertFunction(message, true)
+        } else {
+            showAlertFunction(message, false)
+        }
+    }
+
 
     private fun favouriteCuisineApi() {
         BaseApplication.showMe(requireContext())
@@ -265,16 +288,11 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
                     is NetworkResult.Success -> {
                         try {
                             val gson = Gson()
-                            val dietaryModel =
-                                gson.fromJson(it.data, FavouriteCuisinesModel::class.java)
+                            val dietaryModel = gson.fromJson(it.data, FavouriteCuisinesModel::class.java)
                             if (dietaryModel.code == 200 && dietaryModel.success) {
                                 showDataInFirstUi(dietaryModel.data)
                             } else {
-                                if (dietaryModel.code == ErrorMessage.code) {
-                                    showAlertFunction(dietaryModel.message, true)
-                                } else {
-                                    showAlertFunction(dietaryModel.message, false)
-                                }
+                                handleError(dietaryModel.code,dietaryModel.message)
                             }
                         } catch (e: Exception) {
                             Log.d("FavouriteCuisines", "message" + e.message)
@@ -295,22 +313,11 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
 
     private fun showDataInUi(favouriteModelData: MutableList<FavouriteCuisinesModelData>) {
         try {
-            if (favouriteModelData != null && favouriteModelData.isNotEmpty()) {
-            /*    if (favouriteCuisineViewModel.getFavouriteCuiData() == null) {
-                    favouriteModelData.add(0, FavouriteCuisinesModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
-                }
-                var selected = false
-                favouriteModelData.forEach {
-                    if (it.selected) selected = true
-                }
-                if (!selected) {
-                    favouriteModelData[0] = FavouriteCuisinesModelData(id = -1, selected = true, "None")
-                }*/
-                // Show "Show More" button only if there are more than 3 items
+            if (favouriteModelData.size>0) {
                 if (favouriteModelData.size > 5) {
                     binding.relMoreButton.visibility = View.VISIBLE
                 }
-                favouriteCuiModelData = favouriteModelData
+                hideShow()
                 adapterFavouriteCuisinesItem = AdapterFavouriteCuisinesItem(favouriteModelData, requireActivity(), this)
                 binding.rcyFavCuisines.adapter = adapterFavouriteCuisinesItem
             }
@@ -322,16 +329,16 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
 
     private fun showDataInFirstUi(favouriteModelData: MutableList<FavouriteCuisinesModelData>) {
         try {
-            if (favouriteModelData != null && favouriteModelData.isNotEmpty()) {
-          /*      if (favouriteCuisineViewModel.getFavouriteCuiData() == null) {
-                    favouriteModelData.add(0, FavouriteCuisinesModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
-                }*/
-                favouriteCuiModelData = favouriteModelData
-                // Show "Show More" button only if there are more than 3 items
-                if (favouriteModelData.size > 5) {
+            favouriteCuiModelData.clear()
+            favouriteModelData.let {
+                favouriteCuiModelData.addAll(it)
+            }
+            if (favouriteCuiModelData.size>0) {
+                if (favouriteCuiModelData.size > 5) {
                     binding.relMoreButton.visibility = View.VISIBLE
                 }
-                adapterFavouriteCuisinesItem = AdapterFavouriteCuisinesItem(favouriteModelData, requireActivity(), this)
+                hideShow()
+                adapterFavouriteCuisinesItem = AdapterFavouriteCuisinesItem(favouriteCuiModelData, requireActivity(), this)
                 binding.rcyFavCuisines.adapter = adapterFavouriteCuisinesItem
             }
         } catch (e: Exception) {
@@ -344,40 +351,25 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
     }
 
 
-    override fun itemClicked(
-        position: Int?,
-        list: MutableList<String>?,
-        status1: String?,
-        type: String?
-    ) {
+    override fun itemClicked(position: Int?, list: MutableList<String>?, status1: String?, type: String?) {
+        hideShow()
+    }
 
-        if (status1.equals("-1")) {
-            if (position == 0) {
-                favouriteSelectId = mutableListOf()
-                /*  favouriteSelectId.clear()*/
-            } else {
-                favouriteSelectId = list!!
-            }
-            status = "2"
-            binding.tvNextBtn.isClickable = true
-            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            binding.rlUpdateFavCuisine.isClickable = true
-            binding.rlUpdateFavCuisine.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            favouriteSelectId = list!!
-            return
-        }
 
-        if (type.equals("true")) {
-            status = "2"
-            binding.tvNextBtn.isClickable = true
-            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            binding.rlUpdateFavCuisine.isClickable = true
-            binding.rlUpdateFavCuisine.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            favouriteSelectId = list!!
-        } else {
+    private fun hideShow() {
+        val count = favouriteCuiModelData.count { it.selected }
+        if (count == 0) {
             status = ""
+            binding.tvNextBtn.isClickable = false
+            binding.rlUpdateFavCuisine.isClickable = false
             binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
             binding.rlUpdateFavCuisine.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+        } else {
+            status = "2"
+            binding.tvNextBtn.isClickable = true
+            binding.rlUpdateFavCuisine.isClickable = true
+            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
+            binding.rlUpdateFavCuisine.setBackgroundResource(R.drawable.green_fill_corner_bg)
         }
     }
 

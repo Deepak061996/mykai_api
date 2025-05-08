@@ -149,6 +149,12 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
         /// handle click event for redirect next part
         binding.tvNextBtn.setOnClickListener {
             if (status == "2") {
+                allergensSelectedId.clear()
+                allergenIngModelData.forEach {
+                    if (it.selected){
+                        allergensSelectedId.add(it.id.toString())
+                    }
+                }
                 allergenIngredientViewModel.setAllergensData(allergenIngModelData,binding.etAllergensIngSearchBar.text.toString())
                 sessionManagement.setAllergenIngredientList(allergensSelectedId)
                 if (sessionManagement.getCookingFor().equals("Myself")) {
@@ -165,6 +171,12 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
             if (status == "2") {
                 ///checking the device of mobile data in online and offline(show network error message)
                 if (BaseApplication.isOnline(requireActivity())) {
+                    allergensSelectedId.clear()
+                    allergenIngModelData.forEach {
+                        if (it.selected){
+                            allergensSelectedId.add(it.id.toString())
+                        }
+                    }
                     updateAllergensApi()
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
@@ -238,11 +250,7 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
                             if (updateModel.code == 200 && updateModel.success) {
                                 findNavController().navigateUp()
                             } else {
-                                if (updateModel.code == ErrorMessage.code) {
-                                    showAlertFunction(updateModel.message, true)
-                                } else {
-                                    showAlertFunction(updateModel.message, false)
-                                }
+                                handleError(updateModel.code,updateModel.message)
                             }
                         }catch (e:Exception){
                             Log.d("allergens@@","message:---"+e.message)
@@ -276,22 +284,14 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
                                 if (dietaryModel.code == 200 && dietaryModel.success) {
                                     showDataFirstUi(dietaryModel.data.allergesingredient,countStatus)
                                 } else {
-                                    if (dietaryModel.code == ErrorMessage.code) {
-                                        showAlertFunction(dietaryModel.message, true)
-                                    } else {
-                                        showAlertFunction(dietaryModel.message, false)
-                                    }
+                                    handleError(dietaryModel.code,dietaryModel.message)
                                 }
                             }else{
                                 val dietaryModel = gson.fromJson(it.data, AllergensIngredientModel::class.java)
                                 if (dietaryModel.code == 200 && dietaryModel.success) {
                                     showDataFirstUi(dietaryModel.data,countStatus)
                                 } else {
-                                    if (dietaryModel.code == ErrorMessage.code) {
-                                        showAlertFunction(dietaryModel.message, true)
-                                    } else {
-                                        showAlertFunction(dietaryModel.message, false)
-                                    }
+                                    handleError(dietaryModel.code,dietaryModel.message)
                                 }
                             }
                         }catch (e:Exception){
@@ -313,12 +313,22 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
 
     }
 
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlertFunction(message, true)
+        } else {
+            showAlertFunction(message, false)
+        }
+    }
     private fun showDataFirstUi(allergensModelData: MutableList<AllergensIngredientModelData>,type:String) {
         try {
-            if (allergensModelData != null && allergensModelData.size>0) {
-                allergenIngModelData.clear()
-                allergenIngModelData.add(0, AllergensIngredientModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
-                allergenIngModelData.addAll(allergensModelData)
+            allergenIngModelData.clear()
+            allergenIngModelData.add(0, AllergensIngredientModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
+            allergensModelData?.let {
+                allergenIngModelData.addAll(it)
+            }
+            if (allergenIngModelData.size>0) {
+                hideShow()
                 allergenIngAdapter?.filterList(allergenIngModelData)
                 if (type.equals("search",true)){
                     binding.relMoreButton.visibility=View.GONE
@@ -336,35 +346,13 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
 
     private fun showDataInUi(allergensModelData: MutableList<AllergensIngredientModelData>) {
         try {
-            if (allergensModelData != null && allergensModelData.isNotEmpty()) {
-                if (allergenIngredientViewModel.getAllergensData() == null) {
-                    allergensModelData.add(0, AllergensIngredientModelData(id = -1, selected = false, "None")
-                    ) // ID set to -1 as an indicator
-                }
-                var selected = false
-                allergensModelData.forEach {
-                    if(it.selected) selected = true
-                }
-                if(!selected){
-                    allergensModelData.set(0, AllergensIngredientModelData(id = -1, selected = true, "None")
-                    )
-                }
-
-             /*   // Show "Show More" button only if there are more than 3 items
-                if (allergensModelData.size > 3) {
-                    binding.relMoreButton.visibility = View.VISIBLE
-                }*/
-                allergenIngModelData = allergensModelData.toMutableList()
-                allergenIngModelData = allergensModelData.toMutableList()
-                allergenIngAdapter?.filterList(allergenIngModelData)
+            if (allergensModelData.size>0) {
+                allergenIngAdapter?.filterList(allergensModelData)
                 if (allergenIngredientViewModel.getEditStatus().equals("")){
                     binding.relMoreButton.visibility=View.VISIBLE
                 }else{
                     binding.relMoreButton.visibility=View.GONE
                 }
-
-//                allergenIngAdapter = AdapterAllergensIngItem(allergensModelData, requireActivity(), this)
-//                binding.rcyAllergensDesc.adapter = allergenIngAdapter
             }
         }catch (e:Exception){
             Log.d("allergens","message:---"+e.message)
@@ -402,34 +390,7 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
     }
 
     override fun itemClicked(position: Int?, list: MutableList<String>?, status1: String?, type: String?) {
-            if (status1.equals("-1")) {
-                if (position==0){
-                    allergensSelectedId = mutableListOf()
-
-                }else{
-                    allergensSelectedId = list!!
-                }
-                status = "2"
-                binding.tvNextBtn.isClickable = true
-                binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-                binding.rlUpdateAllergens.isClickable = true
-                binding.rlUpdateAllergens.setBackgroundResource(R.drawable.green_fill_corner_bg)
-                return
-            }
-
-            if (type.equals("true")) {
-                status = "2"
-                binding.tvNextBtn.isClickable = true
-                binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-
-                binding.rlUpdateAllergens.isClickable = true
-                binding.rlUpdateAllergens.setBackgroundResource(R.drawable.green_fill_corner_bg)
-                allergensSelectedId = list!!
-            } else {
-                status = ""
-                binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
-                binding.rlUpdateAllergens.setBackgroundResource(R.drawable.gray_btn_unselect_background)
-            }
+        hideShow()
     }
 
     override fun onResume() {
@@ -441,6 +402,24 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
         binding.etAllergensIngSearchBar.removeTextChangedListener(textListener)
         super.onPause()
     }
+
+    private fun hideShow() {
+        val count = allergenIngModelData.count { it.selected }
+        if (count == 0) {
+            status = ""
+            binding.tvNextBtn.isClickable = false
+            binding.rlUpdateAllergens.isClickable = false
+            binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+            binding.rlUpdateAllergens.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+        } else {
+            status = "2"
+            binding.tvNextBtn.isClickable = true
+            binding.rlUpdateAllergens.isClickable = true
+            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
+            binding.rlUpdateAllergens.setBackgroundResource(R.drawable.green_fill_corner_bg)
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

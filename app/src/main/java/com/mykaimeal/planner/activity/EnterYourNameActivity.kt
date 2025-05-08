@@ -1,11 +1,16 @@
 package com.mykaimeal.planner.activity
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.mykaimeal.planner.R
@@ -27,6 +32,9 @@ class EnterYourNameActivity : AppCompatActivity() {
         setContentView(binding!!.root)
         commonWorkUtils = CommonWorkUtils(this@EnterYourNameActivity)
         sessionManagement = SessionManagement(this@EnterYourNameActivity)
+
+        // Call setupUI with the root view of your activity
+        setupUI(findViewById(android.R.id.content))
 
         ///main function using all triggered of this screen
         initialize()
@@ -164,6 +172,30 @@ class EnterYourNameActivity : AppCompatActivity() {
         }
     }
 
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupUI(view: View) {
+        // Hide keyboard if the touched view is not EditText
+        if (view !is EditText) {
+            view.setOnTouchListener { _, _ ->
+                hideKeyboard(view)
+                false
+            }
+        }
+
+        // If the view is a container, loop through its children
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                val child = view.getChildAt(i)
+                setupUI(child)
+            }
+        }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
     // based on the validation of the entered username and selection gender.
     private fun validate(): Boolean {

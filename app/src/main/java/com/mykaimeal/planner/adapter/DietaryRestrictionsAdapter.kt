@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class DietaryRestrictionsAdapter(
         return ViewHolder(binding)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.binding.tvTitleName.text = datalist[position].name
@@ -41,7 +43,6 @@ class DietaryRestrictionsAdapter(
                 if (!dietaryId.contains(datalist[position].id.toString())) {
                     dietaryId.add(datalist[position].id.toString())
                 }
-                onItemClickListener.itemClicked(position, dietaryId, "-1", "")
             } else {
                 imageRightTick.visibility = View.GONE
                 relMainLayout.setBackgroundResource(R.drawable.gray_box_border_bg)
@@ -50,47 +51,71 @@ class DietaryRestrictionsAdapter(
 
             // Handle item click
             relMainLayout.setOnClickListener {
-                if (position == 0) {
-                    // Handle "None" (first item) case
-                    if (datalist[position].selected) {
-                        // Deselect "None"
-                        datalist[position].selected = false
-                        selectedPositions.remove(0)
-                        dietaryId.clear()
-                        onItemClickListener.itemClicked(position, dietaryId, "2", "false")
-                    } else {
-                        // Select "None" and clear all other selections
-                        selectedPositions.clear()
-                        datalist.forEach { it.selected = false }
-                        dietaryId.clear()
+//                if (position == 0) {
+//                    // Handle "None" (first item) case
+//                    if (datalist[position].selected) {
+//                        // Deselect "None"
+//                        datalist[position].selected = false
+//                        selectedPositions.remove(0)
+//                        dietaryId.clear()
+//                        onItemClickListener.itemClicked(position, dietaryId, "2", "false")
+//                    } else {
+//                        // Select "None" and clear all other selections
+//                        selectedPositions.clear()
+//                        datalist.forEach { it.selected = false }
+//                        dietaryId.clear()
+//
+//                        datalist[position].selected = true
+//                        selectedPositions.add(0)
+//                        dietaryId.add(datalist[position].id.toString())
+//                        onItemClickListener.itemClicked(position, dietaryId, "2", "true")
+//                    }
+//                } else {
+//                    // Deselect "select all" if another item is clicked
+//
+//                        datalist[0].selected = false
+//                        dietaryId.clear()
+//
+//                    // Toggle the current item's selection state
+//                    if (datalist[position].selected) {
+//                        // Deselect the item
+//                        datalist[position].selected = false
+//                        selectedPositions.remove(position)
+//                        dietaryId.remove(datalist[position].id.toString())
+//                        onItemClickListener.itemClicked(position, dietaryId, "2", "false")
+//                    } else {
+//                        // Select the item
+//                        datalist[position].selected = true
+//                        selectedPositions.add(position)
+//                        dietaryId.add(datalist[position].id.toString())
+//                        onItemClickListener.itemClicked(position, dietaryId, "2", "true")
+//                    }
+//                }
 
-                        datalist[position].selected = true
-                        selectedPositions.add(0)
-                        dietaryId.add(datalist[position].id.toString())
-                        onItemClickListener.itemClicked(position, dietaryId, "2", "true")
+
+                if (datalist[position].name.equals("None",true)){
+                    // In your click listener or wherever you're handling item selection
+                    datalist.forEachIndexed { index, item ->
+                        if (index==0){
+                            item.selected = !item.selected
+                        }else{
+                            item.selected = false
+                        }
                     }
-                } else {
-                    // Deselect "select all" if another item is clicked
-
-                        datalist[0].selected = false
-                        dietaryId.clear()
-
-                    // Toggle the current item's selection state
-                    if (datalist[position].selected) {
-                        // Deselect the item
-                        datalist[position].selected = false
-                        selectedPositions.remove(position)
-                        dietaryId.remove(datalist[position].id.toString())
-                        onItemClickListener.itemClicked(position, dietaryId, "2", "false")
-                    } else {
-                        // Select the item
-                        datalist[position].selected = true
-                        selectedPositions.add(position)
-                        dietaryId.add(datalist[position].id.toString())
-                        onItemClickListener.itemClicked(position, dietaryId, "2", "true")
+                }else{
+                    // In your click listener or wherever you're handling item selection
+                    datalist.forEachIndexed { index, item ->
+                        if (index==0){
+                            item.selected = false
+                        }
                     }
+                    val data=datalist[position]
+                    data.selected = !datalist[position].selected
+                    notifyItemChanged(position,data)
                 }
-                notifyDataSetChanged() // Refresh the UI
+                notifyDataSetChanged()
+                onItemClickListener.itemClicked(position, dietaryId, "2", "false")
+
             }
         }
     }

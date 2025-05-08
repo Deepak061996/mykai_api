@@ -135,14 +135,9 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
                             val gson = Gson()
                             val bodyModel = gson.fromJson(it.data, GetUserPreference::class.java)
                             if (bodyModel.code == 200 && bodyModel.success) {
-//                                showDataInUi(bodyModel.data.ingredientdislike)
                                 showDataFirstUi(bodyModel.data.ingredientdislike,"count")
                             } else {
-                                if (bodyModel.code == ErrorMessage.code) {
-                                    showAlertFunction(bodyModel.message, true)
-                                } else {
-                                    showAlertFunction(bodyModel.message, false)
-                                }
+                               handleError(bodyModel.code,bodyModel.message)
                             }
                         }catch (e:Exception){
                             Log.d("IngredientDislike@", "message:--" + e.message)
@@ -158,6 +153,14 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
                     }
                 }
             },"",itemCount)
+        }
+    }
+
+    private fun handleError(code: Int, message: String) {
+        if (code == ErrorMessage.code) {
+            showAlertFunction(message, true)
+        } else {
+            showAlertFunction(message, false)
         }
     }
 
@@ -179,20 +182,18 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
 
         binding.tvNextBtn.setOnClickListener {
             if (status == "2") {
+                dislikeSelectedId.clear()
+                dislikeIngredientModelData.forEach {
+                    if (it.selected){
+                        dislikeSelectedId.add(it.id.toString())
+                    }
+                }
                 dislikeIngredientsViewModel.setDislikeIngData(dislikeIngredientModelData,binding.etIngDislikesSearchBar.text.toString())
                 sessionManagement.setDislikeIngredientList(dislikeSelectedId)
                 findNavController().navigate(R.id.allergensIngredientsFragment)
             }
         }
 
-//        binding.etIngDislikesSearchBar.addTextChangedListener(object :
-//            TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-//            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-//            override fun afterTextChanged(editable: Editable) {
-//                searchable(editable.toString())
-//            }
-//        })
 
 
         textListener = object : TextWatcher {
@@ -242,47 +243,15 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
         }
 
 
-
-        /*  textListener = object : TextWatcher {
-              private var searchFor = "" // Or view.editText.text.toString()
-
-              override fun afterTextChanged(s: Editable?) {}
-
-              override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-              override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                  val searchText = s.toString().trim()
-                  if (searchText.length!=0){
-                      if (searchText.trim() != searchFor) {
-                          searchFor = searchText
-                          textChangedJob?.cancel()
-                          // Launch a new coroutine in the lifecycle scope
-                          textChangedJob = lifecycleScope.launch {
-                              delay(1000)  // Debounce time
-                              if (searchText == searchFor) {
-                                  if (BaseApplication.isOnline(requireActivity())) {
-                                      searchable(searchText)
-                                  } else {
-                                      BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-                                  }
-                              }
-                          }
-                      }
-                  }else{
-                      Log.d("not data","vyvdsvd")
-                      if (BaseApplication.isOnline(requireContext())) {
-                          ingredientDislikeSelectApi()
-                      } else {
-                          BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
-                      }
-                  }
-
-              }
-          }*/
-
         binding.rlUpdateIngDislike.setOnClickListener {
             if (status=="2"){
                 if (BaseApplication.isOnline(requireContext())) {
+                    dislikeSelectedId.clear()
+                    dislikeIngredientModelData.forEach {
+                        if (it.selected){
+                            dislikeSelectedId.add(it.id.toString())
+                        }
+                    }
                     updateIngDislikeApi()
                 } else {
                     BaseApplication.alertError(requireContext(), ErrorMessage.networkError, false)
@@ -322,11 +291,7 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
                             if (updateModel.code == 200 && updateModel.success) {
                                 findNavController().navigateUp()
                             } else {
-                                if (updateModel.code == ErrorMessage.code) {
-                                    showAlertFunction(updateModel.message, true)
-                                } else {
-                                    showAlertFunction(updateModel.message, false)
-                                }
+                                handleError(updateModel.code,updateModel.message)
                             }
                         }catch (e:Exception){
                             Log.d("IngredientDislike@@@@", "message:--" + e.message)
@@ -358,11 +323,7 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
                             if (dietaryModel.code == 200 && dietaryModel.success) {
                                 showDataFirstUi(dietaryModel.data,"count")
                             } else {
-                                if (dietaryModel.code == ErrorMessage.code) {
-                                    showAlertFunction(dietaryModel.message, true)
-                                } else {
-                                    showAlertFunction(dietaryModel.message, false)
-                                }
+                                handleError(dietaryModel.code,dietaryModel.message)
                             }
                         }catch (e:Exception){
                             Log.d("IngredientDislike@@@@", "message:--" + e.message)
@@ -383,25 +344,14 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
 
     private fun showDataInUi(dislikeIngModelData: MutableList<DislikedIngredientsModelData>) {
         try {
-            if (dislikeIngModelData != null && dislikeIngModelData.isNotEmpty()) {
-                if (dislikeIngredientsViewModel.getDislikeIngData() == null) {
-                    dislikeIngModelData.add(0, DislikedIngredientsModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
-                }
-                var selected = false
-                dislikeIngModelData.forEach { if (it.selected) selected = true }
-                if (!selected) {
-                    dislikeIngModelData[0] = DislikedIngredientsModelData(id = -1, selected = true, "None")
-                }
-                dislikeIngredientModelData = dislikeIngModelData.toMutableList()
-                dislikeIngredientsAdapter?.filterList(dislikeIngredientModelData)
-                /*dislikeIngredientsAdapter = AdapterDislikeIngredientItem(dislikeIngModelData, requireActivity(), this)
-                binding.rcyIngDislikes.adapter = dislikeIngredientsAdapter*/
+            if (dislikeIngModelData.size>0) {
+                hideShow()
+                dislikeIngredientsAdapter?.filterList(dislikeIngModelData)
                 if (dislikeIngredientsViewModel.getEditStatus().equals("")){
                     binding.relMoreButton.visibility=View.VISIBLE
                 }else{
                     binding.relMoreButton.visibility=View.GONE
                 }
-
             }
         } catch (e: Exception) {
             Log.d("IngredientDislike", "message:--" + e.message)
@@ -410,10 +360,16 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
 
     private fun showDataFirstUi(dislikeIngModelData: MutableList<DislikedIngredientsModelData>?,type:String) {
         try {
-            if (dislikeIngModelData != null && dislikeIngModelData.size>0) {
-                dislikeIngredientModelData.clear()
-                dislikeIngModelData.add(0, DislikedIngredientsModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
-                dislikeIngredientModelData.addAll(dislikeIngModelData.toMutableList())
+
+            dislikeIngredientModelData.clear()
+            dislikeIngredientModelData.add(0, DislikedIngredientsModelData(id = -1, selected = false, "None")) // ID set to -1 as an indicator
+
+            dislikeIngModelData?.let {
+                dislikeIngredientModelData.addAll(it)
+            }
+
+            if (dislikeIngredientModelData.size>0) {
+                hideShow()
                 dislikeIngredientsAdapter?.filterList(dislikeIngredientModelData)
                 if (type.equals("search",true)){
                     binding.relMoreButton.visibility=View.GONE
@@ -449,22 +405,14 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
                                 if (dietaryModel.code == 200 && dietaryModel.success) {
                                     showDataFirstUi(dietaryModel.data.ingredientdislike,"search")
                                 } else {
-                                    if (dietaryModel.code == ErrorMessage.code) {
-                                        showAlertFunction(dietaryModel.message, true)
-                                    } else {
-                                        showAlertFunction(dietaryModel.message, false)
-                                    }
+                                    handleError(dietaryModel.code,dietaryModel.message)
                                 }
                             }else{
                                 val dietaryModel = gson.fromJson(it.data, DislikedIngredientsModel::class.java)
                                 if (dietaryModel.code == 200 && dietaryModel.success) {
                                     showDataFirstUi(dietaryModel.data,"search")
                                 } else {
-                                    if (dietaryModel.code == ErrorMessage.code) {
-                                        showAlertFunction(dietaryModel.message, true)
-                                    } else {
-                                        showAlertFunction(dietaryModel.message, false)
-                                    }
+                                    handleError(dietaryModel.code,dietaryModel.message)
                                 }
                             }
                         }catch (e:Exception){
@@ -531,31 +479,23 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
         status1: String?,
         type: String?
     ) {
-        if (status1.equals("-1")) {
-            if (position == 0) {
-                dislikeSelectedId = mutableListOf()
-            } else {
-                dislikeSelectedId = list!!
-            }
-            status = "2"
-            binding.tvNextBtn.isClickable = true
-            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            binding.rlUpdateIngDislike.isClickable = true
-            binding.rlUpdateIngDislike.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            return
-        }
+        hideShow()
+    }
 
-        if (type.equals("true")) {
-            status = "2"
-            binding.tvNextBtn.isClickable = true
-            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            binding.rlUpdateIngDislike.isClickable = true
-            binding.rlUpdateIngDislike.setBackgroundResource(R.drawable.green_fill_corner_bg)
-            dislikeSelectedId = list!!
-        } else {
+    private fun hideShow() {
+        val count = dislikeIngredientModelData.count { it.selected }
+        if (count == 0) {
             status = ""
+            binding.tvNextBtn.isClickable = false
+            binding.rlUpdateIngDislike.isClickable = false
             binding.tvNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
             binding.rlUpdateIngDislike.setBackgroundResource(R.drawable.gray_btn_unselect_background)
+        } else {
+            status = "2"
+            binding.tvNextBtn.isClickable = true
+            binding.rlUpdateIngDislike.isClickable = true
+            binding.tvNextBtn.setBackgroundResource(R.drawable.green_fill_corner_bg)
+            binding.rlUpdateIngDislike.setBackgroundResource(R.drawable.green_fill_corner_bg)
         }
     }
 

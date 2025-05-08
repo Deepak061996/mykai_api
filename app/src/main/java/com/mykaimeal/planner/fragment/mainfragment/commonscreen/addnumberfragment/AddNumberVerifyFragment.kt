@@ -35,7 +35,6 @@ import java.util.Locale
 class AddNumberVerifyFragment : Fragment() {
 
     private lateinit var binding: FragmentAddNumberVerifyBinding
-    //    private lateinit var addNumberVerifyViewModel: AddNumberVerifyViewModel
     private lateinit var addNumberVerifyViewModel: CheckoutScreenViewModel
     private var lastNumber: String = ""
     private var countryCode: String = "+1"

@@ -98,7 +98,7 @@ class SubscriptionPlanOverViewFragment : Fragment() {
 
         Handler(Looper.getMainLooper()).postDelayed({
             binding.crossImages.visibility = View.VISIBLE // Show the ImageView after 5 seconds
-        }, 5000)
+        }, 3000)
 
         startBillingApi()
 
