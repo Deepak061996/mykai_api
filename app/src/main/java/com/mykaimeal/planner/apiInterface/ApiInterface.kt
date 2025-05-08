@@ -839,7 +839,9 @@ interface ApiInterface {
 
     @FormUrlEncoded
     @POST(ApiEndPoint.graphWeekUrl)
-    suspend fun orderWeekUrl(@Field("week") week:String?,@Field("month") month:String?,@Field("year") year:String?): Response<JsonObject>
+    suspend fun orderWeekUrl(@Field("start_date") start_date:String?,
+                             @Field("end_date") end_date:String?,
+                             @Field("year") year:String?): Response<JsonObject>
 
     @POST(ApiEndPoint.referralUrl)
     suspend fun referralUrl(): Response<JsonObject>

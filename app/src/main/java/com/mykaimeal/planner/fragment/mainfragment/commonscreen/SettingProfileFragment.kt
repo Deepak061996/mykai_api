@@ -208,6 +208,7 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
 
     private fun  userDeleteData(dialog: Dialog) {
         BaseApplication.showMe(requireContext())
+        (activity as MainActivity?)?.stopRepeatingApiCall()
         lifecycleScope.launch {
             viewModel.userDeleteData { result ->
                 BaseApplication.dismissMe()
@@ -218,6 +219,7 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
 
     private fun  userLogOutData(dialog: Dialog) {
         BaseApplication.showMe(requireContext())
+        (activity as MainActivity?)?.stopRepeatingApiCall()
         lifecycleScope.launch {
             viewModel.userLogOutData { result ->
                 BaseApplication.dismissMe()

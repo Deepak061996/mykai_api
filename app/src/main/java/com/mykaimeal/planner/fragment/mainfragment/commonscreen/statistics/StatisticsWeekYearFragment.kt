@@ -84,11 +84,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
 
         backButton()
 
-//        statisticsViewModel.dataGraphDataList?.let {
-//            showSpendingWeekYear(it)
-//        }?:run{
-//            loadWeekListApi()
-//        }
+
 
 
         statisticsViewModel.currentDate?.let {
@@ -121,6 +117,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
 
     private fun getStatWeekList() {
         BaseApplication.showMe(requireContext())
+        val daysBetween = getDaysBetween(startDate, endDate)
         lifecycleScope.launch {
             statisticsViewModel.orderWeekUrl({
                 BaseApplication.dismissMe()
@@ -380,7 +377,7 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
         }
         // Print the dates
         println("Days between $startDate and ${endDate}:")
-        daysBetween.forEach { println(it) }
+        daysBetween.forEach { println(it.date) }
         binding.textWeekRange.text = "" + formatDate(startDate) + "-" + formatDate(endDate)
         binding.tvCustomDates.text = "${formatDate(startDate)} - ${formatDate(endDate)}"
         tvWeekRange?.text = "" + formatDate(startDate) + "-" + formatDate(endDate)
@@ -388,6 +385,13 @@ class StatisticsWeekYearFragment : Fragment(),OnItemClickListener {
         calendarAdapter = CalendarDayDateWeekAdapter(updatedDaysBetween as MutableList)
         // Update the RecyclerView
         binding.recyclerViewWeekDays.adapter = calendarAdapter
+
+        statisticsViewModel.dataGraphDataList?.let {
+            showSpendingWeekYear(it)
+        }?:run{
+            loadWeekListApi()
+        }
+
     }
 
     private fun formatDate(date: Date): String {

@@ -90,6 +90,7 @@ import com.mykaimeal.planner.model.DateModel
 import com.skydoves.powerspinner.PowerSpinnerView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -157,7 +158,7 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     private lateinit var cameraManager: CameraManager
     private lateinit var cameraId: String
     private lateinit var sessionManagement: SessionManagement
-
+    private var apiCallJob: Job? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -217,11 +218,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
     }
 
     private fun startRepeatingApiCall() {
-        lifecycleScope.launch {
+        apiCallJob = lifecycleScope.launch {
             while (isActive) {
                 withContext(Dispatchers.IO) {
                     if (BaseApplication.isOnline(this@MainActivity)) {
-                        mealRoutineViewModel.userSubscriptionCountApi {0
+                        mealRoutineViewModel.userSubscriptionCountApi {
                             handleApiSubscriptionResponse(it)
                         }
                     }
@@ -230,6 +231,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
             }
         }
     }
+
+    fun stopRepeatingApiCall() {
+        apiCallJob?.cancel()
+    }
+
 
     private fun searchBottomDialog(submittedResult: String?) {
         bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)

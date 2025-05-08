@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -315,6 +316,7 @@ class SignUpFragment : Fragment() {
                                 val signUpModel = gson.fromJson(it.data, SignUpModel::class.java)
                                 if (signUpModel.code == 200 && signUpModel.success) {
                                     try {
+                                        Toast.makeText(requireContext(),"Otp "+signUpModel.data.otp,Toast.LENGTH_SHORT).show()
                                         val bundle = Bundle()
                                         bundle.putString("screenType", "signup")
                                         bundle.putString("chooseType", chooseType)
