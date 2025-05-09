@@ -102,7 +102,7 @@ class AddNumberVerifyFragment : Fragment() {
                     if (lastNumber.equals(formatted,true)){
                         val digitsOnly = binding.etRegPhone.text.toString().filter { it.isDigit() }
                         val lastFour = digitsOnly.takeLast(3)
-                        binding.tvCodeSent.text= "we have sent the code to *******$lastFour"
+                        binding.tvCodeSent.text= "We have sent the code to *******$lastFour"
                         binding.tvVerify.isEnabled = false
                         binding.rlVerificationVerify.isEnabled = true
                         binding.tvVerificationError.visibility = View.GONE

@@ -78,7 +78,7 @@
                     android:id="@+id/tvCodeSent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="we have sent the code to"
+                    android:text="We have sent the code to email below-"
                     android:textSize="@dimen/_13sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:fontFamily="@font/poppins"

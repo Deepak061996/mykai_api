@@ -399,13 +399,11 @@
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
-
                     <RelativeLayout
                         android:id="@+id/img_bmr"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:background="@drawable/plan_shadow"
-                        android:layout_height="@dimen/_150sdp">
+                        android:background="@drawable/plan_bmr"
+                        android:layout_height="@dimen/_170sdp">
                     </RelativeLayout>
                 </RelativeLayout>
 

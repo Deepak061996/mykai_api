@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Kai App</string>
+    <string name="app_name">My Kai</string>
     <string name="my_kitchen_assistant">My Kitchen Assistant</string>
     <string name="publish_key">pk_test_51PdDwn2MfdrjGdokeRO8ulheGv5oP8xXkvE7izmXQbSrmXPO2g6S9x0QoiafnAi3F52AwyC1NHJWOOJqPpcmNbuw00Q2OcA9nr</string>
 
@@ -21,7 +21,7 @@
     <string name="tvDescriptions1">Get meal plans tailored to your\n preferences and goals</string>
     <string name="tvDescriptions2">My Kai adds your meal plan ingredients to\n your cart and compares prices across\n nearby stores, giving you the best deals</string>
     <string name="tvDescription3">Finalize your grocery items and get them delivered straight to your door</string>
-    <string name="bit_about_you"><font color="#3C4541"> I’ll need to know a bit </font><font color="#06C169">about you ?</font></string>
+    <string name="bit_about_you"><font color="#3C4541"> I’ll need to know a bit </font><font color="#06C169">about you?</font></string>
     <string name="enter_your_name">Enter your Name</string>
     <string name="type_amount">Type Amount</string>
     <string name="partner_name">Partner\'s name</string>
@@ -35,7 +35,7 @@
     <string name="reset_password"><font color="#000000">Reset</font><font color="#06C169"> Password</font></string>
     <string name="turn_on_location"><font color="#000000">Turn on</font><font color="#06C169"> Location</font></string>
     <string name="turn_on_notifications"><font color="#000000">Turn on</font><font color="#06C169"> Notifications</font></string>
-    <string name="sign_up_to_myka"><font color="#000000">Sign-up to</font><font color="#06C169"> Myka</font></string>
+    <string name="sign_up_to_myka"><font color="#000000">Sign up to</font><font color="#06C169"> My Kai</font></string>
     <string name="resend"> <font color="#06C169"> Resend</font></string>
     <string name="your_password_has_been_changed_successfully">Your password has been changed\n successfully.</string>
     <string name="your_account_has_been_created_successfully">Your account has been created\n successfully.</string>

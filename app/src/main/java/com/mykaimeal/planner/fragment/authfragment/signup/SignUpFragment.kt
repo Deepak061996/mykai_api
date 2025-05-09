@@ -23,6 +23,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.mykaimeal.planner.R
+import com.mykaimeal.planner.activity.AuthActivity
 import com.mykaimeal.planner.activity.EnterYourNameActivity
 import com.mykaimeal.planner.activity.MainActivity
 import com.mykaimeal.planner.basedata.BaseApplication
@@ -82,13 +83,12 @@ class SignUpFragment : Fragment() {
         _binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
         signUpViewModel = ViewModelProvider(this)[SignUpViewModel::class.java]
-
         //// handle on back pressed
         requireActivity().onBackPressedDispatcher.addCallback(
             requireActivity(),
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigate(R.id.loginFragment)
+                    moveBackScreen()
                 }
             })
 
@@ -99,6 +99,14 @@ class SignUpFragment : Fragment() {
         initialize()
 
         return binding.root
+    }
+
+    private fun moveBackScreen(){
+        if ((activity as AuthActivity?)?.type.equals("signup",true)){
+            requireActivity().finish()
+        }else{
+            findNavController().navigateUp()
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -122,7 +130,7 @@ class SignUpFragment : Fragment() {
 
         //// handle on back pressed
         binding.imagesBackSignUp.setOnClickListener {
-            findNavController().navigate(R.id.loginFragment)
+            moveBackScreen()
         }
 
         binding.googleImages.setOnClickListener {

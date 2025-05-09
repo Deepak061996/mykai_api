@@ -287,6 +287,7 @@ class StatisticsGraphFragment : Fragment() {
     @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun showSpendingChart(response: StatisticsGraphModelData) {
         statisticsViewModel.setGraphData(response,currentMonth,year,weekOfMonth,currentDate)
+        statisticsViewModel.setGraphDataList(null,currentDate)
         val month = response.month ?: ""
         val graphData = response.graph_data
 

@@ -39,7 +39,7 @@ class AuthActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         // Inflate the navigation graph
         val navGraph = navController.navInflater.inflate(R.navigation.main_graph)
-        if (type == "signup"){
+        if (type.equals("signup",true)){
             navGraph.setStartDestination(R.id.signUpFragment)
         }else{
             navGraph.setStartDestination(R.id.loginFragment)

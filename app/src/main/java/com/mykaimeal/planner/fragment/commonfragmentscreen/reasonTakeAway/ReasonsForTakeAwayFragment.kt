@@ -301,7 +301,11 @@ class ReasonsForTakeAwayFragment : Fragment(), OnItemClickListener {
                         reasonTakeAwayViewModel.setReasonTakeData(reasonTakeModelData!!.toMutableList())
                         sessionManagement.setReasonTakeAway(reasonSelect.toString())
                         sessionManagement.setReasonTakeAwayDesc(reasonTakeAway.toString())
-                        navigateToAuthActivity("login")
+                        if (sessionManagement.getFirstTime()){
+                            navigateToAuthActivity("login")
+                        }else{
+                            navigateToAuthActivity("signup")
+                        }
                     }
                 }
             } else {

@@ -84,7 +84,7 @@ class StatisticsViewModel @Inject constructor(private val repository: MainReposi
 
     fun setGraphDataList(data: StatisticsWeekYearModelData?,currentDate: Date?){
         _dataGraphDataList=data
-        _currentDate=currentDate
+        _currentDateList=currentDate
     }
 
 

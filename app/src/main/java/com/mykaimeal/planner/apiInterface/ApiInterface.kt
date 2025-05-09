@@ -715,6 +715,13 @@ interface ApiInterface {
     @POST(ApiEndPoint.getOrderProductUrl)
     suspend fun getOrderProductUrl(@Field("tip") tip:String?, @Field("card_id") card_id:String?): Response<JsonObject>
 
+
+    @FormUrlEncoded
+    @POST(ApiEndPoint.chargeUrl)
+    suspend fun getOrderProductGooglePayUrl(@Field("tip") tip:String?,
+                                   @Field("amount") amount:String?,
+                                   @Field("token") stripeTokenId:String?): Response<JsonObject>
+
     @POST(ApiEndPoint.getStoreProductsUrl)
     suspend fun getStoreProductUrl(): Response<JsonObject>
 

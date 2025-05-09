@@ -136,6 +136,8 @@ class FullCookedScheduleFragment : Fragment(), OnItemSelectUnSelectListener,
 
 
         initialize()
+
+
         // Display current week dates
         showWeekDates()
 
@@ -501,7 +503,7 @@ class FullCookedScheduleFragment : Fragment(), OnItemSelectUnSelectListener,
     }
 
     private fun formatDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
         return dateFormat.format(date)
     }
 

@@ -87,7 +87,7 @@ class SubscriptionAllPlanFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity())[SubscriptionPlanViewModel::class.java]
 
-        binding.rlNextBtn.isClickable=false
+        binding.rlNextBtn.isClickable = false
         binding.rlNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
 
         sessionManagement = SessionManagement(requireContext())
@@ -500,11 +500,12 @@ class SubscriptionAllPlanFragment : Fragment() {
                                 listOf(binding.tvNewDollarMonthly, binding.tvNewDollaryearly),AppConstant.Premium_Weekly,"Starter")
                         }
                     }
+
                     if (apiModel.data?.Subscription_status==1){
-                        binding.rlNextBtn.isClickable=true
+                        binding.rlNextBtn.isClickable = true
                         binding.rlNextBtn.setBackgroundResource(R.drawable.green_btn_background)
                     }else{
-                        binding.rlNextBtn.isClickable=false
+                        binding.rlNextBtn.isClickable = false
                         binding.rlNextBtn.setBackgroundResource(R.drawable.gray_btn_unselect_background)
                     }
                 }

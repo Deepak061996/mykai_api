@@ -2267,6 +2267,27 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
         }
     }
 
+    override suspend fun getOrderProductGooglePayUrl(
+        successCallback: (response: NetworkResult<String>) -> Unit,
+        tip: String?,
+        amount: String?,
+        stripeTokenId: String?
+    ) {
+        try {
+            api.getOrderProductGooglePayUrl(tip, amount,stripeTokenId).apply {
+                if (isSuccessful) {
+                    body()?.let {
+                        successCallback(NetworkResult.Success(it.toString()))
+                    } ?: successCallback(NetworkResult.Error(ErrorMessage.apiError))
+                } else {
+                    successCallback(NetworkResult.Error(errorBody().toString()))
+                }
+            }
+        } catch (e: Exception) {
+            successCallback(NetworkResult.Error(e.message.toString()))
+        }
+    }
+
 
     override suspend fun getStoreProductUrl(
         successCallback: (response: NetworkResult<String>) -> Unit

@@ -963,7 +963,7 @@ class PlanFragment : Fragment(), OnItemClickListener, OnItemSelectPlanTypeListen
     }
 
     private fun formatDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("d MMM", Locale.getDefault())
         return dateFormat.format(date)
     }
 

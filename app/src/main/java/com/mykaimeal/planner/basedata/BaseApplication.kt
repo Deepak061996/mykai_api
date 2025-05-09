@@ -154,7 +154,7 @@ object BaseApplication {
     fun formatOnlyDate(date: String): String {
         try {
             val inputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Define input format
-            val outputDateFormat = SimpleDateFormat("dd", Locale.getDefault()) // Define output format
+            val outputDateFormat = SimpleDateFormat("d", Locale.getDefault()) // Define output format
 
             val parsedDate = inputDateFormat.parse(date) // Parse the input string into a Date object
             return outputDateFormat.format(parsedDate!!) // Format the Date object to "dd"

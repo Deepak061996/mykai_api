@@ -203,5 +203,6 @@ dependencies {
     ///for phone number
     implementation ("com.googlecode.libphonenumber:libphonenumber:8.13.32") // or latest
 
-
+    // Google Pay API
+    implementation ("com.google.android.gms:play-services-wallet:19.3.0") // Required for Google Pay
 }

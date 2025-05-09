@@ -113,8 +113,11 @@ class LoginFragment : Fragment() {
     }
 
     private fun moveToNextScreen(){
-        requireActivity().finish()
-
+        if ((activity as AuthActivity?)?.type.equals("login",true)){
+            requireActivity().finish()
+        }else{
+            findNavController().navigateUp()
+        }
     }
 
     private fun getFcmToken() {

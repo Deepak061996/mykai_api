@@ -19,7 +19,7 @@ import com.mykaimeal.planner.model.OnboardingItem
 
 class OnBoardingActivity : AppCompatActivity() {
 
-    private var binding: ActivityOnBoardingBinding? = null
+    private lateinit var binding: ActivityOnBoardingBinding
     var datalist : ArrayList<OnboardingItem> = arrayListOf()
     private var adapters:OnboardingAdapter?=null
     private lateinit var sessionManagement: SessionManagement
@@ -27,14 +27,14 @@ class OnBoardingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOnBoardingBinding.inflate(LayoutInflater.from(this))
-        setContentView(binding!!.root)
+        setContentView(binding.root)
         sessionManagement = SessionManagement(this)
         sessionManagement.setFirstTime(false)
 
 
         adapters = OnboardingAdapter(datalist)
-        binding!!.viewpager.adapter = adapters
-        binding!!.viewpager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        binding.viewpager.adapter = adapters
+        binding.viewpager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
         ///main function using all triggered of this screen
         initialize()
@@ -45,16 +45,16 @@ class OnBoardingActivity : AppCompatActivity() {
         currentOnBoardingIndicator(0)
 
         /// handle click event to set viewpager position
-        binding!!.rlNextBtn.setOnClickListener{
-            if (binding!!.viewpager.currentItem == 0) {
-                binding!!.viewpager.currentItem =+1
+        binding.rlNextBtn.setOnClickListener{
+            if (binding.viewpager.currentItem == 0) {
+                binding.viewpager.currentItem =+1
             } else {
-                binding!!.viewpager.currentItem =adapters!!.itemCount+1
+                binding.viewpager.currentItem =adapters!!.itemCount+1
             }
         }
 
         // handle click event to set next screen
-        binding!!.relLetsGetStarted.setOnClickListener{
+        binding.relLetsGetStarted.setOnClickListener{
             val intent = Intent(this@OnBoardingActivity, EnterYourNameActivity::class.java)
             startActivity(intent)
             finish()
@@ -62,27 +62,27 @@ class OnBoardingActivity : AppCompatActivity() {
 
 
         /// set view pager position and value
-        binding!!.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             @SuppressLint("SetTextI18n")
 
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 if (position == 0) {
-                    binding!!.rlNextBtn.visibility= View.VISIBLE
-                    binding!!.relLetsGetStarted.visibility= View.GONE
-                    binding!!.tvHeading1.text="Plan a Meal"
-                    binding!!.tvTextDescriptions.text=getString(R.string.tvDescriptions1)
+                    binding.rlNextBtn.visibility= View.VISIBLE
+                    binding.relLetsGetStarted.visibility= View.GONE
+                    binding.tvHeading1.text="Plan a Meal"
+                    binding.tvTextDescriptions.text=getString(R.string.tvDescriptions1)
 
                 }else if (position==1){
-                    binding!!.rlNextBtn.visibility= View.VISIBLE
-                    binding!!.relLetsGetStarted.visibility= View.GONE
-                    binding!!.tvHeading1.text="Compare Store Prices"
-                    binding!!.tvTextDescriptions.text=getString(R.string.tvDescriptions2)
+                    binding.rlNextBtn.visibility= View.VISIBLE
+                    binding.relLetsGetStarted.visibility= View.GONE
+                    binding.tvHeading1.text="Compare Store Prices"
+                    binding.tvTextDescriptions.text=getString(R.string.tvDescriptions2)
                 }else{
-                    binding!!.rlNextBtn.visibility= View.GONE
-                    binding!!.relLetsGetStarted.visibility= View.VISIBLE
-                    binding!!.tvHeading1.text="10-Min Weekly Grocery Run"
-                    binding!!.tvTextDescriptions.text=getString(R.string.tvDescription3)
+                    binding.rlNextBtn.visibility= View.GONE
+                    binding.relLetsGetStarted.visibility= View.VISIBLE
+                    binding.tvHeading1.text="10-Min Weekly Grocery Run"
+                    binding.tvTextDescriptions.text=getString(R.string.tvDescription3)
                 }
 
                 currentOnBoardingIndicator(position)
@@ -106,14 +106,14 @@ class OnBoardingActivity : AppCompatActivity() {
                 )
             })
             img.layoutParams = layoutParams
-            binding!!.layOnboardingIndicator.addView(img)
+            binding.layOnboardingIndicator.addView(img)
         }
     }
 
     private fun currentOnBoardingIndicator(index: Int) {
-        val childCount: Int = binding!!.layOnboardingIndicator.childCount
+        val childCount: Int = binding.layOnboardingIndicator.childCount
         for (i in 0 until childCount) {
-            val imageView = binding!!.layOnboardingIndicator.getChildAt(i) as ImageView
+            val imageView = binding.layOnboardingIndicator.getChildAt(i) as ImageView
             if (i == index) {
                 imageView.setImageDrawable(ContextCompat.getDrawable(applicationContext, R.drawable.indicator_active))
             } else  {

@@ -13,6 +13,14 @@ class AddTipScreenViewModel@Inject constructor(private val repository: MainRepos
         repository.getOrderProductUrl({ successCallback(it) },tip,cardId)
     }
 
+    suspend fun getOrderProductGooglePayUrl(successCallback: (response: NetworkResult<String>) -> Unit,
+                                            tip:String?,
+                                            totalPrices:String?,
+                                            stripeTokenId:String?
+    ){
+        repository.getOrderProductGooglePayUrl({ successCallback(it) },tip,totalPrices,stripeTokenId)
+    }
+
 
     suspend fun getTipUrl(successCallback: (response: NetworkResult<String>) -> Unit, tip: String?){
         repository.getTipUrl({ successCallback(it) },tip)

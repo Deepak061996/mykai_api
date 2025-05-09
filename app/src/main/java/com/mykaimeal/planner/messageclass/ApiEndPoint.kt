@@ -96,6 +96,7 @@ object ApiEndPoint {
     const val getNotesUrl="get-notes"
     const val getCheckoutUrl="checkout"
     const val getOrderProductUrl="order-product"
+    const val chargeUrl="charge"
 
     const val getStoreProductsUrl="store-products"
     const val getCardMealMeUrl="get-card-mealme"

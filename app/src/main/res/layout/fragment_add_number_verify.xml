@@ -196,7 +196,7 @@
                     android:layout_below="@+id/relPleaseCheckYourEmail"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:fontFamily="@font/poppins"
-                    android:text="we have sent the code to **********"
+                    android:text="We have sent the code to **********"
                     android:textColor="@color/light_black"
                     android:textSize="@dimen/_13sdp" />
 

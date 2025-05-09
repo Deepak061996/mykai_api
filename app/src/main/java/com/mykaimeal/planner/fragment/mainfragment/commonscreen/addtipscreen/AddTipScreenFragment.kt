@@ -55,7 +55,6 @@ class AddTipScreenFragment : Fragment() {
     private var cardId = ""
     private var status = ""
     private var selectedTipPercent: String=""
-
     private lateinit var paymentsClient: PaymentsClient
     private val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
 
@@ -69,7 +68,13 @@ class AddTipScreenFragment : Fragment() {
         addTipScreenViewModel = ViewModelProvider(requireActivity())[AddTipScreenViewModel::class.java]
         totalPrices = arguments?.getString("totalPrices") ?: ""
         cardId = arguments?.getString("cardId") ?: ""
+
+//        gpayPaymentImplement()
+
+
+        Toast.makeText(requireContext(),"price"+totalPrices,Toast.LENGTH_SHORT).show()
         setupBackNavigation()
+
         initialize()
         return binding.root
     }
@@ -93,6 +98,8 @@ class AddTipScreenFragment : Fragment() {
         binding.relBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
+
         getTipUrl()
         setupListeners()
 
@@ -102,6 +109,7 @@ class AddTipScreenFragment : Fragment() {
                 if (BaseApplication.isOnline(requireContext())) {
                     if (!selectedTipPercent.equals("",true)){
                         if (cardId.equals("gpay",true)){
+
 //                            val paymentDataRequestJson = createPaymentDataRequest()
 //                            val paymentDataRequest = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
 //                            AutoResolveHelper.resolveTask(paymentsClient.loadPaymentData(paymentDataRequest), requireActivity(), LOAD_PAYMENT_DATA_REQUEST_CODE)
@@ -114,7 +122,7 @@ class AddTipScreenFragment : Fragment() {
 //                                LOAD_PAYMENT_DATA_REQUEST_CODE
 //                            )
 
-                            val paymentDataRequestJson = createPaymentDataRequest()
+                           /* val paymentDataRequestJson = createPaymentDataRequest()
                             val paymentDataRequest = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
                             val task = paymentsClient.loadPaymentData(paymentDataRequest)
                             task.addOnFailureListener { e ->
@@ -128,9 +136,9 @@ class AddTipScreenFragment : Fragment() {
                                 } else {
                                     e.printStackTrace()
                                 }
-                            }
+                            }*/
 
-
+                            gpayPaymentImplement()
                         }else{
                             paymentCreditDebitApi()
                         }
@@ -140,10 +148,42 @@ class AddTipScreenFragment : Fragment() {
                 }
             }
         }
-
-        gpayPaymentImplement()
-
     }
+
+
+    // Launch Google Pay request
+    private fun gpayPaymentImplement() {
+        // Initialize PaymentsClient for Google Pay
+        paymentsClient = Wallet.getPaymentsClient(
+            requireContext(),
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Change to PRODUCTION for live
+                .build()
+        )
+
+        val baseAmount = totalPrices.toDouble()
+        val tipAmount = selectedTipPercent.replace("$", "").toDouble()
+        val finalAmount = baseAmount + tipAmount
+        // Prepare the Google Pay Payment Data Request
+        val paymentDataRequestJson = createPaymentDataRequest(finalAmount.toString())
+        val paymentDataRequest = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
+
+        // Start the Google Pay flow
+        val task = paymentsClient.loadPaymentData(paymentDataRequest)
+        task.addOnFailureListener { e ->
+            if (e is ResolvableApiException) {
+                try {
+                    val intentSenderRequest = IntentSenderRequest.Builder(e.resolution).build()
+                    loadPaymentDataLauncher.launch(intentSenderRequest)
+                } catch (sendEx: Exception) {
+                    sendEx.printStackTrace()
+                }
+            } else {
+                e.printStackTrace()
+            }
+        }
+    }
+
     private val loadPaymentDataLauncher = registerForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
@@ -155,37 +195,155 @@ class AddTipScreenFragment : Fragment() {
             val token = paymentMethodData
                 .getJSONObject("tokenizationData")
                 .getString("token")
-            Log.d("Token **** token ","****** :- "+token)
+            val tokenJson = JSONObject(token)
+            val stripeTokenId = tokenJson.getString("id") // ✅ This is what Stripe expects
 
-            // TODO: Send token to your backend for processing
+
+            paymentGooglePay(stripeTokenId)
+
+
+
+            // Log the token for debug purposes
+            Log.d("Token **** token", "****** :- $tokenJson")
+
+
+
         } else if (result.resultCode == Activity.RESULT_CANCELED) {
             // User canceled the payment
-            Log.d("Token ****","****** :- "+"RESULT_CANCELED")
+            Log.d("Token ****", "****** :- RESULT_CANCELED")
         } else {
             val status = AutoResolveHelper.getStatusFromIntent(result.data)
             // Handle error (e.g., show message to user)
-            Log.d("Token **** status","****** :- "+status)
+            Log.d("Token **** status", "****** :- $status")
         }
     }
 
-    private fun gpayPaymentImplement() {
-        // Initialize PaymentsClient
-        paymentsClient = Wallet.getPaymentsClient(
-            requireContext(),
-            Wallet.WalletOptions.Builder()
-//                .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Use ENVIRONMENT_PRODUCTION for live
-                .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION) // Use ENVIRONMENT_PRODUCTION for live
-                .build()
-        )
+    private fun paymentGooglePay(stripeTokenId:String){
+        BaseApplication.showMe(requireContext())
+        val tipAmount=selectedTipPercent.replace("$", "")
+        lifecycleScope.launch {
+            addTipScreenViewModel.getOrderProductGooglePayUrl({
+                BaseApplication.dismissMe()
+                handleApiOrderResponse(it)
+            },tipAmount,totalPrices,stripeTokenId)
+        }
     }
 
-    private fun createPaymentDataRequest(): JSONObject {
+    private fun createPaymentDataRequest(amount: String): JSONObject {
+        val tokenizationSpec = JSONObject()
+            .put("type", "PAYMENT_GATEWAY")
+            .put("parameters", JSONObject()
+                .put("gateway", "stripe")
+                .put("stripe:version", "2020-08-27")
+                .put("stripe:publishableKey", "pk_test_51Qko2KEowij4RlG8Ehh3tKQVhxVJUMzAPIi0rTnsX77jwtz5F8LfHfSvS9d2PTg8G7I5NQ3x19JlqdMaAihRcXAn00MvY1CI0X") // Make sure this key is correct
+            )
+
+        val cardPaymentMethod = JSONObject()
+            .put("type", "CARD")
+            .put("tokenizationSpecification", tokenizationSpec)
+            .put("parameters", JSONObject()
+                .put("allowedAuthMethods", JSONArray().put("PAN_ONLY").put("CRYPTOGRAM_3DS"))
+                .put("allowedCardNetworks", JSONArray().put("VISA").put("MASTERCARD").put("AMEX").put("DISCOVER"))
+                .put("billingAddressRequired", true)
+                .put("billingAddressParameters", JSONObject().put("format", "FULL"))
+            )
+
+        val transactionInfo = JSONObject()
+            .put("totalPrice", amount)  // Make sure this is a string
+            .put("totalPriceStatus", "FINAL")
+            .put("currencyCode", "USD")
+
+        val merchantInfo = JSONObject()
+            .put("merchantName", "My Kai Ltd") // Optional
+            .put("merchantId", "BCR2DN4TTXQ37VTP")
+
+        return JSONObject()
+            .put("apiVersion", 2)
+            .put("apiVersionMinor", 0)
+            .put("allowedPaymentMethods", JSONArray().put(cardPaymentMethod))
+            .put("transactionInfo", transactionInfo)
+            .put("merchantInfo", merchantInfo)
+    }
+
+//    private val loadPaymentDataLauncher = registerForActivityResult(
+//        ActivityResultContracts.StartIntentSenderForResult()
+//    ) { result ->
+//        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+//            val paymentData = PaymentData.getFromIntent(result.data!!)
+//            val json = paymentData?.toJson()
+//            val paymentMethodData = JSONObject(json)
+//                .getJSONObject("paymentMethodData")
+//            val token = paymentMethodData
+//                .getJSONObject("tokenizationData")
+//                .getString("token")
+//            Log.d("Token **** token ","****** :- "+token)
+//
+//            // TODO: Send token to your backend for processing
+//        } else if (result.resultCode == Activity.RESULT_CANCELED) {
+//            // User canceled the payment
+//            Log.d("Token ****","****** :- "+"RESULT_CANCELED")
+//        } else {
+//            val status = AutoResolveHelper.getStatusFromIntent(result.data)
+//            // Handle error (e.g., show message to user)
+//            Log.d("Token **** status","****** :- "+status)
+//        }
+//    }
+//
+//    private fun gpayPaymentImplement() {
+//        // Initialize PaymentsClient
+//        paymentsClient = Wallet.getPaymentsClient(
+//            requireContext(),
+//            Wallet.WalletOptions.Builder()
+//                .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Use ENVIRONMENT_PRODUCTION for live
+////                .setEnvironment(WalletConstants.ENVIRONMENT_PRODUCTION) // Use ENVIRONMENT_PRODUCTION for live
+//                .build()
+//        )
+//    }
+//    private fun createPaymentDataRequest(): JSONObject {
+//        val tokenizationSpec = JSONObject()
+//            .put("type", "PAYMENT_GATEWAY")
+//            .put("parameters", JSONObject()
+//                .put("gateway", "stripe")
+//                .put("stripe:version", "2020-08-27")
+//                .put("stripe:publishableKey", "pk_test_51Qko2KEowij4RlG8Ehh3tKQVhxVJUMzAPIi0rTnsX77jwtz5F8LfHfSvS9d2PTg8G7I5NQ3x19JlqdMaAihRcXAn00MvY1CI0X") // ✅ No trailing space
+//            )
+//
+//        val cardPaymentMethod = JSONObject()
+//            .put("type", "CARD")
+//            .put("tokenizationSpecification", tokenizationSpec)
+//            .put("parameters", JSONObject()
+//                .put("allowedAuthMethods", JSONArray().put("PAN_ONLY").put("CRYPTOGRAM_3DS"))
+//                .put("allowedCardNetworks", JSONArray().put("VISA").put("MASTERCARD").put("AMEX").put("DISCOVER"))
+//                .put("billingAddressRequired", true)
+//                .put("billingAddressParameters", JSONObject().put("format", "FULL"))
+//            )
+//
+//        val transactionInfo = JSONObject()
+//            .put("totalPrice", totalPrices) // Ensure this is a string like "10.00"
+//            .put("totalPriceStatus", "FINAL")
+//            .put("currencyCode", "USD")
+//
+//        val merchantInfo = JSONObject()
+//            .put("merchantName", "My Kai Ltd") // Optional
+//        // 🔥 DO NOT SET merchantId unless you're whitelisted by Google Pay
+//
+//        return JSONObject()
+//            .put("apiVersion", 2)
+//            .put("apiVersionMinor", 0)
+//            .put("allowedPaymentMethods", JSONArray().put(cardPaymentMethod))
+//            .put("transactionInfo", transactionInfo)
+//            .put("merchantInfo", merchantInfo)
+//    }
+
+    /*private fun createPaymentDataRequest(): JSONObject {
+
         val tokenizationSpec = JSONObject()
             .put("type", "PAYMENT_GATEWAY")
             .put("parameters", JSONObject()
                 .put("gateway", "stripe")  // Replace with "stripe"
                 .put("stripe:version", "2020-08-27") // Adjust as needed
-                .put("stripe:publishableKey", "pk_live_51Qko2KEowij4RlG8jPdIDKTTaX12y4tNGgP2CWL2YAEOy4XMQx7vhEAeAtbmpaohAx7VOBPq0Z7iMBsAiygbJpAM00RcRMGU0W ") // Replace with real key
+                .put("stripe:publishableKey", "pk_test_51Qko2KEowij4RlG8Ehh3tKQVhxVJUMzAPIi0rTnsX77jwtz5F8LfHfSvS9d2PTg8G7I5NQ3x19JlqdMaAihRcXAn00MvY1CI0X ") // Replace with real key
+//                .put("stripe:publishableKey", "pk_live_51Qko2KEowij4RlG8jPdIDKTTaX12y4tNGgP2CWL2YAEOy4XMQx7vhEAeAtbmpaohAx7VOBPq0Z7iMBsAiygbJpAM00RcRMGU0W ") // Replace with real key
             )
 
         val cardPaymentMethod = JSONObject()
@@ -209,9 +367,10 @@ class AddTipScreenFragment : Fragment() {
             )
             .put("merchantInfo", JSONObject()
                 .put("merchantName", "My Kai Ltd")
-                .put("merchantId", "acct_1Qko2KEowij4RlG8")   // ❌ Stripe Account ID — Not Allowed
+                .put("merchantId", "BCR2DN4TTXQ37VTP")   // ❌ Stripe Account ID — Not Allowed
             )
-    }
+    }*/
+
 
     private fun getTipUrl() {
         if (BaseApplication.isOnline(requireActivity())) {

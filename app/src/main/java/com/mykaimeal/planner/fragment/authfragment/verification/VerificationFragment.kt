@@ -113,8 +113,11 @@ class VerificationFragment : Fragment() {
 
         val isEmail = value?.contains("@") == true
 
-        binding.tvLogInType.text = if (isEmail) " email" else " phone"
-        binding.tvCodeSent.text = if (isEmail) "we have sent the code to $value" else "**********"
+        val loginType=if (isEmail) " email" else " phone"
+
+        binding.tvLogInType.text = loginType
+
+        binding.tvCodeSent.text = if (isEmail) "We have sent the code to the$loginType below \n$value" else "*******"+value?.takeLast(3)
 
 
         /// screen type value for signup screen
