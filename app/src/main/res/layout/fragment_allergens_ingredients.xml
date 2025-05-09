@@ -130,6 +130,7 @@
                     android:id="@+id/relMoreButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_below="@+id/rcyAllergensDesc"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:background="@drawable/gray_box_border_bg">
@@ -139,7 +140,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/poppins_semibold"
                         android:gravity="center_vertical"
                         android:paddingHorizontal="@dimen/_15sdp"
                         android:paddingVertical="@dimen/_10sdp"

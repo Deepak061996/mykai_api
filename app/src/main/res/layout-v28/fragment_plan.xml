@@ -113,6 +113,7 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:background="@drawable/calendar_events_bg"
                 android:orientation="vertical"
+                android:gravity="center"
                 android:paddingHorizontal="@dimen/_6sdp"
                 android:paddingVertical="@dimen/_10sdp">
 
@@ -153,7 +154,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewWeekDays"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:overScrollMode="never"

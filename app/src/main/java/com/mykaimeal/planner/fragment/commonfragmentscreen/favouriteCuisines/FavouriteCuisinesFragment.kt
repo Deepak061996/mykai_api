@@ -51,7 +51,7 @@ class FavouriteCuisinesFragment : Fragment(), OnItemClickedListener {
 
         // Inflate the layout for this fragment
         binding = FragmentFavouriteCuisinesBinding.inflate(inflater, container, false)
-        favouriteCuisineViewModel = ViewModelProvider(requireActivity())[FavouriteCuisineViewModel::class.java]
+        favouriteCuisineViewModel = ViewModelProvider(this)[FavouriteCuisineViewModel::class.java]
         sessionManagement = SessionManagement(requireContext())
 
         val cookingFor = sessionManagement.getCookingFor()

@@ -3,6 +3,7 @@ package com.mykaimeal.planner.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.mykaimeal.planner.OnItemClickListener
@@ -24,6 +25,13 @@ class BodyGoalAdapter(private var datalist: List<BodyGoalModelData>, private var
         val data=datalist[position]
 
         data.let {
+            if (it.name.equals("Add other")){
+                val typeface = ResourcesCompat.getFont(requireActivity, R.font.poppins_semibold)
+                holder.binding.tvTitleName.typeface = typeface
+            }else{
+                val typeface = ResourcesCompat.getFont(requireActivity, R.font.poppins)
+                holder.binding.tvTitleName.typeface = typeface
+            }
             holder.binding.tvTitleName.text = it.name
         }
 

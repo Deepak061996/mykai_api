@@ -35,7 +35,7 @@ data class FinalQuote(
     val store_address: String?,
     val store_id: String?,
     val tip: Int,
-    val total_with_tip: Int
+    val total_with_tip: Double
 )
 
 data class AddedFees(

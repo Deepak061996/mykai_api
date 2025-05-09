@@ -99,6 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/rcyFavCuisines"
                     android:layout_marginTop="@dimen/_10sdp"
+                    android:visibility="gone"
                     android:background="@drawable/gray_box_border_bg">
 
                     <TextView
@@ -106,8 +107,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:fontFamily="@font/poppins"
+                        android:fontFamily="@font/poppins_semibold"
                         android:gravity="center_vertical"
+
                         android:paddingHorizontal="@dimen/_15sdp"
                         android:paddingVertical="@dimen/_10sdp"
                         android:singleLine="true"

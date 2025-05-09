@@ -48,10 +48,7 @@ class TrackOrderScreenFragment : Fragment() {
     private fun setupBackNavigation() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val bundle = Bundle().apply {
-                    putString("screen","yes")
-                }
-                findNavController().navigate(R.id.orderHistoryFragment,bundle)
+                moveToScreen()
             }
         })
     }
@@ -60,10 +57,7 @@ class TrackOrderScreenFragment : Fragment() {
     private fun initialize() {
 
         binding.imgTrackOrder.setOnClickListener{
-            val bundle = Bundle().apply {
-                putString("screen","yes")
-            }
-            findNavController().navigate(R.id.orderHistoryFragment,bundle)
+            moveToScreen()
         }
 
         val webSettings: WebSettings = binding.webView.settings
@@ -88,6 +82,14 @@ class TrackOrderScreenFragment : Fragment() {
         }
         Log.d("url", "****$trackStatus")
         binding.webView.loadUrl(trackStatus)
+    }
+
+    private fun moveToScreen(){
+        (activity as MainActivity?)?.upOrderTracking()
+        val bundle = Bundle().apply {
+            putString("screen","yes")
+        }
+        findNavController().navigate(R.id.orderHistoryFragment,bundle)
     }
 
 }

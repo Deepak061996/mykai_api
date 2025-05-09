@@ -347,6 +347,7 @@ class AllergensIngredientsFragment : Fragment(), OnItemClickedListener {
     private fun showDataInUi(allergensModelData: MutableList<AllergensIngredientModelData>) {
         try {
             if (allergensModelData.size>0) {
+                hideShow()
                 allergenIngAdapter?.filterList(allergensModelData)
                 if (allergenIngredientViewModel.getEditStatus().equals("")){
                     binding.relMoreButton.visibility=View.VISIBLE

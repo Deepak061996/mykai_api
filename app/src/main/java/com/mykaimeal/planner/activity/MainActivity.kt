@@ -74,6 +74,7 @@ import com.mykaimeal.planner.fragment.commonfragmentscreen.mealRoutine.viewmodel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.basketscreen.viewmodel.BasketScreenViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.checkoutscreen.viewmodel.CheckoutScreenViewModel
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.viewmodel.StatisticsViewModel
+import com.mykaimeal.planner.fragment.mainfragment.profilesetting.orderhistoryscreen.viewmodel.OrderHistoryViewModel
 import com.mykaimeal.planner.fragment.mainfragment.searchtab.searchscreen.model.SearchMealUrlModel
 import com.mykaimeal.planner.fragment.mainfragment.searchtab.searchscreen.model.SearchMealUrlModelData
 import com.mykaimeal.planner.fragment.mainfragment.viewmodel.homeviewmodel.HomeViewModel
@@ -1699,7 +1700,11 @@ class MainActivity : AppCompatActivity(), OnClickListener, OnItemClickListener{
 
     fun upDateGraph(){
         ViewModelProvider(this)[StatisticsViewModel::class.java].setGraphData(null,null,null,null,null)
-        ViewModelProvider(this)[StatisticsViewModel::class.java].setGraphDataList(null)
+        ViewModelProvider(this)[StatisticsViewModel::class.java].setGraphDataList(null,null)
+    }
+
+    fun upOrderTracking(){
+        ViewModelProvider(this)[OrderHistoryViewModel::class.java].setOrderHistoryData(null)
     }
 
     private fun searchRecipeDialog() {

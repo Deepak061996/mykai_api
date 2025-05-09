@@ -295,7 +295,9 @@ interface ApiInterface {
 
     @FormUrlEncoded
     @POST(ApiEndPoint.addMealTypeUrl)
-    suspend fun addMealTypeApiUrl(@Field("uri") uri: String?,@Field("plan_type") planType:String?): Response<JsonObject>
+    suspend fun addMealTypeApiUrl(@Field("uri") uri: String?,
+                                  @Field("plan_type") planType:String?,
+                                  @Field("type") mealType:String?): Response<JsonObject>
 
 
     @Multipart

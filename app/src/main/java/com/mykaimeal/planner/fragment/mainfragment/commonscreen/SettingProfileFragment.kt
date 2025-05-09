@@ -397,6 +397,7 @@ class SettingProfileFragment : Fragment(), View.OnClickListener {
             R.id.imageEditTargets -> moveToNextScreen()
             R.id.relMyWallet -> navigateToFragment(R.id.walletFragment)
             R.id.relOrderHistory -> {
+                (activity as MainActivity?)?.upOrderTracking()
                 val bundle = Bundle().apply {
                     putString("screen","no")
                 }

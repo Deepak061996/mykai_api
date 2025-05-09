@@ -1,5 +1,6 @@
 package com.mykaimeal.planner.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ class AdapterOrderHistoryItem(private var datalist: MutableList<OrderHistoryMode
         return ViewHolder(binding)
     }
 
+    @SuppressLint("DefaultLocale", "SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val data= datalist[position]
@@ -104,6 +106,7 @@ class AdapterOrderHistoryItem(private var datalist: MutableList<OrderHistoryMode
         return datalist.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(dataList: MutableList<OrderHistoryModelData>) {
         datalist=dataList
         notifyDataSetChanged()

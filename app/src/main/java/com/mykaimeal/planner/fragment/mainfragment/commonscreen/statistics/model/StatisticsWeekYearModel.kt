@@ -1,5 +1,8 @@
 package com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model
 
+import com.mykaimeal.planner.fragment.mainfragment.profilesetting.orderhistoryscreen.model.Item
+import com.mykaimeal.planner.fragment.mainfragment.profilesetting.orderhistoryscreen.model.OrderHistoryModelData
+
 data class StatisticsWeekYearModel(
     val code: Int?,
     val `data`: StatisticsWeekYearModelData?,
@@ -9,18 +12,18 @@ data class StatisticsWeekYearModel(
 
 data class StatisticsWeekYearModelData(
     val month: String?,
-    val orders: MutableList<Order>?,
+    val orders: MutableList<OrderHistoryModelData>?,
     val recipes: Recipes?,
     val total_price: Double?,
-    val user_budget: Int?
+    val user_budget: Double?
 )
 
 data class Order(
     val address: String,
     val date: String,
-    val order: OrderX,
+    val order: OrderX?,
     val status: Int,
-    val store_logo: String
+    val store_logo: String?
 )
 
 data class OrderX(
@@ -33,7 +36,7 @@ data class OrderX(
 
 data class FinalQuote(
     val added_fees: AddedFees?,
-    val items: MutableList<Any>?,
+    val items: MutableList<Item>?,
     val misc_fees: MutableList<Any>?,
     val quote: Quote?,
     val quote_id: String?,
@@ -41,7 +44,7 @@ data class FinalQuote(
     val store_address: String?,
     val store_id: String?,
     val tip: Int?,
-    val total_with_tip: Int?
+    val total_with_tip: Double?
 )
 
 data class AddedFees(

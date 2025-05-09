@@ -18,6 +18,7 @@ import com.mykaimeal.planner.R
 import com.mykaimeal.planner.databinding.AdapterMealTypeItemBinding
 import com.mykaimeal.planner.databinding.AdapterStatisticsWeekYearItemBinding
 import com.mykaimeal.planner.fragment.mainfragment.commonscreen.statistics.model.Breakfast
+import com.mykaimeal.planner.fragment.mainfragment.viewmodel.planviewmodel.apiresponse.BreakfastModel
 import com.mykaimeal.planner.model.DataModel
 
 class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, private var requireActivity: FragmentActivity,
@@ -30,10 +31,17 @@ class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, p
         return ViewHolder(binding)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateList(updateList: MutableList<Breakfast>, type:String){
+        dataList=updateList
+        this.type=type
+        notifyDataSetChanged()
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         try {
-            val item= dataList?.get(position)?.recipe?.xservices
+            val item= dataList?.get(position)
 
             if (item?.recipe?.label!=null){
                 holder.binding.tvBreakfast.text = item.recipe.label
@@ -43,7 +51,7 @@ class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, p
                 holder.binding.tvTime.text = ""+ item.recipe.totalTime +" min "
             }
 
-           /* if (item?.is_like!=null){
+            if (item?.is_like!=null){
                 if (item.is_like ==0 ){
                     holder.binding.imgHeartRed.setImageResource(R.drawable.heart_white_icon)
                 }else{
@@ -53,7 +61,7 @@ class AdapterStatisticsWeekItem(private var dataList: MutableList<Breakfast>?, p
 
             if (item?.review!=null){
                 holder.binding.tvRatingReviews.text = ""+ item.review +"("+ item.review_number +")"
-            }*/
+            }
 
 
             if (item?.recipe?.images?.SMALL?.url!=null){

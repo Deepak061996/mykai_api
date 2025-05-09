@@ -104,7 +104,7 @@ interface MainRepository {
 
  suspend fun recipeAddToPlanRequestApi(successCallback: (response: NetworkResult<String>) -> Unit,jsonObject: JsonObject)
  suspend fun addToBasketAllUrl(successCallback: (response: NetworkResult<String>) -> Unit,date: String?)
- suspend fun addMealTypeApiUrl(successCallback: (response: NetworkResult<String>) -> Unit,uri: String?,planType: String?)
+ suspend fun addMealTypeApiUrl(successCallback: (response: NetworkResult<String>) -> Unit,uri: String?,planType: String?,mealType:String?)
  suspend fun createRecipeRequestApi(successCallback: (response: NetworkResult<String>) -> Unit,jsonObject: JsonObject)
  suspend fun updateMealUrl(successCallback: (response: NetworkResult<String>) -> Unit,jsonObject: JsonObject)
 
@@ -282,7 +282,7 @@ interface MainRepository {
     suspend fun generateLinkUrl(successCallback: (response: NetworkResult<String>) -> Unit, link: RequestBody?, image: MultipartBody.Part?)
     suspend fun selectStoreProductUrl(successCallback: (response: NetworkResult<String>) -> Unit, storeName: String?, storeId: String?)
     suspend fun getGraphScreenUrl(successCallback: (response: NetworkResult<String>) -> Unit, month:String?, year:String?)
-    suspend fun orderWeekUrl(successCallback: (response: NetworkResult<String>) -> Unit, week:String?,month:String?,year:String?)
+    suspend fun orderWeekUrl(successCallback: (response: NetworkResult<String>) -> Unit, start_date:String?,end_date:String?,year:String?)
     suspend fun orderHistoryUrl(successCallback: (response: NetworkResult<String>) -> Unit)
     suspend fun referralUrl(successCallback: (response: NetworkResult<String>) -> Unit)
 

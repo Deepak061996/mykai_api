@@ -2532,10 +2532,10 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
 
 
     override suspend fun addMealTypeApiUrl(
-        successCallback: (response: NetworkResult<String>) -> Unit,uri:String?,planType:String?
+        successCallback: (response: NetworkResult<String>) -> Unit,uri:String?,planType:String?,mealType:String?
     ) {
         try {
-            api.addMealTypeApiUrl(uri,planType).apply {
+            api.addMealTypeApiUrl(uri,planType,mealType).apply {
                 if (isSuccessful) {
                     body()?.let {
                         successCallback(NetworkResult.Success(it.toString()))
@@ -2629,10 +2629,10 @@ class MainRepositoryImpl @Inject constructor(private val api: ApiInterface) : Ma
     }
 
     override suspend fun orderWeekUrl(
-        successCallback: (response: NetworkResult<String>) -> Unit,week:String?,month:String?,year:String?
+        successCallback: (response: NetworkResult<String>) -> Unit,start_date:String?,end_date:String?,year:String?
     ) {
         try {
-            api.orderWeekUrl(week,month,year).apply {
+            api.orderWeekUrl(start_date,end_date,year).apply {
                 if (isSuccessful) {
                     body()?.let {
                         successCallback(NetworkResult.Success(it.toString()))

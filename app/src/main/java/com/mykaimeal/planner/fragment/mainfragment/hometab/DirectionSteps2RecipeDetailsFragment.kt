@@ -298,7 +298,7 @@ class DirectionSteps2RecipeDetailsFragment : Fragment() {
                     viewModel.addMealTypeApiUrl({
                         BaseApplication.dismissMe()
                         handleApiAddToPlanResponse(it, dialogCookedMeals)
-                    },uri,type)
+                    },uri,type,mealType)
                 }
             }
         }

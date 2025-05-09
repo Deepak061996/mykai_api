@@ -360,7 +360,6 @@ class CookedFragment : Fragment(), OnItemClickListener {
     private fun showDataInUi(cookedTabModelData: CookedTabModelData?) {
         try {
             if (cookedTabModelData != null) {
-                cookedTabViewModel.setData(cookedTabModelData)
                 recipesModel = cookedTabModelData
                 if (cookedTabModelData.fridge != null && cookedTabModelData.freezer != null) {
                     fun updateFridgeVisibility(condition: Boolean) {

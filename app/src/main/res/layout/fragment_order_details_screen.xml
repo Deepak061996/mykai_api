@@ -5,50 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.mainfragment.profilesetting.orderhistoryscreen.OrderDetailsScreenFragment">
+    <RelativeLayout
+        android:id="@+id/rlToolbar"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/_25sdp"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/imgBackOrderDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/black_images_back" />
+
+        <TextView
+            android:id="@+id/tvOrderId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Order #24609"
+            android:textSize="@dimen/_13sdp" />
+
+    </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_below="@id/rlToolbar"
         android:fillViewport="true">
-
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_25sdp"
-            android:layout_marginBottom="@dimen/_20sdp">
-
-            <RelativeLayout
-                android:id="@+id/rlToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/imgBackOrderDetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:padding="@dimen/_5sdp"
-                    android:src="@drawable/black_images_back" />
-
-                <TextView
-                    android:id="@+id/tvOrderId"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="Order #24609"
-                    android:textSize="@dimen/_13sdp" />
-
-            </RelativeLayout>
-
-
+            android:layout_height="wrap_content">
             <RelativeLayout
                 android:id="@+id/relStoreImages"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_80sdp"
-                android:layout_below="@+id/rlToolbar"
+                android:layout_height="@dimen/_100sdp"
                 android:layout_marginTop="@dimen/_15sdp">
 
                 <com.google.android.material.imageview.ShapeableImageView
@@ -57,7 +53,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_welmart_super_market"
+                    android:src="@drawable/no_image"
                     app:shapeAppearanceOverlay="@style/CornerCut" />
 
                 <include
@@ -80,9 +76,10 @@
 
                 <RelativeLayout
                     android:id="@+id/relDatePrice"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
+                    android:gravity="center"
                     android:layout_marginTop="@dimen/_5sdp">
 
                     <TextView
@@ -132,10 +129,11 @@
 
             <TextView
                 android:id="@+id/tvYourOrderReceipt"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relOrderComDate"
                 android:layout_centerVertical="true"
+                android:gravity="center|start"
                 android:fontFamily="@font/montserrat_bold"
                 android:text="Your order &amp; receipt"
                 android:textColor="@color/black"
@@ -146,7 +144,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvYourOrderReceipt"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -156,7 +155,7 @@
                 android:layout_height="@dimen/_1sdp"
                 android:layout_below="@+id/rcyOrderHistoryDetails"
                 android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:background="@color/grey1" />
 
             <RelativeLayout
@@ -164,7 +163,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewPrices"
-                android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_15sdp">
 
                 <RelativeLayout
@@ -312,7 +310,7 @@
                 android:layout_height="@dimen/_1sdp"
                 android:layout_below="@+id/relBillingDetailAmount"
                 android:layout_marginHorizontal="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:background="@color/grey1" />
 
 
@@ -320,7 +318,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewAmount"
-                android:layout_marginTop="@dimen/_15sdp">
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp">
 
                 <TextView
                     android:id="@+id/tvPayments"
@@ -390,7 +389,5 @@
 
 
         </RelativeLayout>
-
     </ScrollView>
-
 </RelativeLayout>

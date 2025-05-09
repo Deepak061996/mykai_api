@@ -29,9 +29,9 @@ class RecipeDetailsViewModel @Inject constructor(private val repository: MainRep
     }
 
 
-    suspend fun addMealTypeApiUrl(successCallback: (response: NetworkResult<String>) -> Unit, uri: String?, planType:String?
+    suspend fun addMealTypeApiUrl(successCallback: (response: NetworkResult<String>) -> Unit, uri: String?, planType:String?,mealType:String?
     ){
-        repository.addMealTypeApiUrl({ successCallback(it) },uri, planType)
+        repository.addMealTypeApiUrl({ successCallback(it) },uri, planType,mealType)
     }
 
 

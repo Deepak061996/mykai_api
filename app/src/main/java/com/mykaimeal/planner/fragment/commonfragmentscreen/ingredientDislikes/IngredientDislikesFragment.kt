@@ -432,24 +432,6 @@ class IngredientDislikesFragment : Fragment(), OnItemClickedListener {
 
         }
 
-    /*    if (editText!=""){
-            binding.relMoreButton.visibility=View.GONE
-            val filteredList: MutableList<DislikedIngredientsModelData> =
-                java.util.ArrayList<DislikedIngredientsModelData>()
-            for (item in dislikeIngredientModelData) {
-                if (item.name.toLowerCase().contains(editText.lowercase(Locale.getDefault()))) {
-                    filteredList.add(item)
-                }
-            }
-            if (filteredList.size > 0) {
-                dislikeIngredientsAdapter!!.filterList(filteredList)
-                binding.rcyIngDislikes.visibility = View.VISIBLE
-            } else {
-                binding.rcyIngDislikes.visibility = View.GONE
-            }
-        }else{
-            binding.relMoreButton.visibility=View.VISIBLE
-        }*/
     }
 
     private fun stillSkipDialog() {

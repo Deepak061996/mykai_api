@@ -53,7 +53,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:fontFamily="@font/montserrat_bold"
                         android:textAlignment="center"
-                        android:text="Allow “My-Kai” to use\nyour location?"
+                        android:text="Allow “My Kai” to use\nyour location?"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_14sdp" />
 

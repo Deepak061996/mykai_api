@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -42,7 +43,7 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentOrderHistoryBinding.inflate(inflater, container, false)
-
+        orderHistoryViewModel = ViewModelProvider(requireActivity())[OrderHistoryViewModel::class.java]
 
         val mainActivity = activity as? MainActivity
         mainActivity?.binding?.apply {
@@ -52,7 +53,6 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
 
         screen = arguments?.getString("screen", "") ?: ""
 
-        orderHistoryViewModel = ViewModelProvider(this)[OrderHistoryViewModel::class.java]
 
         adapterOrderHistoryItem = AdapterOrderHistoryItem(orderHistoryModel, requireActivity(), this)
         binding.rcyOrderHistory.adapter = adapterOrderHistoryItem
@@ -65,15 +65,6 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
     }
 
     private fun setupBackNavigation() {
-
-      /*  if (screen.equals("yes", true)) {
-            binding.relNoOrders.visibility = View.GONE
-            binding.rcyOrderHistory.visibility = View.VISIBLE
-        } else {
-            binding.relNoOrders.visibility = View.VISIBLE
-            binding.rcyOrderHistory.visibility = View.GONE
-        }*/
-
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -89,17 +80,21 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
             moveToScreen()
         }
 
-        binding.rlStartOrder.setOnClickListener {
-            binding.relNoOrders.visibility = View.GONE
-            binding.rcyOrderHistory.visibility = View.VISIBLE
-        }
+//        binding.rlStartOrder.setOnClickListener {
+//            binding.relNoOrders.visibility = View.GONE
+//            binding.rcyOrderHistory.visibility = View.VISIBLE
+//        }
 
-     /*   if (orderHistoryViewModel.dataOrderHistory!=null){
+
+        if (orderHistoryViewModel.dataOrderHistory!=null){
             showDataInUI(orderHistoryViewModel.dataOrderHistory!!)
         }else{
-            orderHistoryApi()
-        }*/
+            loadApi()
+        }
 
+    }
+
+    private fun loadApi(){
         if (BaseApplication.isOnline(requireActivity())) {
             orderHistoryApi()
         } else {
@@ -135,33 +130,42 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
             val apiModel = Gson().fromJson(data, OrderHistoryModel::class.java)
             Log.d("@@@ Recipe Details ", "message :- $data")
             if (apiModel.code == 200 && apiModel.success) {
-                showDataInUI(apiModel.data)
+                apiModel.data?.let {
+                    orderHistoryModel.clear()
+                    orderHistoryModel.addAll(it)
+                    showDataInUI(it)
+                }?.run {
+                    binding.relNoOrders.visibility = View.GONE
+                    binding.rcyOrderHistory.visibility = View.VISIBLE
+                }
             } else {
+                binding.relNoOrders.visibility = View.GONE
+                binding.rcyOrderHistory.visibility = View.VISIBLE
                 handleError(apiModel.code, apiModel.message)
             }
 
         } catch (e: Exception) {
+            binding.relNoOrders.visibility = View.GONE
+            binding.rcyOrderHistory.visibility = View.VISIBLE
             showAlert(e.message, false)
         }
     }
 
-    private fun showDataInUI(data: MutableList<OrderHistoryModelData>?) {
-
-        orderHistoryModel.clear()
-
-        data.let {
-            orderHistoryModel.addAll(it!!)
-
-            orderHistoryViewModel.setOrderHistoryData(orderHistoryModel)
-        }
-
-        if (orderHistoryModel.size > 0) {
-            binding.relNoOrders.visibility=View.GONE
-            binding.rcyOrderHistory.visibility = View.VISIBLE
-            adapterOrderHistoryItem?.updateList(orderHistoryModel)
-        }else{
+    private fun showDataInUI(data: MutableList<OrderHistoryModelData>) {
+        try {
+            orderHistoryViewModel.setOrderHistoryData(data)
+            if (data.size > 0) {
+                binding.relNoOrders.visibility = View.GONE
+                binding.rcyOrderHistory.visibility = View.VISIBLE
+                adapterOrderHistoryItem?.updateList(data)
+            }else{
+                binding.relNoOrders.visibility=View.VISIBLE
+                binding.rcyOrderHistory.visibility = View.GONE
+            }
+        }catch (e:Exception){
             binding.relNoOrders.visibility=View.VISIBLE
             binding.rcyOrderHistory.visibility = View.GONE
+            Log.d("Error","******"+e.message)
         }
     }
 
@@ -185,14 +189,18 @@ class OrderHistoryFragment : Fragment(), OnItemClickedListener {
 
     override fun itemClicked(position: Int?, list: MutableList<String>?, status: String?, type: String?) {
         if (type.equals("View",true)) {
+            val selectedItem = orderHistoryModel[position!!]
+            val gson = Gson()
+            val jsonString = gson.toJson(selectedItem)
             val bundle = Bundle().apply {
-                putSerializable("viewDetails", orderHistoryModel[position!!])
+                putString("order_item_json", jsonString)
             }
             findNavController().navigate(R.id.orderDetailsScreenFragment,bundle)
         } else {
-            if (orderHistoryModel[position!!].order?.tracking_link!=null){
+            val selectedItem = orderHistoryModel[position!!]
+            if (selectedItem.order?.tracking_link!=null){
                 val bundle = Bundle().apply {
-                    putString("tracking",orderHistoryModel[position].order?.tracking_link )
+                    putString("tracking", selectedItem.order.tracking_link)
                 }
                 findNavController().navigate(R.id.trackOrderScreenFragment, bundle)
             }

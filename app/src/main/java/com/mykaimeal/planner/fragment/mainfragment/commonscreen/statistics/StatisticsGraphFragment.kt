@@ -66,6 +66,7 @@ class StatisticsGraphFragment : Fragment() {
     private var currentMonth: String = ""
     private var weekOfMonth: String = ""
     private var year: String = ""
+    private  var clickCount=0
     private var currentDate = Date() // Current date
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -145,6 +146,16 @@ class StatisticsGraphFragment : Fragment() {
         binding.tvDateCalendar.text = formatMonthYear(currentMonth.toInt(),year.toInt())
 
 
+        // Enable pinch zoom and double tap zoom
+        binding.barChart.setPinchZoom(false)
+        binding.barChart.setScaleEnabled(false)
+        binding.barChart.isDoubleTapToZoomEnabled = false
+
+        // Optional: enable dragging and scaling
+        binding.barChart.isDragEnabled = false
+        binding.barChart.isScaleXEnabled = false
+        binding.barChart.isScaleYEnabled = false
+
 
         binding.imgBackStats.setOnClickListener {
             findNavController().navigateUp()
@@ -166,8 +177,10 @@ class StatisticsGraphFragment : Fragment() {
         }
 
         binding.barChart.setOnClickListener {
-            statisticsViewModel.setGraphDataList(null)
-            findNavController().navigate(R.id.statisticsWeekYearFragment)
+            if (clickCount!=0){
+                statisticsViewModel.setGraphDataList(null,currentDate)
+                findNavController().navigate(R.id.statisticsWeekYearFragment)
+            }
         }
 
 
@@ -282,6 +295,9 @@ class StatisticsGraphFragment : Fragment() {
         weekValues.add((graphData.week_2 ?: 0f))
         weekValues.add((graphData.week_3 ?: 0f))
         weekValues.add((graphData.week_4 ?: 0f))
+
+
+        clickCount=weekValues.count { it.toInt() !=0 }
 
         val entries = mutableListOf<BarEntry>()
         for (i in weekValues.indices) {

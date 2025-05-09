@@ -22,6 +22,6 @@ class OrderHistoryViewModel@Inject constructor(private val repository: MainRepos
     val dataOrderHistory: MutableList<OrderHistoryModelData>? get() = _dataOrderHistory
 
     fun setOrderHistoryData(data: MutableList<OrderHistoryModelData>?){
-        _dataOrderHistory=data
+        _dataOrderHistory = data
     }
 }

@@ -288,6 +288,7 @@ class AddTipScreenFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(editText: Editable) {
                 if (editText.isNotEmpty()) {
+                    selectedTipPercent=editText.toString()
                     binding.rlProceedAndPay.isClickable=true
                     binding.rlProceedAndPay.setBackgroundResource(R.drawable.green_fill_corner_bg)
                     val allViews = listOf(binding.linearNotNow, binding.llTenPerc, binding.llFifteenPerc, binding.llTwentyPerc, binding.lltwentyFivePerc)

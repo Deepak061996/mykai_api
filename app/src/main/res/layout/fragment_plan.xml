@@ -112,6 +112,7 @@
                 android:layout_marginTop="@dimen/_15sdp"
                 android:background="@drawable/calendar_events_bg"
                 android:orientation="vertical"
+                android:gravity="center"
                 android:paddingHorizontal="@dimen/_6sdp"
                 android:paddingVertical="@dimen/_10sdp">
 
@@ -156,8 +157,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:overScrollMode="never"
-                    android:foregroundGravity="center"
-                    android:layout_gravity="center_horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <RelativeLayout
@@ -166,6 +165,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/_15sdp"
+                    android:visibility="gone"
                     android:layout_marginBottom="@dimen/_10sdp"
                     android:background="@drawable/gray_btn_unselect_background"
                     android:clickable="false">
